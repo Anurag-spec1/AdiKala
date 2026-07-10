@@ -25,7 +25,7 @@
         android:layout_below="@id/imgProduct"
         android:layout_marginTop="10dp"
         android:ellipsize="end"
-        android:maxLines="2"
+        android:maxLines="1"
         android:text="Nike Air Max 97"
         android:textColor="#0D3238"
         android:textSize="15sp"
