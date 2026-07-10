@@ -19,8 +19,8 @@
         android:layout_height="180dp"
         android:scaleType="centerCrop"
         android:src="@drawable/sample_place"
-        app:carbon_cornerRadiusTopLeft="20dp"
-        app:carbon_cornerRadiusTopRight="20dp"/>
+        app:carbon_cornerRadiusTopEnd="20dp"
+        app:carbon_cornerRadiusTopStart="20dp"/>
 
     <carbon.widget.TextView
         android:id="@+id/tvPlaceName"

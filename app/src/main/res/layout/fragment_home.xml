@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="#E2EDE5"
     android:fitsSystemWindows="true"
-    tools:context=".HomeFragment">
+    tools:context=".fragment.HomeFragment">
 
     <carbon.widget.ImageView
         android:id="@+id/userImg"
@@ -21,31 +21,37 @@
         app:carbon_stroke="@color/carbon_blue_200"
         app:carbon_strokeWidth="1dp" />
 
-    <carbon.widget.TextView
-        android:id="@+id/gestureTag"
+    <LinearLayout
+        android:id="@+id/userInfoLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="15dp"
-        android:layout_marginTop="19dp"
         android:layout_toEndOf="@id/userImg"
-        android:text="Good Morning !"
-        android:textColor="@color/carbon_grey_700"
-        android:textSize="16sp"
-        app:carbon_font="@font/space_grotesk_semibold" />
+        android:layout_marginStart="15dp"
+        android:layout_alignTop="@id/userImg"
+        android:layout_alignBottom="@id/userImg"
+        android:gravity="center_vertical"
+        android:orientation="vertical">
 
-    <carbon.widget.TextView
-        android:id="@+id/userName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/gestureTag"
-        android:layout_marginStart="15dp"
-        android:layout_marginTop="-5dp"
-        android:layout_toEndOf="@id/userImg"
-        android:maxLines="1"
-        android:text="Anurag"
-        android:textColor="@color/black"
-        android:textSize="20sp"
-        app:carbon_font="@font/space_grotesk_semibold" />
+        <carbon.widget.TextView
+            android:id="@+id/gestureTag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Good Morning !"
+            android:textColor="@color/carbon_grey_700"
+            android:textSize="15sp"
+            app:carbon_font="@font/space_grotesk_semibold" />
+
+        <carbon.widget.TextView
+            android:id="@+id/userName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:text="Anurag"
+            android:textColor="@color/black"
+            android:textSize="22sp"
+            app:carbon_font="@font/space_grotesk_semibold" />
+
+    </LinearLayout>
 
 
     <carbon.widget.ImageView
@@ -155,6 +161,9 @@
                 android:src="@drawable/home_banner"
                 app:carbon_cornerRadius="15dp"
                 app:carbon_elevation="4dp"
+                app:carbon_strokeWidth="1dp"
+                app:carbon_stroke="@color/carbon_grey_300"
+                android:layout_marginTop="10dp"
                 app:carbon_elevationShadowColor="@color/black"
                 android:focusable="true"
                 android:scaleType="fitXY"

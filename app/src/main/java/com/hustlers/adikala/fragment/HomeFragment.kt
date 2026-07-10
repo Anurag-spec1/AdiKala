@@ -1,11 +1,13 @@
-package com.hustlers.adikala
+package com.hustlers.adikala.fragment
 
 import android.graphics.Typeface
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.hustlers.adikala.databinding.FragmentHomeBinding
 
@@ -31,6 +33,9 @@ class HomeFragment : Fragment() {
         binding.userName.text = "Christopherkumar".toDisplayName()
         binding.rvPopular.layoutManager =
             StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+
+        binding.rvCategories.layoutManager =
+            LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
 
     }
 
