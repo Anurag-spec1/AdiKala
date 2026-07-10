@@ -65,26 +65,26 @@ class HomeFragment : Fragment() {
 
             PopularCollection(
                 1,
-                "Goa",
-                "https://picsum.photos/400/500"
+                "Pichwai Art",
+                "https://www.adikala.in/cdn/shop/collections/pichwai.jpg?v=1737890053&width=1080"
             ),
 
             PopularCollection(
                 2,
-                "Varanasi",
-                "https://picsum.photos/400/650"
+                "Decorative Essentials",
+                "https://www.adikala.in/cdn/shop/collections/decoration.jpg?v=1674844832&width=1080"
             ),
 
             PopularCollection(
                 3,
-                "Jaipur",
-                "https://picsum.photos/400/550"
+                "Wooden Beads",
+                "https://www.adikala.in/cdn/shop/products/657_cdb4596c-0ceb-47dc-9652-09be375b15c0.jpg?v=1657903140&width=1080"
             ),
 
             PopularCollection(
                 4,
-                "Rishikesh",
-                "https://picsum.photos/400/700"
+                "MDF Bases",
+                "https://www.adikala.in/cdn/shop/collections/for-DIY.jpg?v=1674845390&width=1080"
             )
         )
 

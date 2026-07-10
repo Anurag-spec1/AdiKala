@@ -17,16 +17,12 @@ class PopularCollectionAdapter(
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: PopularCollection) {
-            binding.tvTag.text = item.name
+            binding.tvTitle.text = item.name
 
             Glide.with(binding.root)
                 .load(item.image)
-                .into(binding.imgCollection)
+                .into(binding.imgProduct)
 
-            binding.swipeButton.buttonText = "Swipe to Explore"
-            binding.swipeButton.onSwipeComplete = {
-                onClick?.invoke(item)
-            }
         }
     }
 
