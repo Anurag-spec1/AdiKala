@@ -1,38 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<carbon.widget.LinearLayout
+<carbon.widget.RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    android:orientation="vertical"
-    android:background="@android:color/white"
-    app:carbon_cornerRadius="20dp"
-    app:carbon_elevation="4dp"
+    android:layout_height="260dp"
+    android:layout_margin="6dp"
     app:carbon_strokeWidth="1dp"
-    app:carbon_stroke="@color/carbon_grey_300">
+    app:carbon_elevation="4dp"
+    app:carbon_stroke="@color/carbon_grey_700"
+    app:carbon_cornerRadius="14dp">
 
     <carbon.widget.ImageView
-        android:id="@+id/imgPlace"
+        android:id="@+id/imgCollection"
         android:layout_width="match_parent"
-        android:layout_height="180dp"
+        android:layout_height="match_parent"
         android:scaleType="centerCrop"
-        android:src="@drawable/sample_place"
-        app:carbon_cornerRadiusTopEnd="20dp"
-        app:carbon_cornerRadiusTopStart="20dp"/>
+        android:src="@drawable/sample_place"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/gradient_image_scrim"/>
 
     <carbon.widget.TextView
-        android:id="@+id/tvPlaceName"
+        android:id="@+id/tvTag"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="14dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginEnd="14dp"
-        android:layout_marginBottom="14dp"
-        android:text="Varanasi"
-        android:textColor="@android:color/black"
-        android:textSize="18sp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="10dp"
+        android:maxLines="2"
+        android:ellipsize="end"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:text="Iconic Brazil"
+        android:textColor="@color/black"
+        android:textSize="17sp"
+        android:background="@color/white"
+        app:carbon_cornerRadius="10dp"
+        app:carbon_elevation="2dp"
         app:carbon_font="@font/space_grotesk_semibold"/>
 
-</carbon.widget.LinearLayout>
+    <com.hustlers.adikala.widget.SwipeableConfirmView
+        android:id="@+id/swipeButton"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="22dp"/>
+
+</carbon.widget.RelativeLayout>
