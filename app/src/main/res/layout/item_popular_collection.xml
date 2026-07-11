@@ -6,13 +6,11 @@
     android:layout_margin="8dp"
     android:padding="3dp">
 
-    <!-- Ring is drawn across the FULL frame -->
     <com.hustlers.adikala.widget.GlowingBorderView
         android:id="@+id/glowBorder"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <!-- Card is inset by 3dp so the ring shows around it -->
     <carbon.widget.RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

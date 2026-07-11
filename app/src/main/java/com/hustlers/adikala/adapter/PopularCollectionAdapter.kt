@@ -19,7 +19,7 @@ class PopularCollectionAdapter(
             binding.tvTitle.text = item.name
             Glide.with(binding.root).load(item.image).into(binding.imgProduct)
             binding.root.setOnClickListener { onClick?.invoke(item) }
-            binding.glowBorder.startGlowAnimation()   // start right on bind, guaranteed to fire
+            binding.glowBorder.startGlowAnimation()
         }
     }
 

@@ -22,13 +22,12 @@ class GlowingBorderView @JvmOverloads constructor(
     private var rotationAngle = 0f
     private var animator: ValueAnimator? = null
 
-    // base stroke color -> bright highlight -> base, repeated so it reads as a moving glint
     private var cornerRadiusPx = dpToPx(20f)
-    private var strokeWidthPx = dpToPx(3f)   // was 1.5f — now actually visible in the 3dp gap
+    private var strokeWidthPx = dpToPx(3f)
 
     private var glowColors = intArrayOf(
         Color.parseColor("#E9BDB0"),
-        Color.parseColor("#FF7A45"),   // warm copper glint, ties to button color
+        Color.parseColor("#FF7A45"),
         Color.parseColor("#E9BDB0"),
         Color.parseColor("#E9BDB0"),
         Color.parseColor("#FF7A45"),
