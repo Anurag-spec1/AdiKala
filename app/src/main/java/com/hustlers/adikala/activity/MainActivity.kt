@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import com.hustlers.adikala.fragment.HomeFragment
 import com.hustlers.adikala.R
 import com.hustlers.adikala.databinding.ActivityMainBinding
+import com.hustlers.adikala.fragment.ProfileFragment
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -26,7 +27,7 @@ class MainActivity : AppCompatActivity() {
 //            loadFragment(CartFragment())
         }
         binding.bottomNavBar.setOnProfileClickListener {
-//            loadFragment(ProfileFragment())
+            loadFragment(ProfileFragment())
         }
     }
 
