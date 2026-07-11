@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="#FFFFFF" />
+    <!-- radius bigger than half the pill height guarantees a full stadium
+         shape (fully rounded ends) no matter how wide it grows -->
+    <corners android:radius="100dp" />
+</shape>

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center_vertical"
     android:orientation="horizontal"
     android:weightSum="3">
 
@@ -16,13 +16,35 @@
         android:focusable="true"
         android:foreground="?attr/selectableItemBackgroundBorderless">
 
-        <ImageView
-            android:id="@+id/nav_cart_icon"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+        <LinearLayout
+            android:id="@+id/nav_cart_pill"
+            android:layout_width="wrap_content"
+            android:layout_height="42dp"
             android:layout_gravity="center"
-            android:src="@drawable/ic_cart"
-            app:tint="@color/nav_icon_inactive" />
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingHorizontal="14dp"
+            android:background="@drawable/bg_nav_pill">
+
+            <ImageView
+                android:id="@+id/nav_cart_icon"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:src="@drawable/ic_cart"
+                app:tint="@color/nav_icon_inactive" />
+
+            <TextView
+                android:id="@+id/nav_cart_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="0dp"
+                android:text="Cart"
+                android:textColor="@color/nav_icon_active"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:singleLine="true"
+                android:alpha="0" />
+        </LinearLayout>
     </FrameLayout>
 
     <FrameLayout
@@ -34,20 +56,35 @@
         android:focusable="true"
         android:foreground="?attr/selectableItemBackgroundBorderless">
 
-        <View
-            android:id="@+id/nav_home_bg"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+        <LinearLayout
+            android:id="@+id/nav_home_pill"
+            android:layout_width="wrap_content"
+            android:layout_height="42dp"
             android:layout_gravity="center"
-            android:background="@drawable/bg_nav_active_circle" />
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingHorizontal="14dp"
+            android:background="@drawable/bg_nav_pill">
 
-        <ImageView
-            android:id="@+id/nav_home_icon"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_gravity="center"
-            android:src="@drawable/ic_home"
-            app:tint="@color/nav_icon_active" />
+            <ImageView
+                android:id="@+id/nav_home_icon"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:src="@drawable/ic_home"
+                app:tint="@color/nav_icon_active" />
+
+            <TextView
+                android:id="@+id/nav_home_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="0dp"
+                android:text="Home"
+                android:textColor="@color/nav_icon_active"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:singleLine="true"
+                android:alpha="0" />
+        </LinearLayout>
     </FrameLayout>
 
     <FrameLayout
@@ -59,13 +96,35 @@
         android:focusable="true"
         android:foreground="?attr/selectableItemBackgroundBorderless">
 
-        <ImageView
-            android:id="@+id/nav_profile_icon"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+        <LinearLayout
+            android:id="@+id/nav_profile_pill"
+            android:layout_width="wrap_content"
+            android:layout_height="42dp"
             android:layout_gravity="center"
-            android:src="@drawable/ic_profile"
-            app:tint="@color/nav_icon_inactive" />
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingHorizontal="14dp"
+            android:background="@drawable/bg_nav_pill">
+
+            <ImageView
+                android:id="@+id/nav_profile_icon"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:src="@drawable/ic_profile"
+                app:tint="@color/nav_icon_inactive" />
+
+            <TextView
+                android:id="@+id/nav_profile_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="0dp"
+                android:text="Profile"
+                android:textColor="@color/nav_icon_active"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:singleLine="true"
+                android:alpha="0" />
+        </LinearLayout>
     </FrameLayout>
 
 </LinearLayout>
