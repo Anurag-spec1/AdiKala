@@ -17,7 +17,7 @@ class MainActivity : AppCompatActivity() {
         binding= ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        loadFragment(HomeFragment())
+
     }
     private fun loadFragment(fragment: Fragment){
         supportFragmentManager.beginTransaction()

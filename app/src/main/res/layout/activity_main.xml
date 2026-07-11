@@ -10,9 +10,21 @@
     tools:context=".activity.MainActivity">
 
     <FrameLayout
+        android:id="@+id/fragmentContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/fragmentContainer"/>
+        android:layout_above="@id/bottomNavBar" />
 
+    <com.hustlers.adikala.widget.BottomNavBar
+        android:id="@+id/bottomNavBar"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginHorizontal="30dp"
+        android:layout_marginBottom="20dp"
+        android:background="#0D3238"
+        app:carbon_cornerRadius="35dp"
+        app:carbon_elevation="8dp"
+        app:carbon_elevationShadowColor="@color/white" />
 
 </carbon.widget.RelativeLayout>
