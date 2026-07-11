@@ -13,35 +13,28 @@ class PopularCollectionAdapter(
 ) : RecyclerView.Adapter<PopularCollectionAdapter.ViewHolder>() {
 
     inner class ViewHolder(
-        private val binding: ItemPopularCollectionBinding
+        val binding: ItemPopularCollectionBinding
     ) : RecyclerView.ViewHolder(binding.root) {
-
         fun bind(item: PopularCollection) {
             binding.tvTitle.text = item.name
-
-            Glide.with(binding.root)
-                .load(item.image)
-                .into(binding.imgProduct)
-
+            Glide.with(binding.root).load(item.image).into(binding.imgProduct)
+            binding.root.setOnClickListener { onClick?.invoke(item) }
+            binding.glowBorder.startGlowAnimation()   // start right on bind, guaranteed to fire
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-
         val binding = ItemPopularCollectionBinding.inflate(
-            LayoutInflater.from(parent.context),
-            parent,
-            false
+            LayoutInflater.from(parent.context), parent, false
         )
-
         return ViewHolder(binding)
-
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) = holder.bind(list[position])
 
-        holder.bind(list[position])
-
+    override fun onViewRecycled(holder: ViewHolder) {
+        super.onViewRecycled(holder)
+        holder.binding.glowBorder.stopGlowAnimation()
     }
 
     override fun getItemCount() = list.size

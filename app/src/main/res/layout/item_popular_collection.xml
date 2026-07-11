@@ -1,48 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<carbon.widget.RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="180dp"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
-    android:background="@color/white"
-    android:padding="12dp"
-    app:carbon_cornerRadius="20dp"
-    app:carbon_elevation="6dp"
-    app:carbon_strokeWidth="0dp">
+    android:padding="3dp">
 
-    <carbon.widget.ImageView
-        android:id="@+id/imgProduct"
+    <!-- Ring is drawn across the FULL frame -->
+    <com.hustlers.adikala.widget.GlowingBorderView
+        android:id="@+id/glowBorder"
         android:layout_width="match_parent"
-        android:layout_height="130dp"
-        android:scaleType="centerCrop"
-        app:carbon_cornerRadius="16dp" />
+        android:layout_height="match_parent" />
 
-    <carbon.widget.TextView
-        android:id="@+id/tvTitle"
-        android:layout_width="wrap_content"
+    <!-- Card is inset by 3dp so the ring shows around it -->
+    <carbon.widget.RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/imgProduct"
-        android:layout_marginTop="10dp"
-        android:ellipsize="end"
-        android:maxLines="1"
-        android:text="Nike Air Max 97"
-        android:textColor="#0D3238"
-        android:textSize="15sp"
-        app:carbon_font="@font/space_grotesk_semibold" />
+        android:layout_margin="3dp"
+        android:background="@color/white"
+        android:padding="12dp"
+        app:carbon_cornerRadius="17dp"
+        app:carbon_elevation="6dp"
+        app:carbon_elevationShadowColor="@color/carbon_grey_500">
 
-    <carbon.widget.Button
-        android:id="@+id/btnCheckout"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_below="@id/tvTitle"
-        android:layout_marginTop="10dp"
-        android:background="#0D3238"
-        android:text="Check out"
-        android:textAllCaps="false"
-        android:textColor="@color/white"
-        android:textSize="13sp"
-        app:carbon_cornerRadius="20dp"
-        app:carbon_font="@font/space_grotesk_semibold" />
+        <carbon.widget.ImageView
+            android:id="@+id/imgProduct"
+            android:layout_width="match_parent"
+            android:layout_height="130dp"
+            android:scaleType="centerCrop"
+            app:carbon_cornerRadius="16dp" />
 
-</carbon.widget.RelativeLayout>
+        <carbon.widget.TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/imgProduct"
+            android:layout_marginTop="10dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="Nike Air Max 97"
+            android:textColor="#3A2418"
+            android:textSize="15sp"
+            app:carbon_font="@font/space_grotesk_semibold" />
+
+        <carbon.widget.Button
+            android:id="@+id/btnCheckout"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_below="@id/tvTitle"
+            android:layout_marginTop="10dp"
+            android:background="#0D3238"
+            android:text="Check out"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="13sp"
+            app:carbon_cornerRadius="20dp"
+            app:carbon_font="@font/space_grotesk_semibold" />
+    </carbon.widget.RelativeLayout>
+</FrameLayout>
