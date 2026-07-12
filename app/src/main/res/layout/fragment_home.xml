@@ -26,7 +26,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toEndOf="@id/userImg"
-        android:layout_marginStart="15dp"
+        android:layout_marginStart="12dp"
         android:layout_alignTop="@id/userImg"
         android:layout_alignBottom="@id/userImg"
         android:gravity="center_vertical"
@@ -46,7 +46,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:maxLines="1"
-            android:layout_marginTop="-5dp"
+            android:layout_marginTop="0dp"
             android:text="Anurag"
             android:textColor="#0D3238"
             android:textSize="26sp"
@@ -54,14 +54,13 @@
 
     </LinearLayout>
 
-
     <carbon.widget.ImageView
         android:id="@+id/cart"
         android:layout_width="45dp"
         android:layout_height="45dp"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="15dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="20dp"
         android:background="@color/white"
         android:focusable="true"
         android:clickable="true"
@@ -78,17 +77,16 @@
     <carbon.widget.ImageView
         android:id="@+id/notification"
         android:layout_width="45dp"
-        app:carbon_stroke="#e9bdb0"
-        app:carbon_strokeWidth="1.5dp"
         android:layout_height="45dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="15dp"
-        android:focusable="true"
         android:layout_toStartOf="@id/cart"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="12dp"
+        android:focusable="true"
         android:background="@color/white"
         android:clickable="true"
         android:padding="13dp"
+        app:carbon_stroke="#e9bdb0"
+        app:carbon_strokeWidth="1.5dp"
         app:carbon_elevationShadowColor="@color/black"
         android:scaleType="centerCrop"
         android:src="@drawable/ic_notification"
@@ -103,7 +101,7 @@
         android:layout_below="@id/userImg"
         android:layout_marginStart="20dp"
         android:layout_marginTop="20dp"
-        android:layout_marginEnd="84dp"
+        android:layout_toStartOf="@id/ivMic"
         android:background="@android:color/white"
         android:hint="Search destination..."
         android:textColor="@android:color/black"
@@ -133,6 +131,7 @@
         android:layout_alignBottom="@id/etSearchBar"
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="15dp"
+        android:layout_marginStart="10dp"
         android:background="#0D3238"
         android:src="@drawable/ic_mic"
         android:scaleType="center"
@@ -150,7 +149,7 @@
         android:layout_height="match_parent"
         android:layout_below="@id/etSearchBar"
         android:fillViewport="true"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="15dp"
         android:overScrollMode="never"
         android:scrollbars="none">
 
@@ -168,7 +167,6 @@
                 app:carbon_elevation="4dp"
                 app:carbon_stroke="#e9bdb0"
                 app:carbon_strokeWidth="1.5dp"
-                android:layout_marginTop="10dp"
                 app:carbon_elevationShadowColor="@color/black"
                 android:focusable="true"
                 android:scaleType="fitXY"
@@ -178,7 +176,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="20dp"
                 android:text="Categories"
                 android:textColor="#0D3238"
                 android:textSize="24sp"
@@ -188,7 +186,7 @@
                 android:id="@+id/rvCategories"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="14dp"
+                android:layout_marginTop="12dp"
                 android:paddingStart="20dp"
                 android:paddingEnd="20dp"
                 android:nestedScrollingEnabled="false"/>
@@ -207,7 +205,7 @@
                 android:id="@+id/rvPopular"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="14dp"
+                android:layout_marginTop="12dp"
                 android:layout_marginHorizontal="10dp"
                 tools:listitem="@layout/item_popular_collection"
                 android:nestedScrollingEnabled="false"
@@ -216,9 +214,5 @@
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>
-
-
-
-
 
 </carbon.widget.RelativeLayout>
