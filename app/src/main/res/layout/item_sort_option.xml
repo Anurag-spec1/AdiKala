@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<carbon.widget.LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rowSort"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    android:focusable="true"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingHorizontal="12dp"
+    android:paddingVertical="15dp"
+    app:carbon_cornerRadius="14dp"
+    app:carbon_rippleColor="#1A0D3238">
+
+    <carbon.widget.TextView
+        android:id="@+id/tvSortLabel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Featured"
+        android:textColor="#0D3238"
+        android:textSize="16sp"
+        app:carbon_font="@font/space_grotesk_semibold" />
+
+    <carbon.widget.ImageView
+        android:id="@+id/ivCheck"
+        android:layout_width="22dp"
+        android:layout_height="22dp"
+        android:src="@drawable/ic_check"
+        android:visibility="invisible"
+        app:carbon_tint="#0D3238" />
+
+</carbon.widget.LinearLayout>

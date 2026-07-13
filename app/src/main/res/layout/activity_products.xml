@@ -1,12 +1,185 @@
 <?xml version="1.0" encoding="utf-8"?>
-<carbon.widget.RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<carbon.widget.RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/main_bg"
+    android:fitsSystemWindows="true"
     tools:context=".activity.ProductsActivity">
+
+    <carbon.widget.ImageView
+        android:id="@+id/btnBack"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="15dp"
+        android:background="@color/white"
+        android:clickable="true"
+        android:focusable="true"
+        android:padding="12dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_chevron_left"
+        app:carbon_cornerRadius="22.5dp"
+        app:carbon_elevation="4dp"
+        app:carbon_rippleColor="#1A0D3238"
+        app:carbon_stroke="#14000000"
+        app:carbon_strokeWidth="1dp"
+        app:carbon_tint="#0D3238" />
+
+    <LinearLayout
+        android:id="@+id/titleWrap"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/btnBack"
+        android:layout_alignBottom="@id/btnBack"
+        android:layout_marginStart="14dp"
+        android:layout_marginEnd="14dp"
+        android:layout_toStartOf="@id/btnSort"
+        android:layout_toEndOf="@id/btnBack"
+        android:gravity="center_vertical"
+        android:orientation="vertical">
+
+        <carbon.widget.TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Category"
+            android:textColor="@color/carbon_grey_700"
+            android:textSize="13sp"
+            app:carbon_font="@font/space_grotesk_semibold" />
+
+        <carbon.widget.TextView
+            android:id="@+id/tvCategoryName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="-3dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="Temple Décor"
+            android:textColor="#0D3238"
+            android:textSize="22sp"
+            app:carbon_font="@font/space_grotesk_semibold" />
+    </LinearLayout>
+
+    <carbon.widget.ImageView
+        android:id="@+id/btnSort"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_alignTop="@id/btnBack"
+        android:layout_alignBottom="@id/btnBack"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="20dp"
+        android:background="@color/white"
+        android:clickable="true"
+        android:focusable="true"
+        android:padding="12dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_sort"
+        app:carbon_cornerRadius="22.5dp"
+        app:carbon_elevation="4dp"
+        app:carbon_rippleColor="#1A0D3238"
+        app:carbon_stroke="#14000000"
+        app:carbon_strokeWidth="1dp"
+        app:carbon_tint="#0D3238" />
+
+    <LinearLayout
+        android:id="@+id/subBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btnBack"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="18dp"
+        android:layout_marginEnd="20dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <carbon.widget.TextView
+            android:id="@+id/tvResultCount"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="48 products"
+            android:layout_marginVertical="8dp"
+            android:textColor="@color/carbon_grey_700"
+            android:textSize="15sp"
+            app:carbon_font="@font/space_grotesk_semibold" />
+
+        <carbon.widget.LinearLayout
+            android:id="@+id/chipActiveSort"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="14dp"
+            android:paddingTop="7dp"
+            android:paddingEnd="12dp"
+            android:paddingBottom="7dp"
+            app:carbon_cornerRadius="18dp"
+            app:carbon_elevation="3dp"
+            app:carbon_rippleColor="#1A0D3238">
+
+            <carbon.widget.TextView
+                android:id="@+id/tvActiveSort"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Featured"
+                android:textColor="#0D3238"
+                android:textSize="13sp"
+                app:carbon_font="@font/space_grotesk_semibold" />
+
+            <carbon.widget.ImageView
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:layout_marginStart="6dp"
+                android:src="@drawable/ic_chevron_down"
+                app:carbon_tint="#0D3238" />
+        </carbon.widget.LinearLayout>
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvProducts"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/subBar"
+        android:layout_marginTop="14dp"
+        android:clipToPadding="false"
+        android:overScrollMode="never"
+        android:paddingHorizontal="12dp"
+        android:paddingBottom="24dp"
+        android:scrollbars="none"
+        tools:listitem="@layout/item_products" />
+
+    <LinearLayout
+        android:id="@+id/emptyState"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/subBar"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="80dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <carbon.widget.ImageView
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:alpha="0.5"
+            android:src="@drawable/ic_search"
+            app:carbon_tint="@color/carbon_grey_500" />
+
+        <carbon.widget.TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:text="No products found"
+            android:textColor="#0D3238"
+            android:textSize="18sp"
+            app:carbon_font="@font/space_grotesk_semibold" />
+    </LinearLayout>
 
 </carbon.widget.RelativeLayout>

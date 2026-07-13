@@ -1,5 +1,6 @@
 package com.hustlers.adikala.fragment
 
+import android.content.Intent
 import android.graphics.Typeface
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.hustlers.adikala.activity.ProductsActivity
 import com.hustlers.adikala.adapter.CategoryAdapter
 import com.hustlers.adikala.adapter.PopularCollectionAdapter
 import com.hustlers.adikala.databinding.FragmentHomeBinding
@@ -87,10 +89,8 @@ class HomeFragment : Fragment() {
             )
         )
 
-        popularAdapter = PopularCollectionAdapter(popular) {
-
-            Toast.makeText(requireContext(), it.name, Toast.LENGTH_SHORT).show()
-
+        popularAdapter = PopularCollectionAdapter(popular) { collection ->
+            openProducts(collection.name)
         }
 
         binding.rvPopular.adapter = popularAdapter
@@ -107,6 +107,12 @@ class HomeFragment : Fragment() {
         } else {
             firstName
         }
+    }
+
+    private fun openProducts(categoryName: String) {
+        val intent = Intent(requireContext(), ProductsActivity::class.java)
+        intent.putExtra(ProductsActivity.EXTRA_CATEGORY, categoryName)
+        startActivity(intent)
     }
 
 
