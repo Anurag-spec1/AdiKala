@@ -1,5 +1,7 @@
 package com.hustlers.adikala.dataclass
 
+import java.io.Serializable
+
 data class Product(
     val id: String,
     val name: String,
@@ -10,5 +12,7 @@ data class Product(
     val rating: Double = 0.0,
     val salesCount: Int = 0,
     val createdAt: Long = 0L,
-    var isWishlisted: Boolean = false
-)
+    var isWishlisted: Boolean = false,
+    val brand: String = "adikala.in",
+    val images: List<String> = emptyList()   // gallery; falls back to imageUrl
+) : Serializable

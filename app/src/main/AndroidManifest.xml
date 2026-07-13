@@ -14,6 +14,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AdiKala">
         <activity
+            android:name=".activity.ProductDetailActivity"
+            android:exported="false" />
+        <activity
             android:name=".activity.ProductsActivity"
             android:exported="false" />
         <activity

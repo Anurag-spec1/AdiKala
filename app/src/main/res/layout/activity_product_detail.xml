@@ -1,0 +1,462 @@
+<?xml version="1.0" encoding="utf-8"?>
+<carbon.widget.RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/main_bg"
+    tools:context=".activity.ProductDetailActivity">
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scroll"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/bottomBar"
+        android:overScrollMode="never"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="430dp">
+
+                <androidx.viewpager2.widget.ViewPager2
+                    android:id="@+id/vpImages"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+                <carbon.widget.TextView
+                    android:id="@+id/tvPageCounter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom|end"
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginBottom="40dp"
+                    android:background="#B30D3238"
+                    android:paddingStart="12dp"
+                    android:paddingTop="5dp"
+                    android:paddingEnd="12dp"
+                    android:paddingBottom="5dp"
+                    android:text="1 / 2"
+                    android:textColor="@color/white"
+                    android:textSize="12sp"
+                    app:carbon_cornerRadius="12dp"
+                    app:carbon_font="@font/space_grotesk_semibold" />
+            </FrameLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="-28dp"
+                android:background="@drawable/bg_detail_sheet"
+                android:orientation="vertical"
+                android:paddingHorizontal="20dp"
+                android:paddingTop="18dp"
+                android:paddingBottom="24dp">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvThumbs"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:clipToPadding="false"
+                    android:overScrollMode="never"
+                    android:scrollbars="none" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <carbon.widget.TextView
+                        android:id="@+id/tvBrand"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="adikala.in"
+                        android:textColor="@color/teal"
+                        android:textSize="14sp"
+                        app:carbon_font="@font/space_grotesk_semibold" />
+
+                    <carbon.widget.ImageView
+                        android:id="@+id/btnShare"
+                        android:layout_width="38dp"
+                        android:layout_height="38dp"
+                        android:background="@color/white"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:padding="9dp"
+                        android:layout_marginVertical="5dp"
+                        android:src="@drawable/ic_share"
+                        app:carbon_cornerRadius="19dp"
+                        app:carbon_elevation="2dp"
+                        app:carbon_rippleColor="#1A0D3238"
+                        app:carbon_stroke="#e9bdb0"
+                        app:carbon_strokeWidth="1.5dp"
+                        app:carbon_tint="#0D3238" />
+                </LinearLayout>
+
+                <carbon.widget.TextView
+                    android:id="@+id/tvTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:lineSpacingExtra="2dp"
+                    android:text="Peacock printed MDF Cutout Pack of 4 | DIY Decoration, Toran, Bandhanwar | 6 inch"
+                    android:textColor="#0D3238"
+                    android:textSize="22sp"
+                    app:carbon_font="@font/space_grotesk_semibold" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="#E7F0EA"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="10dp"
+                    android:paddingTop="5dp"
+                    android:paddingEnd="12dp"
+                    android:paddingBottom="5dp"
+                    app:carbon_cornerRadius="11dp">
+
+                    <carbon.widget.ImageView
+                        android:layout_width="14dp"
+                        android:layout_height="14dp"
+                        android:src="@drawable/ic_star"
+                        app:carbon_tint="#F5A623" />
+
+                    <carbon.widget.TextView
+                        android:id="@+id/tvRating"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        android:text="4.8 · No reviews yet"
+                        android:textColor="#4A6B5A"
+                        android:textSize="13sp"
+                        app:carbon_font="@font/space_grotesk_semibold" />
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="18dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <carbon.widget.TextView
+                        android:id="@+id/tvDiscountedPrice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="₹349"
+                        android:textColor="#0D3238"
+                        android:textSize="30sp"
+                        app:carbon_font="@font/space_grotesk_semibold" />
+
+                    <carbon.widget.TextView
+                        android:id="@+id/tvActualPrice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:text="₹399"
+                        android:textColor="#9B9B9B"
+                        android:textSize="16sp"
+                        app:carbon_font="@font/space_grotesk_semibold" />
+
+                    <carbon.widget.TextView
+                        android:id="@+id/tvSave"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:background="#C97B4A"
+                        android:paddingStart="9dp"
+                        android:paddingTop="4dp"
+                        android:paddingEnd="9dp"
+                        android:paddingBottom="4dp"
+                        android:text="Save ₹50"
+                        android:textColor="@color/white"
+                        android:textSize="12sp"
+                        app:carbon_cornerRadius="9dp"
+                        app:carbon_font="@font/space_grotesk_semibold" />
+                </LinearLayout>
+
+                <carbon.widget.TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="Tax included. Shipping calculated at checkout."
+                    android:textColor="@color/carbon_grey_700"
+                    android:textSize="12sp"
+                    app:carbon_font="@font/space_grotesk_semibold" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:background="#F7F2ED"
+                    android:orientation="vertical"
+                    android:padding="16dp"
+                    app:carbon_cornerRadius="16dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <carbon.widget.ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/ic_verified"
+                            app:carbon_tint="#0D3238" />
+
+                        <carbon.widget.TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="12dp"
+                            android:text="100% Hand crafted · Made in India"
+                            android:textColor="#0D3238"
+                            android:textSize="14sp"
+                            app:carbon_font="@font/space_grotesk_semibold" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="14dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <carbon.widget.ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/ic_truck"
+                            app:carbon_tint="#0D3238" />
+
+                        <carbon.widget.TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="12dp"
+                            android:text="Free shipping above ₹1499 · COD available"
+                            android:textColor="#0D3238"
+                            android:textSize="14sp"
+                            app:carbon_font="@font/space_grotesk_semibold" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="14dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <carbon.widget.ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/ic_lock"
+                            app:carbon_tint="#0D3238" />
+
+                        <carbon.widget.TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="12dp"
+                            android:text="Secure payments"
+                            android:textColor="#0D3238"
+                            android:textSize="14sp"
+                            app:carbon_font="@font/space_grotesk_semibold" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="22dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <carbon.widget.TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Quantity"
+                        android:textColor="#0D3238"
+                        android:textSize="18sp"
+                        app:carbon_font="@font/space_grotesk_semibold" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="46dp"
+                        android:background="@color/white"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        app:carbon_cornerRadius="23dp"
+                        app:carbon_stroke="#e9bdb0"
+                        app:carbon_strokeWidth="1.5dp">
+
+                        <carbon.widget.ImageView
+                            android:id="@+id/btnMinus"
+                            android:layout_width="46dp"
+                            android:layout_height="46dp"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:padding="14dp"
+                            android:src="@drawable/ic_minus"
+                            app:carbon_cornerRadius="23dp"
+                            app:carbon_rippleColor="#1A0D3238"
+                            app:carbon_tint="#0D3238" />
+
+                        <carbon.widget.TextView
+                            android:id="@+id/tvQty"
+                            android:layout_width="34dp"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="1"
+                            android:textColor="#0D3238"
+                            android:textSize="18sp"
+                            app:carbon_font="@font/space_grotesk_semibold" />
+
+                        <carbon.widget.ImageView
+                            android:id="@+id/btnPlus"
+                            android:layout_width="46dp"
+                            android:layout_height="46dp"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:padding="14dp"
+                            android:src="@drawable/ic_plus"
+                            app:carbon_cornerRadius="23dp"
+                            app:carbon_rippleColor="#1A0D3238"
+                            app:carbon_tint="#0D3238" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <carbon.widget.TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:text="Description"
+                    android:textColor="#0D3238"
+                    android:textSize="20sp"
+                    app:carbon_font="@font/space_grotesk_semibold" />
+
+                <carbon.widget.TextView
+                    android:id="@+id/tvDescription"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:lineSpacingExtra="4dp"
+                    android:text="Handcrafted MDF cutout, printed with intricate detailing. Perfect for DIY décor, toran and bandhanwar. Pack of 4, 6 inch each."
+                    android:textColor="#5C5C5C"
+                    android:textSize="15sp"
+                    app:carbon_font="@font/space_grotesk_semibold" />
+
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <carbon.widget.LinearLayout
+        android:id="@+id/bottomBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/white"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingHorizontal="20dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp"
+        app:carbon_cornerRadius="26dp"
+        app:carbon_elevation="16dp"
+        app:carbon_elevationShadowColor="@color/carbon_grey_500">
+
+        <carbon.widget.LinearLayout
+            android:id="@+id/btnAddToCart"
+            android:layout_width="0dp"
+            android:layout_height="52dp"
+            android:layout_marginEnd="10dp"
+            android:layout_weight="1"
+            android:background="@color/white"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:orientation="horizontal"
+            app:carbon_cornerRadius="26dp"
+            app:carbon_rippleColor="#1A0D3238"
+            app:carbon_stroke="#0D3238"
+            app:carbon_strokeWidth="1.5dp">
+
+            <carbon.widget.TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Add to cart"
+                android:textColor="#0D3238"
+                android:textSize="16sp"
+                app:carbon_font="@font/space_grotesk_semibold" />
+        </carbon.widget.LinearLayout>
+
+        <carbon.widget.LinearLayout
+            android:id="@+id/btnBuyNow"
+            android:layout_width="0dp"
+            android:layout_height="52dp"
+            android:layout_weight="1"
+            android:background="#0D3238"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:orientation="horizontal"
+            app:carbon_cornerRadius="26dp"
+            app:carbon_elevation="4dp"
+            app:carbon_rippleColor="#40FFFFFF">
+
+            <carbon.widget.TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Buy it now"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                app:carbon_font="@font/space_grotesk_semibold" />
+        </carbon.widget.LinearLayout>
+    </carbon.widget.LinearLayout>
+
+    <carbon.widget.ImageView
+        android:id="@+id/btnBack"
+        android:layout_width="44dp"
+        android:layout_height="44dp"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="18dp"
+        android:background="@color/white"
+        android:clickable="true"
+        android:focusable="true"
+        android:padding="11dp"
+        android:src="@drawable/ic_chevron_left"
+        app:carbon_cornerRadius="22dp"
+        app:carbon_elevation="6dp"
+        app:carbon_rippleColor="#1A0D3238"
+        app:carbon_tint="#0D3238" />
+
+    <carbon.widget.ImageView
+        android:id="@+id/btnWishlist"
+        android:layout_width="44dp"
+        android:layout_height="44dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="18dp"
+        android:layout_marginEnd="20dp"
+        android:background="@color/white"
+        android:clickable="true"
+        android:focusable="true"
+        android:padding="11dp"
+        android:src="@drawable/ic_heart"
+        app:carbon_cornerRadius="22dp"
+        app:carbon_elevation="6dp"
+        app:carbon_rippleColor="#1A0D3238"
+        app:carbon_tint="#0D3238" />
+
+</carbon.widget.RelativeLayout>

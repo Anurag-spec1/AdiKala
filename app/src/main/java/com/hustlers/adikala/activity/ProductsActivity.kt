@@ -1,5 +1,6 @@
 package com.hustlers.adikala.activity
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -46,7 +47,9 @@ class ProductsActivity : AppCompatActivity() {
         productAdapter = ProductAdapter(
             list = displayList,
             onClick = { product ->
-
+                val i = Intent(this, ProductDetailActivity::class.java)
+                i.putExtra(ProductDetailActivity.EXTRA_PRODUCT, product)
+                startActivity(i)
             },
             onAddToCart = { product ->
 
@@ -76,7 +79,7 @@ class ProductsActivity : AppCompatActivity() {
                     "1",
                     "Brass Diya Set",
                     "Handcrafted Brass Diya Set with Intricate Detailing",
-                    "https://www.adikala.in/collections/buy-best-quality-imported-wooden-beads-for-jewelery-bracelet-amp-making-decorative-diy/products/multi-colored-wooden-beads-big-size-1cm",
+                    "https://picsum.photos/seed/brass-diya/600/600",
                     999,
                     799,
                     4.8,
@@ -89,7 +92,7 @@ class ProductsActivity : AppCompatActivity() {
                     "2",
                     "Wooden Temple",
                     "Solid Sheesham Wood Home Temple with Elegant Carving",
-                    "https://www.adikala.in/collections/wooden-miniatures/products/multi-color-parrot-wooden-miniature-small-size",
+                    "https://picsum.photos/seed/wooden-temple/600/600",
                     5499,
                     4299,
                     4.7,
@@ -102,7 +105,7 @@ class ProductsActivity : AppCompatActivity() {
                     "3",
                     "Decorative Wooden Beads",
                     "Premium Multi-Colored Wooden Beads for DIY Crafts",
-                    "https://www.adikala.in/collections/wooden-miniatures/products/raja-rani-wooden-miniature",
+                    "https://picsum.photos/seed/wooden-beads/600/600",
                     499,
                     349,
                     4.6,
@@ -115,7 +118,7 @@ class ProductsActivity : AppCompatActivity() {
                     "4",
                     "Brass Pooja Bell",
                     "Traditional Brass Hand Bell for Daily Worship",
-                    "https://www.adikala.in/collections/laces-borders/products/golden-drop-shape-bead-lace-border-decorative-trim-for-saree-blouse-dupatta-lehenga-diy-craft-work",
+                    "https://picsum.photos/seed/brass-bell/600/600",
                     699,
                     549,
                     4.9,
@@ -128,7 +131,7 @@ class ProductsActivity : AppCompatActivity() {
                     "5",
                     "Wooden Elephant",
                     "Handcrafted Wooden Elephant Decorative Showpiece",
-                    "https://www.adikala.in/collections/laces-borders/products/multicolor-plastic-cowrie-shell-lace-border-with-white-pearl-beads-latkan-decorative-trim-for-blouse-dupatta-lehenga-saree-diy-craft-work",
+                    "https://picsum.photos/seed/wooden-elephant/600/600",
                     899,
                     649,
                     4.5,
@@ -141,7 +144,7 @@ class ProductsActivity : AppCompatActivity() {
                     "6",
                     "Marble Incense Holder",
                     "Elegant Marble Agarbatti Stand for Home Temple",
-                    "https://www.adikala.in/collections/fancy-buttons/products/round-rani-lotus-buttons-set-of-10-for-suit-saree-diy-decorative-buttons",
+                    "https://picsum.photos/seed/incense-holder/600/600",
                     399,
                     299,
                     4.4,
@@ -154,7 +157,7 @@ class ProductsActivity : AppCompatActivity() {
                     "7",
                     "Wooden Jewelry Box",
                     "Decorative Wooden Jewelry Storage Box",
-                    "https://www.adikala.in/collections/fancy-buttons/products/lotus-shape-metal-jewelry-connector-pack-of-10-diy-jewelry-making-craft-supplies",
+                    "https://picsum.photos/seed/jewelry-box/600/600",
                     1499,
                     1199,
                     4.8,
@@ -167,7 +170,7 @@ class ProductsActivity : AppCompatActivity() {
                     "8",
                     "Brass Candle Holder",
                     "Vintage Brass Candle Holder for Home Decor",
-                    "https://www.adikala.in/collections/traditional-indian-latkan-tassels/products/neon-blue-beads-long-tassel-pack-of-10-diy-art-craft-festive-decoration-tassels",
+                    "https://picsum.photos/seed/candle-holder/600/600",
                     799,
                     599,
                     4.7,
@@ -180,7 +183,7 @@ class ProductsActivity : AppCompatActivity() {
                     "9",
                     "Decorative Wall Hanging",
                     "Traditional Handmade Wooden Wall Hanging",
-                    "https://www.adikala.in/collections/traditional-indian-latkan-tassels/products/adikala-cowrie-parrot-lattu-decorative-tassel-pack-of-10-diy-craft-festive-decoration-tassels",
+                    "https://picsum.photos/seed/wall-hanging/600/600",
                     1299,
                     999,
                     4.6,
@@ -193,7 +196,7 @@ class ProductsActivity : AppCompatActivity() {
                     "10",
                     "Wooden Key Holder",
                     "Elegant Wooden Key Holder with Hooks",
-                    "https://www.adikala.in/collections/decoration-essentials/products/acrylic-flower-d2-pack-of-10-for-wedding-festive-decoration-diy-art-craft",
+                    "https://picsum.photos/seed/key-holder/600/600",
                     599,
                     449,
                     4.5,
@@ -206,7 +209,7 @@ class ProductsActivity : AppCompatActivity() {
                     "11",
                     "Brass Urli Bowl",
                     "Decorative Brass Urli Bowl for Floating Flowers",
-                    "https://www.adikala.in/collections/decoration-essentials/products/white-raffia-ring-pack-of-10-for-wedding-festive-decoration-diy-art-craft",
+                    "https://picsum.photos/seed/urli-bowl/600/600",
                     1999,
                     1599,
                     4.9,
@@ -219,7 +222,7 @@ class ProductsActivity : AppCompatActivity() {
                     "12",
                     "Wooden Photo Frame",
                     "Classic Wooden Photo Frame for Home Decor",
-                    "https://www.adikala.in/collections/pichwai-art/products/peacock-printed-mdf-cutout-pack-of-4-diy-decoration-toran-bandhanwar-6-inch",
+                    "https://picsum.photos/seed/photo-frame/600/600",
                     699,
                     499,
                     4.6,
@@ -227,7 +230,7 @@ class ProductsActivity : AppCompatActivity() {
                     1_712_500_000_000,
                     false
                 )
-                )
+            )
         )
         applySort(currentSort)
     }
