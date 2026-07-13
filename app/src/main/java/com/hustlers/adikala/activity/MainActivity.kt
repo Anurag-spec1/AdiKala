@@ -71,15 +71,5 @@ class MainActivity : AppCompatActivity() {
                             or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
                     )
         }
-
-        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            val statusBars = insets.getInsets(WindowInsetsCompat.Type.statusBars())
-            val navigationBars = insets.getInsets(WindowInsetsCompat.Type.navigationBars())
-
-            view.setPadding(0, 0, 0, 0)
-
-            insets
-        }
     }
 }

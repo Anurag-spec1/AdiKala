@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<carbon.widget.RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cardProduct"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    android:background="@color/white"
+    android:clickable="true"
+    android:focusable="true"
+    android:padding="10dp"
+    android:stateListAnimator="@null"
+    app:carbon_cornerRadius="20dp"
+    app:carbon_elevation="8dp"
+    app:carbon_elevationShadowColor="@color/carbon_grey_500"
+    app:carbon_rippleColor="#1A0D3238"
+    app:carbon_stroke="#12000000"
+    app:carbon_strokeWidth="1dp">
+
+    <FrameLayout
+        android:id="@+id/imageWrap"
+        android:layout_width="match_parent"
+        android:layout_height="160dp">
+
+        <carbon.widget.ImageView
+            android:id="@+id/imgProduct"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#F2ECE6"
+            android:scaleType="centerCrop"
+            app:carbon_cornerRadius="15dp" />
+
+        <carbon.widget.TextView
+            android:id="@+id/tvDiscountBadge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|start"
+            android:layout_margin="8dp"
+            android:background="#C97B4A"
+            android:paddingStart="9dp"
+            android:paddingTop="4dp"
+            android:paddingEnd="9dp"
+            android:paddingBottom="4dp"
+            android:text="20% OFF"
+            android:textColor="@color/white"
+            android:textSize="11sp"
+            app:carbon_cornerRadius="9dp"
+            app:carbon_elevation="2dp"
+            app:carbon_font="@font/space_grotesk_semibold" />
+
+        <carbon.widget.ImageView
+            android:id="@+id/btnWishlist"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:layout_gravity="top|end"
+            android:layout_margin="8dp"
+            android:background="@color/white"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="8dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_heart"
+            app:carbon_cornerRadius="17dp"
+            app:carbon_elevation="3dp"
+            app:carbon_tint="#0D3238" />
+
+        <carbon.widget.LinearLayout
+            android:id="@+id/ratingPill"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|start"
+            android:layout_margin="8dp"
+            android:background="@color/white"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="8dp"
+            android:paddingTop="4dp"
+            android:paddingEnd="9dp"
+            android:paddingBottom="4dp"
+            app:carbon_cornerRadius="11dp"
+            app:carbon_elevation="3dp">
+
+            <carbon.widget.ImageView
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:src="@drawable/ic_star"
+                app:carbon_tint="#F5A623" />
+
+            <carbon.widget.TextView
+                android:id="@+id/tvRating"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:text="4.8"
+                android:textColor="#0D3238"
+                android:textSize="12sp"
+                app:carbon_font="@font/space_grotesk_semibold" />
+        </carbon.widget.LinearLayout>
+
+        <carbon.widget.ImageView
+            android:id="@+id/btnQuickAdd"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="6dp"
+            android:background="#0D3238"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="10dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_plus"
+            app:carbon_cornerRadius="20dp"
+            app:carbon_elevation="5dp"
+            app:carbon_rippleColor="#40FFFFFF"
+            app:carbon_tint="@color/white" />
+    </FrameLayout>
+
+    <carbon.widget.TextView
+        android:id="@+id/tvDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/imageWrap"
+        android:layout_marginTop="12dp"
+        android:ellipsize="end"
+        android:lineSpacingExtra="1dp"
+        android:maxLines="2"
+        android:minLines="2"
+        android:text="Handcrafted Brass Diya Set with Intricate Detailing"
+        android:textColor="#0D3238"
+        android:textSize="14sp"
+        app:carbon_font="@font/space_grotesk_semibold" />
+
+    <LinearLayout
+        android:id="@+id/priceRow"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvDescription"
+        android:layout_marginTop="10dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <carbon.widget.TextView
+            android:id="@+id/tvDiscountedPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="₹799"
+            android:textColor="#0D3238"
+            android:textSize="19sp"
+            app:carbon_font="@font/space_grotesk_semibold" />
+
+        <carbon.widget.TextView
+            android:id="@+id/tvActualPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="7dp"
+            android:text="₹999"
+            android:textColor="#9B9B9B"
+            android:textSize="13sp"
+            app:carbon_font="@font/space_grotesk_semibold" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1" />
+
+        <carbon.widget.TextView
+            android:id="@+id/tvSave"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#E7F0EA"
+            android:paddingStart="9dp"
+            android:paddingTop="4dp"
+            android:paddingEnd="9dp"
+            android:paddingBottom="4dp"
+            android:text="Save ₹200"
+            android:textColor="#4A6B5A"
+            android:textSize="12sp"
+            app:carbon_cornerRadius="9dp"
+            app:carbon_font="@font/space_grotesk_semibold" />
+    </LinearLayout>
+
+</carbon.widget.RelativeLayout>
