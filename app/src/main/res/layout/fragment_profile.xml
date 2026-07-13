@@ -146,8 +146,8 @@
                         android:paddingHorizontal="16dp"
                         app:carbon_cornerRadius="18dp"
                         app:carbon_elevation="4dp"
-                        app:carbon_stroke="#e9bdb0"
-                        app:carbon_strokeWidth="1.5dp">
+                        app:carbon_stroke="#14000000"
+                        app:carbon_strokeWidth="1dp">
 
                         <carbon.widget.ImageView
                             android:layout_width="18dp"

@@ -174,15 +174,36 @@
                 app:carbon_stroke="#e9bdb0"
                 app:carbon_strokeWidth="1.5dp" />
 
-            <carbon.widget.TextView
-                android:layout_width="wrap_content"
+            <carbon.widget.LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="15dp"
-                android:text="Categories"
-                android:textColor="#0D3238"
-                android:textSize="22sp"
-                app:carbon_font="@font/space_grotesk_semibold" />
+                android:orientation="horizontal">
+
+                <carbon.widget.TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="15dp"
+                    android:text="Categories"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:textColor="#0D3238"
+                    android:textSize="22sp"
+                    app:carbon_font="@font/space_grotesk_semibold" />
+
+                <carbon.widget.TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:gravity="top"
+                    app:carbon_font="@font/space_grotesk_semibold"
+                    android:text="View all →"
+                    android:layout_marginEnd="15dp"
+                    android:layout_marginTop="15dp"
+                    android:textColor="@color/carbon_blue_700"/>
+
+            </carbon.widget.LinearLayout>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvCategories"
@@ -194,15 +215,36 @@
                 android:paddingStart="14dp"
                 android:paddingEnd="14dp" />
 
-            <carbon.widget.TextView
-                android:layout_width="wrap_content"
+            <carbon.widget.LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="15dp"
-                android:text="Popular Collections"
-                android:textColor="#0D3238"
-                android:textSize="22sp"
-                app:carbon_font="@font/space_grotesk_semibold" />
+                android:orientation="horizontal">
+
+                <carbon.widget.TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="15dp"
+                    android:text="New Arrivals"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:textColor="#0D3238"
+                    android:textSize="22sp"
+                    app:carbon_font="@font/space_grotesk_semibold" />
+
+                <carbon.widget.TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    app:carbon_font="@font/space_grotesk_semibold"
+                    android:text="View all →"
+                    android:gravity="top"
+                    android:layout_marginEnd="15dp"
+                    android:layout_marginTop="15dp"
+                    android:textColor="@color/carbon_blue_700"/>
+
+            </carbon.widget.LinearLayout>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvPopular"
