@@ -1,52 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <carbon.widget.LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/cardFilter"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:layout_marginStart="10dp"
-    android:layout_marginEnd="10dp"
-    android:gravity="center"
+    android:layout_margin="6dp"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:paddingStart="8dp"
+    android:paddingEnd="18dp"
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp"
     android:clickable="true"
     android:focusable="true"
-    android:background="@android:color/transparent"
+    android:background="@android:color/white"
+    app:carbon_cornerRadius="26dp"
+    app:carbon_elevation="4dp"
+    app:carbon_stroke="#14000000"
+    app:carbon_strokeWidth="1dp"
     android:stateListAnimator="@null">
 
-    <carbon.widget.RelativeLayout
-        android:id="@+id/iconContainer"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:background="@android:color/white"
-        app:carbon_cornerRadius="30dp"
-        app:carbon_strokeWidth="2dp"
-        app:carbon_stroke="#0D3238">
-
-        <carbon.widget.TextView
-            android:id="@+id/tvAvatarLetter"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:text="T"
-            android:textColor="#0D3238"
-            android:textSize="25sp"
-            app:carbon_font="@font/space_grotesk_semibold"/>
-
-    </carbon.widget.RelativeLayout>
+    <carbon.widget.ImageView
+        android:id="@+id/ivCategory"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:scaleType="centerCrop"
+        android:background="#0D3B3E"
+        app:carbon_cornerRadius="18dp" />
 
     <carbon.widget.TextView
         android:id="@+id/tvChipLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginStart="10dp"
         android:text="Temple"
-        android:textColor="@android:color/black"
-        android:textSize="18sp"
-        android:gravity="center"
-        android:maxLines="2"
+        android:textColor="#0D3238"
+        android:textSize="15sp"
+        android:gravity="center_vertical"
+        android:maxLines="1"
         android:ellipsize="end"
-        app:carbon_font="@font/space_grotesk_semibold"/>
+        app:carbon_font="@font/space_grotesk_semibold" />
 
 </carbon.widget.LinearLayout>

@@ -23,7 +23,7 @@ class GlowingBorderView @JvmOverloads constructor(
     private var animator: ValueAnimator? = null
 
     private var cornerRadiusPx = dpToPx(20f)
-    private var strokeWidthPx = dpToPx(3f)
+    private var strokeWidthPx = dpToPx(2f)
 
     private var glowColors = intArrayOf(
         Color.parseColor("#E9BDB0"),

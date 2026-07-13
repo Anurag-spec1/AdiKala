@@ -45,11 +45,10 @@ class HomeFragment : Fragment() {
             LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
 
         val categories = listOf(
-            Category(1, "Temple"),
-            Category(2, "Beach"),
-            Category(3, "Hill"),
-            Category(4, "Lake"),
-            Category(5, "Fort")
+            Category(1, "Temple","https://www.adikala.in/cdn/shop/collections/pichwai.jpg?v=1737890053&width=1080"),
+            Category(2, "Beach","https://www.adikala.in/cdn/shop/collections/decoration.jpg?v=1674844832&width=1080"),
+            Category(3, "Hill","https://www.adikala.in/cdn/shop/products/657_cdb4596c-0ceb-47dc-9652-09be375b15c0.jpg?v=1657903140&width=1080"),
+            Category(4, "Lake","https://www.adikala.in/cdn/shop/collections/for-DIY.jpg?v=1674845390&width=1080")
         )
 
         categoryAdapter = CategoryAdapter(categories) {

@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="180dp"
+    android:layout_width="170dp"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
     android:padding="3dp">
 
     <com.hustlers.adikala.widget.GlowingBorderView
@@ -17,7 +16,7 @@
         android:layout_margin="3dp"
         android:background="@color/white"
         android:padding="12dp"
-        app:carbon_cornerRadius="17dp"
+        app:carbon_cornerRadius="18dp"
         app:carbon_elevation="6dp"
         app:carbon_elevationShadowColor="@color/carbon_grey_500">
 
@@ -26,18 +25,19 @@
             android:layout_width="match_parent"
             android:layout_height="130dp"
             android:scaleType="centerCrop"
+            android:background="#F2ECE6"
             app:carbon_cornerRadius="16dp" />
 
         <carbon.widget.TextView
             android:id="@+id/tvTitle"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/imgProduct"
             android:layout_marginTop="10dp"
             android:ellipsize="end"
             android:maxLines="1"
             android:text="Nike Air Max 97"
-            android:textColor="#3A2418"
+            android:textColor="#0D3238"
             android:textSize="15sp"
             app:carbon_font="@font/space_grotesk_semibold" />
 
