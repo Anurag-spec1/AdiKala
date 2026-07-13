@@ -160,9 +160,27 @@ class BottomNavBar @JvmOverloads constructor(
 
     private fun cacheTextMetrics(data: TabData) {
         if (data.cachedTextWidth == -1) {
-            data.text.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
+            val originalAlpha = data.text.alpha
+            val originalWidth = (data.text.layoutParams as LinearLayout.LayoutParams).width
+            val originalMargin = (data.text.layoutParams as LinearLayout.LayoutParams).marginStart
+
+            val lp = data.text.layoutParams as LinearLayout.LayoutParams
+            lp.width = LinearLayout.LayoutParams.WRAP_CONTENT
+            lp.marginStart = dp(6)
+            data.text.layoutParams = lp
+            data.text.alpha = 1f
+
+            data.text.measure(
+                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+            )
             data.cachedTextWidth = data.text.measuredWidth
             data.cachedMargin = dp(6)
+
+            data.text.alpha = originalAlpha
+            lp.width = originalWidth
+            lp.marginStart = originalMargin
+            data.text.layoutParams = lp
         }
     }
 
@@ -261,6 +279,7 @@ class BottomNavBar @JvmOverloads constructor(
 
         val targetWidth = if (fraction <= 0f) 0 else data.cachedTextWidth
         val targetMargin = if (fraction <= 0f) 0 else data.cachedMargin
+
         val lp = data.text.layoutParams as LinearLayout.LayoutParams
         if (lp.width != targetWidth || lp.marginStart != targetMargin) {
             lp.width = targetWidth

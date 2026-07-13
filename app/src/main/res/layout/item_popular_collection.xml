@@ -49,7 +49,7 @@
             android:layout_below="@id/tvTitle"
             android:layout_marginTop="10dp"
             android:background="#0D3238"
-            android:text="Check out"
+            android:text="Explore"
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:textSize="13sp"
