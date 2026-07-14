@@ -37,11 +37,11 @@ class CategoriesActivity : AppCompatActivity() {
                     "https://www.adikala.in/cdn/shop/collections/pichwai.jpg?v=1737890053&width=1080",
                     24,
                     listOf(
-                        SubCategory(101, "Toran"),
-                        SubCategory(102, "Bandhanwar"),
-                        SubCategory(103, "Pooja Thali"),
-                        SubCategory(104, "Diya"),
-                        SubCategory(105, "Mandir")
+                        SubCategory(101, "Toran","https://www.adikala.in/cdn/shop/collections/decoration.jpg?v=1674844832&width=1080",3),
+                        SubCategory(102, "Bandhanwar","https://www.adikala.in/cdn/shop/products/657_cdb4596c-0ceb-47dc-9652-09be375b15c0.jpg?v=1657903140&width=1080",5),
+                        SubCategory(103, "Pooja Thali","https://www.adikala.in/cdn/shop/collections/for-DIY.jpg?v=1674845390&width=1080",7),
+                        SubCategory(104, "Diya","https://www.adikala.in/cdn/shop/collections/pichwai.jpg?v=1737890053&width=1080",9),
+                        SubCategory(105, "Mandir","https://www.adikala.in/cdn/shop/collections/decoration.jpg?v=1674844832&width=1080",11)
                     )
                 ),
                 Category(

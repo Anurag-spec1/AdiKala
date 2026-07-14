@@ -9,6 +9,7 @@ import com.bumptech.glide.Glide
 import com.hustlers.adikala.adapter.SubCategoryGridAdapter
 import com.hustlers.adikala.databinding.ActivitySubcategoriesBinding
 import com.hustlers.adikala.dataclass.Category
+import com.hustlers.adikala.dataclass.SubCategory
 
 class SubCategoriesActivity : AppCompatActivity() {
 
@@ -25,7 +26,8 @@ class SubCategoriesActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         category = (intent.getSerializableExtra(EXTRA_CATEGORY) as? Category) ?: run {
-            finish(); return
+            finish()
+            return
         }
 
         bindHeader()
@@ -42,7 +44,10 @@ class SubCategoriesActivity : AppCompatActivity() {
         binding.tvSubtitle.text =
             if (category.itemCount > 0) "$subText · ${category.itemCount} items" else subText
 
-        Glide.with(binding.ivBanner).load(category.image).centerCrop().into(binding.ivBanner)
+        Glide.with(binding.ivBanner)
+            .load(category.image)
+            .centerCrop()
+            .into(binding.ivBanner)
     }
 
     private fun setupGrid() {
@@ -57,9 +62,9 @@ class SubCategoriesActivity : AppCompatActivity() {
 
         binding.rvSubCategories.layoutManager = GridLayoutManager(this, 2)
         binding.rvSubCategories.adapter = SubCategoryGridAdapter(subs) { sub ->
-            val i = Intent(this, ProductsActivity::class.java)
-            i.putExtra(ProductsActivity.EXTRA_CATEGORY, "${category.name} · ${sub.name}")
-            startActivity(i)
+            val intent = Intent(this, ProductsActivity::class.java)
+            intent.putExtra(ProductsActivity.EXTRA_CATEGORY, "${category.name} · ${sub.name}")
+            startActivity(intent)
         }
     }
 }

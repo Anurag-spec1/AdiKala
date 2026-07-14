@@ -10,46 +10,78 @@
     android:clickable="true"
     android:focusable="true"
     android:orientation="vertical"
-    android:padding="8dp"
+    android:padding="9dp"
     android:stateListAnimator="@null"
-    app:carbon_cornerRadius="20dp"
-    app:carbon_elevation="6dp"
+    app:carbon_cornerRadius="22dp"
+    app:carbon_elevation="7dp"
     app:carbon_elevationShadowColor="@color/carbon_grey_500"
     app:carbon_rippleColor="#1A0D3238"
     app:carbon_stroke="#12000000"
     app:carbon_strokeWidth="1dp">
 
-    <carbon.widget.ImageView
-        android:id="@+id/ivSub"
+    <carbon.widget.RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="115dp"
-        android:background="#0D3B3E"
-        android:scaleType="centerCrop"
-        app:carbon_cornerRadius="15dp" />
+        android:layout_height="120dp">
 
-    <carbon.widget.TextView
-        android:id="@+id/tvSubName"
+        <carbon.widget.ImageView
+            android:id="@+id/ivSub"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#0D3B3E"
+            android:scaleType="centerCrop"
+            app:carbon_cornerRadius="16dp" />
+
+        <carbon.widget.TextView
+            android:id="@+id/tvSubItems"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_margin="8dp"
+            android:background="#F2FFFFFF"
+            android:paddingStart="9dp"
+            android:paddingEnd="9dp"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:text="12 items"
+            android:textColor="#0D3238"
+            android:textSize="11sp"
+            app:carbon_cornerRadius="10dp"
+            app:carbon_elevation="2dp"
+            app:carbon_font="@font/space_grotesk_semibold" />
+    </carbon.widget.RelativeLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="10dp"
-        android:ellipsize="end"
-        android:maxLines="1"
-        android:text="Toran"
-        android:textColor="#0D3238"
-        android:textSize="15sp"
-        app:carbon_font="@font/space_grotesk_semibold" />
+        android:layout_marginTop="11dp"
+        android:layout_marginBottom="3dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="5dp"
+        android:paddingEnd="3dp">
 
-    <carbon.widget.TextView
-        android:id="@+id/tvSubItems"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="1dp"
-        android:layout_marginBottom="4dp"
-        android:text="12 items"
-        android:textColor="@color/carbon_grey_700"
-        android:textSize="12sp"
-        app:carbon_font="@font/space_grotesk_semibold" />
+        <carbon.widget.TextView
+            android:id="@+id/tvSubName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="Toran"
+            android:textColor="#0D3238"
+            android:textSize="15sp"
+            app:carbon_font="@font/space_grotesk_semibold" />
+
+        <carbon.widget.ImageView
+            android:layout_width="26dp"
+            android:layout_height="26dp"
+            android:layout_marginStart="6dp"
+            android:background="#F2ECE6"
+            android:padding="7dp"
+            android:src="@drawable/ic_chevron_right"
+            app:carbon_cornerRadius="13dp"
+            app:carbon_tint="#0D3238" />
+    </LinearLayout>
 
 </carbon.widget.LinearLayout>
