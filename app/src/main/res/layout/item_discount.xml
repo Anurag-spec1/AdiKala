@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<carbon.widget.LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rowDiscount"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="10dp"
+    android:background="@color/white"
+    android:clickable="true"
+    android:focusable="true"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:padding="12dp"
+    app:carbon_cornerRadius="14dp"
+    app:carbon_rippleColor="#1A0D3238"
+    app:carbon_stroke="#e9bdb0"
+    app:carbon_strokeWidth="1.5dp">
+
+    <carbon.widget.TextView
+        android:id="@+id/tvCode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#0D3238"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:text="ADIF3"
+        android:textColor="@color/white"
+        android:textSize="13sp"
+        app:carbon_cornerRadius="8dp"
+        app:carbon_font="@font/space_grotesk_semibold" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <carbon.widget.TextView
+            android:id="@+id/tvPercent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="3% off"
+            android:textColor="#0D3238"
+            android:textSize="15sp"
+            app:carbon_font="@font/space_grotesk_semibold" />
+
+        <carbon.widget.TextView
+            android:id="@+id/tvEligibility"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="First-time buyer · ₹500–₹1,999"
+            android:textColor="@color/carbon_grey_700"
+            android:textSize="12sp"
+            app:carbon_font="@font/space_grotesk_semibold" />
+    </LinearLayout>
+
+    <carbon.widget.ImageView
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:src="@drawable/ic_copy"
+        app:carbon_tint="@color/carbon_grey_700" />
+</carbon.widget.LinearLayout>

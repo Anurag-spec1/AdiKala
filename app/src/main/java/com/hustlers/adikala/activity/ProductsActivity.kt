@@ -74,163 +74,232 @@ class ProductsActivity : AppCompatActivity() {
     private fun loadProducts() {
         productList.clear()
         productList.addAll(
-            listOf(
-                Product(
-                    "1",
-                    "Brass Diya Set",
-                    "Handcrafted Brass Diya Set with Intricate Detailing",
-                    "https://picsum.photos/seed/brass-diya/600/600",
-                    999,
-                    799,
-                    4.8,
-                    320,
-                    1_720_000_000_000,
-                    false
-                ),
 
-                Product(
-                    "2",
-                    "Wooden Temple",
-                    "Solid Sheesham Wood Home Temple with Elegant Carving",
-                    "https://picsum.photos/seed/wooden-temple/600/600",
-                    5499,
-                    4299,
-                    4.7,
-                    148,
-                    1_719_000_000_000,
-                    false
-                ),
+                listOf(
 
-                Product(
-                    "3",
-                    "Decorative Wooden Beads",
-                    "Premium Multi-Colored Wooden Beads for DIY Crafts",
-                    "https://picsum.photos/seed/wooden-beads/600/600",
-                    499,
-                    349,
-                    4.6,
-                    189,
-                    1_718_000_000_000,
-                    false
-                ),
+                    Product(
+                        id = "brass_diya_01",
+                        name = "Handcrafted Brass Diya Set",
+                        description = "Premium handcrafted brass diya set for pooja and festive décor.",
+                        imageUrl = "https://picsum.photos/seed/brass_diya_01/800/800",
+                        actualPrice = 999,
+                        discountedPrice = 799,
+                        rating = 4.8,
+                        images = listOf(
+                            "https://picsum.photos/seed/brass_diya_01/800/800",
+                            "https://picsum.photos/seed/brass_diya_01_2/800/800"
+                        ),
+                        fullDescription = "Beautiful handcrafted brass diya set designed for daily worship, festivals and traditional home décor. Made from premium brass with an elegant finish.",
+                        features = listOf(
+                            "Premium quality brass",
+                            "Traditional handcrafted design",
+                            "Perfect for pooja & festivals",
+                            "Long-lasting finish",
+                            "Easy to clean",
+                            "Ideal gifting option"
+                        )
+                    ),
 
-                Product(
-                    "4",
-                    "Brass Pooja Bell",
-                    "Traditional Brass Hand Bell for Daily Worship",
-                    "https://picsum.photos/seed/brass-bell/600/600",
-                    699,
-                    549,
-                    4.9,
-                    278,
-                    1_717_000_000_000,
-                    false
-                ),
+                    Product(
+                        id = "wooden_beads_01",
+                        name = "Multi Colored Wooden Beads",
+                        description = "Colorful wooden beads for DIY jewelry and craft projects.",
+                        imageUrl = "https://picsum.photos/seed/wooden_beads_01/800/800",
+                        actualPrice = 499,
+                        discountedPrice = 349,
+                        rating = 4.7,
+                        images = listOf(
+                            "https://picsum.photos/seed/wooden_beads_01/800/800",
+                            "https://picsum.photos/seed/wooden_beads_01_2/800/800"
+                        ),
+                        fullDescription = "Bright multi-colored wooden beads suitable for bracelets, necklaces, keychains and DIY decorative craft projects.",
+                        features = listOf(
+                            "Premium polished wooden beads",
+                            "Ideal for DIY jewelry",
+                            "Smooth finish",
+                            "Reusable",
+                            "Lightweight",
+                            "Great for hobby crafts"
+                        )
+                    ),
 
-                Product(
-                    "5",
-                    "Wooden Elephant",
-                    "Handcrafted Wooden Elephant Decorative Showpiece",
-                    "https://picsum.photos/seed/wooden-elephant/600/600",
-                    899,
-                    649,
-                    4.5,
-                    135,
-                    1_716_000_000_000,
-                    false
-                ),
+                    Product(
+                        id = "wooden_parrot_01",
+                        name = "Wooden Parrot Miniature",
+                        description = "Handcrafted colorful wooden parrot decorative miniature.",
+                        imageUrl = "https://picsum.photos/seed/wooden_parrot_01/800/800",
+                        actualPrice = 699,
+                        discountedPrice = 549,
+                        rating = 4.6,
+                        images = listOf(
+                            "https://picsum.photos/seed/wooden_parrot_01/800/800",
+                            "https://picsum.photos/seed/wooden_parrot_01_2/800/800"
+                        ),
+                        fullDescription = "Beautiful hand-painted wooden parrot miniature perfect for showcases and traditional home décor.",
+                        features = listOf(
+                            "Hand painted",
+                            "Premium wood",
+                            "Traditional artwork",
+                            "Gift worthy",
+                            "Home décor"
+                        )
+                    ),
 
-                Product(
-                    "6",
-                    "Marble Incense Holder",
-                    "Elegant Marble Agarbatti Stand for Home Temple",
-                    "https://picsum.photos/seed/incense-holder/600/600",
-                    399,
-                    299,
-                    4.4,
-                    102,
-                    1_715_500_000_000,
-                    false
-                ),
+                    Product(
+                        id = "lace_border_01",
+                        name = "Golden Drop Lace Border",
+                        description = "Decorative golden lace trim for sarees and DIY crafts.",
+                        imageUrl = "https://picsum.photos/seed/lace_border_01/800/800",
+                        actualPrice = 699,
+                        discountedPrice = 549,
+                        rating = 4.9,
+                        images = listOf(
+                            "https://picsum.photos/seed/lace_border_01/800/800",
+                            "https://picsum.photos/seed/lace_border_01_2/800/800"
+                        ),
+                        fullDescription = "Elegant golden bead lace border for ethnic wear and handmade decoration.",
+                        features = listOf(
+                            "Premium decorative lace",
+                            "Golden finish",
+                            "DIY compatible",
+                            "Easy stitching",
+                            "Traditional design"
+                        )
+                    ),
 
-                Product(
-                    "7",
-                    "Wooden Jewelry Box",
-                    "Decorative Wooden Jewelry Storage Box",
-                    "https://picsum.photos/seed/jewelry-box/600/600",
-                    1499,
-                    1199,
-                    4.8,
-                    256,
-                    1_715_000_000_000,
-                    false
-                ),
+                    Product(
+                        id = "cowrie_lace_01",
+                        name = "Cowrie Shell Lace Border",
+                        description = "Decorative cowrie shell lace with pearl beads.",
+                        imageUrl = "https://picsum.photos/seed/cowrie_lace_01/800/800",
+                        actualPrice = 899,
+                        discountedPrice = 649,
+                        rating = 4.7,
+                        images = listOf(
+                            "https://picsum.photos/seed/cowrie_lace_01/800/800",
+                            "https://picsum.photos/seed/cowrie_lace_01_2/800/800"
+                        ),
+                        fullDescription = "Beautiful decorative lace with cowrie shells and pearls for festive decoration.",
+                        features = listOf(
+                            "Cowrie shell design",
+                            "Pearl finish",
+                            "Traditional décor",
+                            "Flexible trim",
+                            "Festive use"
+                        )
+                    ),
 
-                Product(
-                    "8",
-                    "Brass Candle Holder",
-                    "Vintage Brass Candle Holder for Home Decor",
-                    "https://picsum.photos/seed/candle-holder/600/600",
-                    799,
-                    599,
-                    4.7,
-                    176,
-                    1_714_500_000_000,
-                    false
-                ),
+                    Product(
+                        id = "lotus_button_01",
+                        name = "Lotus Decorative Buttons",
+                        description = "Round lotus decorative buttons for sewing and DIY.",
+                        imageUrl = "https://picsum.photos/seed/lotus_button_01/800/800",
+                        actualPrice = 399,
+                        discountedPrice = 299,
+                        rating = 4.5,
+                        images = listOf(
+                            "https://picsum.photos/seed/lotus_button_01/800/800",
+                            "https://picsum.photos/seed/lotus_button_01_2/800/800"
+                        ),
+                        fullDescription = "Elegant lotus themed decorative buttons for suits, blouses and handmade craft.",
+                        features = listOf(
+                            "Metal finish",
+                            "Pack of buttons",
+                            "DIY sewing",
+                            "Durable",
+                            "Craft friendly"
+                        )
+                    ),
 
-                Product(
-                    "9",
-                    "Decorative Wall Hanging",
-                    "Traditional Handmade Wooden Wall Hanging",
-                    "https://picsum.photos/seed/wall-hanging/600/600",
-                    1299,
-                    999,
-                    4.6,
-                    211,
-                    1_714_000_000_000,
-                    false
-                ),
+                    Product(
+                        id = "connector_01",
+                        name = "Lotus Jewelry Connector",
+                        description = "Decorative metal connectors for jewelry making.",
+                        imageUrl = "https://picsum.photos/seed/connector_01/800/800",
+                        actualPrice = 599,
+                        discountedPrice = 449,
+                        rating = 4.6,
+                        images = listOf(
+                            "https://picsum.photos/seed/connector_01/800/800",
+                            "https://picsum.photos/seed/connector_01_2/800/800"
+                        ),
+                        fullDescription = "High-quality lotus shaped metal connectors for earrings, necklaces and bracelets.",
+                        features = listOf(
+                            "Metal alloy",
+                            "Rust resistant",
+                            "Jewelry making",
+                            "Premium finish",
+                            "Reusable"
+                        )
+                    ),
 
-                Product(
-                    "10",
-                    "Wooden Key Holder",
-                    "Elegant Wooden Key Holder with Hooks",
-                    "https://picsum.photos/seed/key-holder/600/600",
-                    599,
-                    449,
-                    4.5,
-                    95,
-                    1_713_500_000_000,
-                    false
-                ),
+                    Product(
+                        id = "tassel_01",
+                        name = "Decorative Tassel Pack",
+                        description = "Traditional handmade tassels for festive decoration.",
+                        imageUrl = "https://picsum.photos/seed/tassel_01/800/800",
+                        actualPrice = 799,
+                        discountedPrice = 599,
+                        rating = 4.8,
+                        images = listOf(
+                            "https://picsum.photos/seed/tassel_01/800/800",
+                            "https://picsum.photos/seed/tassel_01_2/800/800"
+                        ),
+                        fullDescription = "Colorful handmade tassels suitable for torans, bandhanwars and festive decorations.",
+                        features = listOf(
+                            "Pack of tassels",
+                            "Bright colors",
+                            "Handmade",
+                            "Festival décor",
+                            "Easy to attach"
+                        )
+                    ),
 
-                Product(
-                    "11",
-                    "Brass Urli Bowl",
-                    "Decorative Brass Urli Bowl for Floating Flowers",
-                    "https://picsum.photos/seed/urli-bowl/600/600",
-                    1999,
-                    1599,
-                    4.9,
-                    342,
-                    1_713_000_000_000,
-                    false
-                ),
+                    Product(
+                        id = "wall_hanging_01",
+                        name = "Traditional Wall Hanging",
+                        description = "Beautiful handcrafted wall hanging for home décor.",
+                        imageUrl = "https://picsum.photos/seed/wall_hanging_01/800/800",
+                        actualPrice = 1299,
+                        discountedPrice = 999,
+                        rating = 4.7,
+                        images = listOf(
+                            "https://picsum.photos/seed/wall_hanging_01/800/800",
+                            "https://picsum.photos/seed/wall_hanging_01_2/800/800"
+                        ),
+                        fullDescription = "Traditional handcrafted wall hanging to enhance your living room or pooja room décor.",
+                        features = listOf(
+                            "Handcrafted",
+                            "Traditional artwork",
+                            "Easy hanging",
+                            "Premium finish",
+                            "Gift option"
+                        )
+                    ),
 
-                Product(
-                    "12",
-                    "Wooden Photo Frame",
-                    "Classic Wooden Photo Frame for Home Decor",
-                    "https://picsum.photos/seed/photo-frame/600/600",
-                    699,
-                    499,
-                    4.6,
-                    163,
-                    1_712_500_000_000,
-                    false
+                    Product(
+                        id = "peacock_cutout_01",
+                        name = "Peacock MDF Cutout",
+                        description = "Printed MDF cutout for DIY decoration and craft.",
+                        imageUrl = "https://picsum.photos/seed/peacock_cutout_01/800/800",
+                        actualPrice = 699,
+                        discountedPrice = 499,
+                        rating = 4.8,
+                        images = listOf(
+                            "https://picsum.photos/seed/peacock_cutout_01/800/800",
+                            "https://picsum.photos/seed/peacock_cutout_01_2/800/800"
+                        ),
+                        fullDescription = "Decorative peacock printed MDF cutout suitable for toran, bandhanwar, wall hanging and DIY festive projects.",
+                        features = listOf(
+                            "Pack of 4",
+                            "6 inch size",
+                            "Printed MDF",
+                            "DIY decoration",
+                            "Festive décor"
+                        )
+                    )
                 )
-            )
+
         )
         applySort(currentSort)
     }

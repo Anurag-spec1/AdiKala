@@ -29,7 +29,7 @@ class ThumbnailAdapter(
         fun bind(url: String, pos: Int) {
             Glide.with(b.ivThumb).load(url).centerCrop().into(b.ivThumb)
             b.ivThumb.stroke = ColorStateList.valueOf(if (pos == selected) active else inactive)
-            b.ivThumb.alpha = if (pos == selected) 1f else 0.6f
+            b.ivThumb.alpha = if (pos == selected) 1f else 0.55f
             b.ivThumb.setOnClickListener { onPick(pos) }
         }
     }

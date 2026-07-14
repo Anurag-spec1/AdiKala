@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/main_bg"
+    android:fitsSystemWindows="true"
     tools:context=".activity.ProductDetailActivity">
 
     <androidx.core.widget.NestedScrollView
@@ -17,36 +18,21 @@
         android:scrollbars="none">
 
         <LinearLayout
+            android:id="@+id/scrollContent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="430dp">
+                android:layout_height="420dp">
 
-                <androidx.viewpager2.widget.ViewPager2
-                    android:id="@+id/vpImages"
+                <carbon.widget.ImageView
+                    android:id="@+id/imgMain"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
-
-                <carbon.widget.TextView
-                    android:id="@+id/tvPageCounter"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom|end"
-                    android:layout_marginEnd="20dp"
-                    android:layout_marginBottom="40dp"
-                    android:background="#B30D3238"
-                    android:paddingStart="12dp"
-                    android:paddingTop="5dp"
-                    android:paddingEnd="12dp"
-                    android:paddingBottom="5dp"
-                    android:text="1 / 2"
-                    android:textColor="@color/white"
-                    android:textSize="12sp"
-                    app:carbon_cornerRadius="12dp"
-                    app:carbon_font="@font/space_grotesk_semibold" />
+                    android:layout_height="match_parent"
+                    android:background="#F2ECE6"
+                    android:scaleType="centerCrop" />
             </FrameLayout>
 
             <LinearLayout
@@ -56,14 +42,13 @@
                 android:background="@drawable/bg_detail_sheet"
                 android:orientation="vertical"
                 android:paddingHorizontal="20dp"
-                android:paddingTop="18dp"
-                android:paddingBottom="24dp">
+                android:paddingTop="16dp"
+                android:paddingBottom="28dp">
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvThumbs"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="start"
                     android:clipToPadding="false"
                     android:overScrollMode="never"
                     android:scrollbars="none" />
@@ -93,7 +78,6 @@
                         android:clickable="true"
                         android:focusable="true"
                         android:padding="9dp"
-                        android:layout_marginVertical="5dp"
                         android:src="@drawable/ic_share"
                         app:carbon_cornerRadius="19dp"
                         app:carbon_elevation="2dp"
@@ -109,7 +93,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:lineSpacingExtra="2dp"
-                    android:text="Peacock printed MDF Cutout Pack of 4 | DIY Decoration, Toran, Bandhanwar | 6 inch"
+                    android:text="Peacock printed MDF Cutout Pack of 4"
                     android:textColor="#0D3238"
                     android:textSize="22sp"
                     app:carbon_font="@font/space_grotesk_semibold" />
@@ -143,7 +127,6 @@
                         android:textSize="13sp"
                         app:carbon_font="@font/space_grotesk_semibold" />
                 </LinearLayout>
-
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -337,26 +320,429 @@
                     </LinearLayout>
                 </LinearLayout>
 
-                <carbon.widget.TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
                     android:layout_marginTop="24dp"
-                    android:text="Description"
-                    android:textColor="#0D3238"
-                    android:textSize="20sp"
-                    app:carbon_font="@font/space_grotesk_semibold" />
+                    android:background="@color/line" />
 
-                <carbon.widget.TextView
-                    android:id="@+id/tvDescription"
+                <LinearLayout
+                    android:id="@+id/headerDesc"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:lineSpacingExtra="4dp"
-                    android:text="Handcrafted MDF cutout, printed with intricate detailing. Perfect for DIY décor, toran and bandhanwar. Pack of 4, 6 inch each."
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingVertical="18dp">
+
+                    <carbon.widget.TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Description"
+                        android:textColor="#0D3238"
+                        android:textSize="19sp"
+                        app:carbon_font="@font/space_grotesk_semibold" />
+
+                    <carbon.widget.ImageView
+                        android:id="@+id/chevDesc"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/ic_chevron_down"
+                        app:carbon_tint="#0D3238" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/contentDesc"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingBottom="6dp">
+
+                    <carbon.widget.TextView
+                        android:id="@+id/tvDescription"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:lineSpacingExtra="4dp"
+                        android:text="Description text"
+                        android:textColor="#5C5C5C"
+                        android:textSize="15sp"
+                        app:carbon_font="@font/space_grotesk_semibold" />
+
+                    <LinearLayout
+                        android:id="@+id/featureContainer"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:orientation="vertical" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/line" />
+
+                <LinearLayout
+                    android:id="@+id/headerShip"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingVertical="18dp">
+
+                    <carbon.widget.TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Shipping information"
+                        android:textColor="#0D3238"
+                        android:textSize="19sp"
+                        app:carbon_font="@font/space_grotesk_semibold" />
+
+                    <carbon.widget.ImageView
+                        android:id="@+id/chevShip"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/ic_chevron_down"
+                        app:carbon_tint="#0D3238" />
+                </LinearLayout>
+
+                <carbon.widget.TextView
+                    android:id="@+id/contentShip"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:lineSpacingExtra="5dp"
+                    android:paddingBottom="10dp"
+                    android:text="• Next-day dispatch after order confirmation\n• Free shipping above ₹1499 (not on custom orders)\n• COD available till ₹1999 · flat ₹80\n• Prepaid orders till ₹1499 · flat ₹40 shipping"
                     android:textColor="#5C5C5C"
-                    android:textSize="15sp"
+                    android:textSize="14sp"
+                    android:visibility="gone"
                     app:carbon_font="@font/space_grotesk_semibold" />
 
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/line" />
+
+                <LinearLayout
+                    android:id="@+id/headerOffers"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingVertical="18dp">
+
+                    <carbon.widget.TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Offers &amp; discounts"
+                        android:textColor="#0D3238"
+                        android:textSize="19sp"
+                        app:carbon_font="@font/space_grotesk_semibold" />
+
+                    <carbon.widget.ImageView
+                        android:id="@+id/chevOffers"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/ic_chevron_down"
+                        app:carbon_tint="#0D3238" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/contentOffers"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingBottom="6dp"
+                    android:visibility="gone">
+
+                    <LinearLayout
+                        android:id="@+id/discountContainer"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical" />
+
+                    <carbon.widget.TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="Tap a code to copy"
+                        android:textColor="@color/carbon_grey_700"
+                        android:textSize="12sp"
+                        app:carbon_font="@font/space_grotesk_semibold" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/line" />
+
+                <LinearLayout
+                    android:id="@+id/headerBulk"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingVertical="18dp">
+
+                    <carbon.widget.TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Bulk &amp; custom orders"
+                        android:textColor="#0D3238"
+                        android:textSize="19sp"
+                        app:carbon_font="@font/space_grotesk_semibold" />
+
+                    <carbon.widget.ImageView
+                        android:id="@+id/chevBulk"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/ic_chevron_down"
+                        app:carbon_tint="#0D3238" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/contentBulk"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingBottom="10dp"
+                    android:visibility="gone">
+
+                    <carbon.widget.TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:lineSpacingExtra="4dp"
+                        android:text="Buy more, save more. Custom &amp; bulk pricing available — reach our team, Mon–Sat 10am–7pm."
+                        android:textColor="#5C5C5C"
+                        android:textSize="14sp"
+                        app:carbon_font="@font/space_grotesk_semibold" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="14dp"
+                        android:orientation="horizontal">
+
+                        <carbon.widget.LinearLayout
+                            android:id="@+id/btnCall"
+                            android:layout_width="0dp"
+                            android:layout_height="46dp"
+                            android:layout_marginEnd="10dp"
+                            android:layout_weight="1"
+                            android:background="@color/white"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:gravity="center"
+                            android:orientation="horizontal"
+                            app:carbon_cornerRadius="23dp"
+                            app:carbon_rippleColor="#1A0D3238"
+                            app:carbon_stroke="#0D3238"
+                            app:carbon_strokeWidth="1.5dp">
+
+                            <carbon.widget.ImageView
+                                android:layout_width="18dp"
+                                android:layout_height="18dp"
+                                android:src="@drawable/ic_phone"
+                                app:carbon_tint="#0D3238" />
+
+                            <carbon.widget.TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="8dp"
+                                android:text="Call"
+                                android:textColor="#0D3238"
+                                android:textSize="15sp"
+                                app:carbon_font="@font/space_grotesk_semibold" />
+                        </carbon.widget.LinearLayout>
+
+                        <carbon.widget.LinearLayout
+                            android:id="@+id/btnWhatsapp"
+                            android:layout_width="0dp"
+                            android:layout_height="46dp"
+                            android:layout_weight="1"
+                            android:background="#0D3238"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:gravity="center"
+                            android:orientation="horizontal"
+                            app:carbon_cornerRadius="23dp"
+                            app:carbon_rippleColor="#40FFFFFF">
+
+                            <carbon.widget.ImageView
+                                android:layout_width="18dp"
+                                android:layout_height="18dp"
+                                android:src="@drawable/ic_whatsapp"
+                                app:carbon_tint="@color/white" />
+
+                            <carbon.widget.TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="8dp"
+                                android:text="WhatsApp"
+                                android:textColor="@color/white"
+                                android:textSize="15sp"
+                                app:carbon_font="@font/space_grotesk_semibold" />
+                        </carbon.widget.LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/line" />
+
+                <LinearLayout
+                    android:id="@+id/headerAsk"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingVertical="18dp">
+
+                    <carbon.widget.TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Ask a question"
+                        android:textColor="#0D3238"
+                        android:textSize="19sp"
+                        app:carbon_font="@font/space_grotesk_semibold" />
+
+                    <carbon.widget.ImageView
+                        android:id="@+id/chevAsk"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/ic_chevron_down"
+                        app:carbon_tint="#0D3238" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/contentAsk"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingBottom="6dp"
+                    android:visibility="gone">
+
+                    <carbon.widget.EditText
+                        android:id="@+id/etName"
+                        android:layout_width="match_parent"
+                        android:layout_height="52dp"
+                        android:background="@color/white"
+                        android:gravity="center_vertical"
+                        android:hint="Name"
+                        android:inputType="textPersonName"
+                        android:maxLines="1"
+                        android:paddingHorizontal="16dp"
+                        android:textColor="#0D3238"
+                        android:textColorHint="#8A8A8A"
+                        android:textSize="15sp"
+                        app:carbon_cornerRadius="14dp"
+                        app:carbon_font="@font/space_grotesk_semibold"
+                        app:carbon_stroke="#e9bdb0"
+                        app:carbon_strokeWidth="1.5dp" />
+
+                    <carbon.widget.EditText
+                        android:id="@+id/etEmail"
+                        android:layout_width="match_parent"
+                        android:layout_height="52dp"
+                        android:layout_marginTop="10dp"
+                        android:background="@color/white"
+                        android:gravity="center_vertical"
+                        android:hint="Email"
+                        android:inputType="textEmailAddress"
+                        android:maxLines="1"
+                        android:paddingHorizontal="16dp"
+                        android:textColor="#0D3238"
+                        android:textColorHint="#8A8A8A"
+                        android:textSize="15sp"
+                        app:carbon_cornerRadius="14dp"
+                        app:carbon_font="@font/space_grotesk_semibold"
+                        app:carbon_stroke="#e9bdb0"
+                        app:carbon_strokeWidth="1.5dp" />
+
+                    <carbon.widget.EditText
+                        android:id="@+id/etPhone"
+                        android:layout_width="match_parent"
+                        android:layout_height="52dp"
+                        android:layout_marginTop="10dp"
+                        android:background="@color/white"
+                        android:gravity="center_vertical"
+                        android:hint="Phone number"
+                        android:inputType="phone"
+                        android:maxLines="1"
+                        android:paddingHorizontal="16dp"
+                        android:textColor="#0D3238"
+                        android:textColorHint="#8A8A8A"
+                        android:textSize="15sp"
+                        app:carbon_cornerRadius="14dp"
+                        app:carbon_font="@font/space_grotesk_semibold"
+                        app:carbon_stroke="#e9bdb0"
+                        app:carbon_strokeWidth="1.5dp" />
+
+                    <carbon.widget.EditText
+                        android:id="@+id/etMessage"
+                        android:layout_width="match_parent"
+                        android:layout_height="110dp"
+                        android:layout_marginTop="10dp"
+                        android:background="@color/white"
+                        android:gravity="top|start"
+                        android:hint="Message"
+                        android:inputType="textMultiLine"
+                        android:padding="16dp"
+                        android:textColor="#0D3238"
+                        android:textColorHint="#8A8A8A"
+                        android:textSize="15sp"
+                        app:carbon_cornerRadius="14dp"
+                        app:carbon_font="@font/space_grotesk_semibold"
+                        app:carbon_stroke="#e9bdb0"
+                        app:carbon_strokeWidth="1.5dp" />
+
+                    <carbon.widget.LinearLayout
+                        android:id="@+id/btnSubmitQuery"
+                        android:layout_width="match_parent"
+                        android:layout_height="52dp"
+                        android:layout_marginTop="14dp"
+                        android:background="#0D3238"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        app:carbon_cornerRadius="26dp"
+                        app:carbon_elevation="4dp"
+                        app:carbon_rippleColor="#40FFFFFF">
+
+                        <carbon.widget.TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Send message"
+                            android:textColor="@color/white"
+                            android:textSize="16sp"
+                            app:carbon_font="@font/space_grotesk_semibold" />
+                    </carbon.widget.LinearLayout>
+
+                    <carbon.widget.TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:gravity="center"
+                        android:text="Protected by hCaptcha · Privacy &amp; Terms apply"
+                        android:textColor="#B6A89F"
+                        android:textSize="11sp"
+                        app:carbon_font="@font/space_grotesk_semibold" />
+                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
@@ -368,7 +754,6 @@
         android:layout_alignParentBottom="true"
         android:background="@color/white"
         android:gravity="center_vertical"
-        android:layout_marginBottom="5dp"
         android:orientation="horizontal"
         android:paddingHorizontal="20dp"
         android:paddingTop="12dp"
@@ -394,6 +779,7 @@
             app:carbon_strokeWidth="1.5dp">
 
             <carbon.widget.TextView
+                android:id="@+id/tvAddToCart"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Add to cart"

@@ -14,5 +14,7 @@ data class Product(
     val createdAt: Long = 0L,
     var isWishlisted: Boolean = false,
     val brand: String = "adikala.in",
-    val images: List<String> = emptyList()   // gallery; falls back to imageUrl
+    val images: List<String> = emptyList(),
+    val fullDescription: String = "",
+    val features: List<String> = emptyList()
 ) : Serializable

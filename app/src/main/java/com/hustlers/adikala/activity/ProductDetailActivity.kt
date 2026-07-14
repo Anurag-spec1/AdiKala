@@ -1,42 +1,66 @@
 package com.hustlers.adikala.activity
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.content.Intent
 import android.graphics.Paint
+import android.net.Uri
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.viewpager2.widget.ViewPager2
+import androidx.transition.AutoTransition
+import androidx.transition.TransitionManager
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.hustlers.adikala.R
-import com.hustlers.adikala.adapter.ProductImageAdapter
 import com.hustlers.adikala.adapter.ThumbnailAdapter
 import com.hustlers.adikala.databinding.ActivityProductDetailBinding
+import com.hustlers.adikala.databinding.ItemDiscountBinding
+import com.hustlers.adikala.databinding.ItemFeatureBinding
 import com.hustlers.adikala.dataclass.Product
 
 class ProductDetailActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityProductDetailBinding
     private lateinit var product: Product
-
     private lateinit var thumbAdapter: ThumbnailAdapter
+
+    private lateinit var images: List<String>
     private var quantity = 1
 
     companion object {
         const val EXTRA_PRODUCT = "extra_product"
+        private const val SUPPORT_PHONE = "+918130507350"
+        private const val SUPPORT_WA = "918130507350"
     }
+
+    private data class Offer(val code: String, val percent: String, val eligibility: String)
+
+    private val offers = listOf(
+        Offer("ADIF3", "3% off", "First-time buyer · ₹500–₹1,999"),
+        Offer("ADIF05", "5% off", "First-time buyer · ₹2,000–₹4,999"),
+        Offer("ADIF7", "7% off", "All buyers · ₹5,000–₹9,999"),
+        Offer("ADIR12", "12% off", "All buyers · ₹10,000–₹49,999"),
+        Offer("ADIB15", "15% off", "All buyers · ₹50,000 & above")
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityProductDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        product = (intent.getSerializableExtra(EXTRA_PRODUCT) as? Product) ?: run {
-            finish(); return
-        }
+        product = (intent.getSerializableExtra(EXTRA_PRODUCT) as? Product) ?: run { finish(); return }
 
         bindProduct()
         setupGallery()
+        setupFeatures()
+        setupOffers()
+        setupSections()
         setupQuantity()
         setupActions()
     }
@@ -44,7 +68,8 @@ class ProductDetailActivity : AppCompatActivity() {
     private fun bindProduct() {
         binding.tvTitle.text = product.name
         binding.tvBrand.text = product.brand
-        binding.tvDescription.text = product.description
+        binding.tvDescription.text =
+            if (product.fullDescription.isNotBlank()) product.fullDescription else product.description
         binding.tvRating.text =
             if (product.rating > 0) "${product.rating} · No reviews yet" else "No reviews yet"
 
@@ -54,14 +79,9 @@ class ProductDetailActivity : AppCompatActivity() {
             binding.tvActualPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
 
         val onSale = product.discountedPrice < product.actualPrice
-        if (onSale) {
-            binding.tvSave.text = "Save ₹${product.actualPrice - product.discountedPrice}"
-            binding.tvSave.visibility = View.VISIBLE
-            binding.tvActualPrice.visibility = View.VISIBLE
-        } else {
-            binding.tvSave.visibility = View.GONE
-            binding.tvActualPrice.visibility = View.GONE
-        }
+        binding.tvSave.text = "Save ₹${product.actualPrice - product.discountedPrice}"
+        binding.tvSave.visibility = if (onSale) View.VISIBLE else View.GONE
+        binding.tvActualPrice.visibility = if (onSale) View.VISIBLE else View.GONE
 
         binding.btnWishlist.setImageResource(
             if (product.isWishlisted) R.drawable.ic_heart_filled else R.drawable.ic_heart
@@ -69,43 +89,82 @@ class ProductDetailActivity : AppCompatActivity() {
     }
 
     private fun setupGallery() {
-        val images = if (product.images.isNotEmpty()) product.images else listOf(product.imageUrl)
-
-        binding.vpImages.adapter = ProductImageAdapter(images)
+        images = if (product.images.isNotEmpty()) product.images else listOf(product.imageUrl)
+        showMainImage(0)
 
         thumbAdapter = ThumbnailAdapter(images) { pos ->
-            binding.vpImages.currentItem = pos   // tap thumb → swipe pager
+            thumbAdapter.setSelected(pos)
+            showMainImage(pos)
         }
         binding.rvThumbs.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         binding.rvThumbs.adapter = thumbAdapter
 
-        // swipe pager → highlight thumb + update counter
-        binding.tvPageCounter.text = "1 / ${images.size}"
-        binding.vpImages.registerOnPageChangeCallback(
-            object : ViewPager2.OnPageChangeCallback() {
-                override fun onPageSelected(position: Int) {
-                    thumbAdapter.setSelected(position)
-                    binding.rvThumbs.smoothScrollToPosition(position)
-                    binding.tvPageCounter.text = "${position + 1} / ${images.size}"
-                }
-            }
-        )
+        binding.rvThumbs.visibility = if (images.size <= 1) View.GONE else View.VISIBLE
+    }
 
-        // hide thumbs + counter when only one image
-        val single = images.size <= 1
-        binding.rvThumbs.visibility = if (single) View.GONE else View.VISIBLE
-        binding.tvPageCounter.visibility = if (single) View.GONE else View.VISIBLE
+    private fun showMainImage(pos: Int) {
+        Glide.with(binding.imgMain)
+            .load(images[pos])
+            .transition(DrawableTransitionOptions.withCrossFade(220))
+            .centerCrop()
+            .into(binding.imgMain)
+    }
+
+    private fun setupFeatures() {
+        val container = binding.featureContainer
+        container.removeAllViews()
+        if (product.features.isEmpty()) { container.visibility = View.GONE; return }
+        product.features.forEach { feature ->
+            val row = ItemFeatureBinding.inflate(layoutInflater, container, false)
+            row.tvFeature.text = feature
+            container.addView(row.root)
+        }
+    }
+
+    private fun setupOffers() {
+        val container = binding.discountContainer
+        container.removeAllViews()
+        offers.forEach { offer ->
+            val row = ItemDiscountBinding.inflate(layoutInflater, container, false)
+            row.tvCode.text = offer.code
+            row.tvPercent.text = offer.percent
+            row.tvEligibility.text = offer.eligibility
+            row.rowDiscount.setOnClickListener { copyCode(offer.code) }
+            container.addView(row.root)
+        }
+    }
+
+    private fun copyCode(code: String) {
+        val cb = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        cb.setPrimaryClip(ClipData.newPlainText("code", code))
+        Toast.makeText(this, "$code copied", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun setupSections() {
+        binding.chevDesc.rotation = 180f
+        toggleSection(binding.headerDesc, binding.contentDesc, binding.chevDesc)
+        toggleSection(binding.headerShip, binding.contentShip, binding.chevShip)
+        toggleSection(binding.headerOffers, binding.contentOffers, binding.chevOffers)
+        toggleSection(binding.headerBulk, binding.contentBulk, binding.chevBulk)
+        toggleSection(binding.headerAsk, binding.contentAsk, binding.chevAsk)
+    }
+
+    private fun toggleSection(header: View, content: View, chevron: View) {
+        header.setOnClickListener {
+            val expanding = content.visibility != View.VISIBLE
+            TransitionManager.beginDelayedTransition(
+                binding.scrollContent, AutoTransition().setDuration(200)
+            )
+            content.visibility = if (expanding) View.VISIBLE else View.GONE
+            chevron.animate().rotation(if (expanding) 180f else 0f).setDuration(200).start()
+        }
     }
 
     private fun setupQuantity() {
         updateQty()
-        binding.btnMinus.setOnClickListener {
-            if (quantity > 1) { quantity--; updateQty() }
-        }
-        binding.btnPlus.setOnClickListener {
-            if (quantity < 99) { quantity++; updateQty() }
-        }
+        binding.btnMinus.setOnClickListener { if (quantity > 1) { quantity--; updateQty() } }
+        binding.btnPlus.setOnClickListener { if (quantity < 99) { quantity++; updateQty() } }
     }
 
     private fun updateQty() {
@@ -119,8 +178,7 @@ class ProductDetailActivity : AppCompatActivity() {
         binding.btnShare.setOnClickListener {
             val text = "${product.name}\n₹${product.discountedPrice} on Adikala"
             startActivity(Intent.createChooser(Intent(Intent.ACTION_SEND).apply {
-                type = "text/plain"
-                putExtra(Intent.EXTRA_TEXT, text)
+                type = "text/plain"; putExtra(Intent.EXTRA_TEXT, text)
             }, "Share via"))
         }
 
@@ -131,13 +189,45 @@ class ProductDetailActivity : AppCompatActivity() {
             )
         }
 
-        binding.btnAddToCart.setOnClickListener {
-            Toast.makeText(this, "Added $quantity to cart", Toast.LENGTH_SHORT).show()
-            // TODO: cart logic
+        binding.btnCall.setOnClickListener {
+            startActivity(Intent(Intent.ACTION_DIAL, Uri.parse("tel:$SUPPORT_PHONE")))
         }
 
-        binding.btnBuyNow.setOnClickListener {
-            // TODO: checkout flow
+        binding.btnWhatsapp.setOnClickListener {
+            val msg = Uri.encode("Hi, I'm interested in bulk/custom order for ${product.name}")
+            try {
+                startActivity(Intent(Intent.ACTION_VIEW,
+                    Uri.parse("https://wa.me/$SUPPORT_WA?text=$msg")))
+            } catch (e: Exception) {
+                Toast.makeText(this, "WhatsApp not installed", Toast.LENGTH_SHORT).show()
+            }
         }
+
+        binding.btnAddToCart.setOnClickListener {
+            Toast.makeText(this, "Added $quantity to cart", Toast.LENGTH_SHORT).show()
+        }
+        binding.btnBuyNow.setOnClickListener {
+
+        }
+
+        binding.btnSubmitQuery.setOnClickListener { submitQuery() }
+    }
+
+    private fun submitQuery() {
+        val name = binding.etName.text.toString().trim()
+        val email = binding.etEmail.text.toString().trim()
+        val msg = binding.etMessage.text.toString().trim()
+
+        if (name.isEmpty()) { binding.etName.error = "Enter your name"; return }
+        if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            binding.etEmail.error = "Enter a valid email"; return
+        }
+        if (msg.isEmpty()) { binding.etMessage.error = "Enter your message"; return }
+
+        Toast.makeText(this, "Thanks! We'll get back to you soon.", Toast.LENGTH_LONG).show()
+        binding.etName.text?.clear()
+        binding.etEmail.text?.clear()
+        binding.etPhone.text?.clear()
+        binding.etMessage.text?.clear()
     }
 }
