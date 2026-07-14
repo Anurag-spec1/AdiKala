@@ -4,7 +4,9 @@ import java.io.Serializable
 
 data class SubCategory(
     val id: Int,
-    val name: String
+    val name: String,
+    val image: String = "",
+    val itemCount: Int = 0
 ) : Serializable
 
 data class Category(

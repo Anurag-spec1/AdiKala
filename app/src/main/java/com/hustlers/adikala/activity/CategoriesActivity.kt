@@ -90,9 +90,15 @@ class CategoriesActivity : AppCompatActivity() {
         binding.rvCategories.adapter = CategoryGridAdapter(
             categories,
             onCategoryClick = { category ->
-                val i = Intent(this, ProductsActivity::class.java)
-                i.putExtra(ProductsActivity.EXTRA_CATEGORY, category.name)
-                startActivity(i)
+                if (category.subCategories.isNotEmpty()) {
+                    val i = Intent(this, SubCategoriesActivity::class.java)
+                    i.putExtra(SubCategoriesActivity.EXTRA_CATEGORY, category)
+                    startActivity(i)
+                } else {
+                    val i = Intent(this, ProductsActivity::class.java)
+                    i.putExtra(ProductsActivity.EXTRA_CATEGORY, category.name)
+                    startActivity(i)
+                }
             },
             onSubCategoryClick = { category, sub ->
                 val i = Intent(this, ProductsActivity::class.java)
