@@ -56,8 +56,8 @@
             app:carbon_cornerRadius="23dp"
             app:carbon_elevation="4dp"
             app:carbon_rippleColor="#1A0D3238"
-            app:carbon_stroke="#e9bdb0"
-            app:carbon_strokeWidth="1.5dp"
+            app:carbon_stroke="#14000000"
+            app:carbon_strokeWidth="1dp"
             app:carbon_tint="#0D3238" />
     </LinearLayout>
 
@@ -75,8 +75,8 @@
         app:carbon_cornerRadius="28dp"
         app:carbon_elevation="5dp"
         app:carbon_elevationShadowColor="@color/carbon_grey_500"
-        app:carbon_stroke="#e9bdb0"
-        app:carbon_strokeWidth="1.5dp">
+        app:carbon_stroke="#14000000"
+        app:carbon_strokeWidth="1dp">
 
         <carbon.widget.LinearLayout
             android:id="@+id/tabOngoing"

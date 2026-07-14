@@ -15,7 +15,7 @@
     app:carbon_elevation="7dp"
     app:carbon_elevationShadowColor="@color/carbon_grey_500"
     app:carbon_rippleColor="#1A0D3238"
-    app:carbon_stroke="#12000000"
+    app:carbon_stroke="#14000000"
     app:carbon_strokeWidth="1dp">
 
     <LinearLayout
