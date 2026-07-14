@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<carbon.widget.LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cardSuggest"
+    android:layout_width="150dp"
+    android:layout_height="wrap_content"
+    android:layout_marginEnd="12dp"
+    android:background="@color/white"
+    android:clickable="true"
+    android:focusable="true"
+    android:orientation="vertical"
+    android:padding="9dp"
+    app:carbon_cornerRadius="18dp"
+    app:carbon_elevation="6dp"
+    app:carbon_elevationShadowColor="@color/carbon_grey_500"
+    app:carbon_stroke="#12000000"
+    app:carbon_strokeWidth="1dp">
+
+    <carbon.widget.RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="120dp">
+
+        <carbon.widget.ImageView
+            android:id="@+id/imgSuggest"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#F2ECE6"
+            android:scaleType="centerCrop"
+            app:carbon_cornerRadius="14dp" />
+
+        <carbon.widget.TextView
+            android:id="@+id/tvSaleTag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="6dp"
+            android:layout_marginBottom="6dp"
+            android:background="#C97B4A"
+            android:paddingStart="9dp"
+            android:paddingEnd="9dp"
+            android:paddingTop="3dp"
+            android:paddingBottom="3dp"
+            android:text="SALE"
+            android:textColor="@color/white"
+            android:textSize="10sp"
+            app:carbon_cornerRadius="8dp"
+            app:carbon_font="@font/space_grotesk_semibold" />
+    </carbon.widget.RelativeLayout>
+
+    <carbon.widget.TextView
+        android:id="@+id/tvSuggestName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="2dp"
+        android:layout_marginTop="8dp"
+        android:ellipsize="end"
+        android:lineSpacingExtra="1dp"
+        android:maxLines="2"
+        android:minLines="2"
+        android:text="Peacock printed MDF Cutout Pack of 4"
+        android:textColor="#0D3238"
+        android:textSize="13sp"
+        app:carbon_font="@font/space_grotesk_semibold" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <carbon.widget.TextView
+            android:id="@+id/tvSuggestPrice"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="₹349"
+            android:textColor="#0D3238"
+            android:textSize="15sp"
+            app:carbon_font="@font/space_grotesk_semibold" />
+
+        <carbon.widget.ImageView
+            android:id="@+id/btnAddSuggest"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:background="#0D3238"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="7dp"
+            android:src="@drawable/ic_plus"
+            app:carbon_cornerRadius="15dp"
+            app:carbon_rippleColor="#40FFFFFF"
+            app:carbon_tint="@color/white" />
+    </LinearLayout>
+
+</carbon.widget.LinearLayout>

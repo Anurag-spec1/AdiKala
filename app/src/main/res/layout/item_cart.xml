@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<carbon.widget.LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cardCart"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="14dp"
+    android:background="@color/white"
+    android:orientation="horizontal"
+    android:padding="12dp"
+    app:carbon_cornerRadius="20dp"
+    app:carbon_elevation="6dp"
+    app:carbon_elevationShadowColor="@color/carbon_grey_500"
+    app:carbon_stroke="#12000000"
+    app:carbon_strokeWidth="1dp">
+
+    <carbon.widget.ImageView
+        android:id="@+id/imgItem"
+        android:layout_width="90dp"
+        android:layout_height="90dp"
+        android:background="#F2ECE6"
+        android:scaleType="centerCrop"
+        app:carbon_cornerRadius="15dp" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <carbon.widget.TextView
+                android:id="@+id/tvName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:lineSpacingExtra="1dp"
+                android:maxLines="2"
+                android:text="Sea Shell Mother of Pearl Two Hole Square Buttons"
+                android:textColor="#0D3238"
+                android:textSize="14sp"
+                app:carbon_font="@font/space_grotesk_semibold" />
+
+            <carbon.widget.ImageView
+                android:id="@+id/btnRemove"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginStart="6dp"
+                android:background="#F7EDED"
+                android:clickable="true"
+                android:focusable="true"
+                android:padding="7dp"
+                android:src="@drawable/ic_trash"
+                app:carbon_cornerRadius="15dp"
+                app:carbon_rippleColor="#1AB04A4A"
+                app:carbon_tint="#B04A4A" />
+        </LinearLayout>
+
+        <carbon.widget.TextView
+            android:id="@+id/tvSize"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:background="#F2ECE6"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:paddingTop="3dp"
+            android:paddingBottom="3dp"
+            android:text="Size: 8IN"
+            android:textColor="#5C5C5C"
+            android:textSize="11sp"
+            app:carbon_cornerRadius="8dp"
+            app:carbon_font="@font/space_grotesk_semibold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="38dp"
+                android:background="@color/white"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                app:carbon_cornerRadius="19dp"
+                app:carbon_stroke="#e9bdb0"
+                app:carbon_strokeWidth="1.5dp">
+
+                <carbon.widget.ImageView
+                    android:id="@+id/btnMinus"
+                    android:layout_width="38dp"
+                    android:layout_height="38dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:padding="12dp"
+                    android:src="@drawable/ic_minus"
+                    app:carbon_cornerRadius="19dp"
+                    app:carbon_rippleColor="#1A0D3238"
+                    app:carbon_tint="#0D3238" />
+
+                <carbon.widget.TextView
+                    android:id="@+id/tvQty"
+                    android:layout_width="30dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="5"
+                    android:textColor="#0D3238"
+                    android:textSize="16sp"
+                    app:carbon_font="@font/space_grotesk_semibold" />
+
+                <carbon.widget.ImageView
+                    android:id="@+id/btnPlus"
+                    android:layout_width="38dp"
+                    android:layout_height="38dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:padding="12dp"
+                    android:src="@drawable/ic_plus"
+                    app:carbon_cornerRadius="19dp"
+                    app:carbon_rippleColor="#1A0D3238"
+                    app:carbon_tint="#0D3238" />
+            </LinearLayout>
+
+            <carbon.widget.TextView
+                android:id="@+id/tvPrice"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:text="₹150"
+                android:textColor="#0D3238"
+                android:textSize="18sp"
+                app:carbon_font="@font/space_grotesk_semibold" />
+        </LinearLayout>
+    </LinearLayout>
+
+</carbon.widget.LinearLayout>
