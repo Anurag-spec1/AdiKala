@@ -14,6 +14,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AdiKala">
         <activity
+            android:name=".activity.MainActivity"
+            android:exported="false" />
+        <activity
             android:name=".activity.CartActivity"
             android:exported="false" />
         <activity
@@ -29,7 +32,7 @@
             android:name=".activity.ProductsActivity"
             android:exported="false" />
         <activity
-            android:name=".activity.MainActivity"
+            android:name=".activity.AuthActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

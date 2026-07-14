@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<carbon.widget.LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<carbon.widget.LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/cardSuggest"
     android:layout_width="150dp"
@@ -38,8 +37,8 @@
             android:layout_marginBottom="6dp"
             android:background="#C97B4A"
             android:paddingStart="9dp"
-            android:paddingEnd="9dp"
             android:paddingTop="3dp"
+            android:paddingEnd="9dp"
             android:paddingBottom="3dp"
             android:text="SALE"
             android:textColor="@color/white"

@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="utf-8"?>
+<carbon.widget.RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/main_bg"
+    android:fitsSystemWindows="true"
+    tools:context=".activity.AuthActivity">
+
+    <carbon.widget.ImageView
+        android:id="@+id/btnClose"
+        android:layout_width="44dp"
+        android:layout_height="44dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="20dp"
+        android:background="@color/white"
+        android:clickable="true"
+        android:focusable="true"
+        android:padding="12dp"
+        android:src="@drawable/ic_close"
+        app:carbon_cornerRadius="22dp"
+        app:carbon_elevation="3dp"
+        app:carbon_rippleColor="#1A0D3238"
+        app:carbon_stroke="#e9bdb0"
+        app:carbon_strokeWidth="1.5dp"
+        app:carbon_tint="#0D3238" />
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/btnClose"
+        android:fillViewport="true"
+        android:overScrollMode="never"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="24dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="28dp">
+
+            <FrameLayout
+                android:layout_width="88dp"
+                android:layout_height="88dp"
+                android:layout_marginTop="8dp">
+
+                <carbon.widget.ImageView
+                    android:layout_width="88dp"
+                    android:layout_height="88dp"
+                    android:background="#0D3238"
+                    android:padding="22dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_cart"
+                    app:carbon_cornerRadius="26dp"
+                    app:carbon_tint="@color/white" />
+            </FrameLayout>
+
+            <carbon.widget.TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="22dp"
+                android:text="Sign in or create account"
+                android:textColor="#0D3238"
+                android:textSize="27sp"
+                app:carbon_font="@font/space_grotesk_semibold" />
+
+            <carbon.widget.TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Handcrafted décor, delivered to your door."
+                android:textColor="@color/carbon_grey_700"
+                android:textSize="15sp"
+                app:carbon_font="@font/space_grotesk_semibold" />
+
+            <carbon.widget.LinearLayout
+                android:id="@+id/btnPrimary"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginTop="30dp"
+                android:background="#0D3238"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center"
+                android:orientation="horizontal"
+                app:carbon_cornerRadius="28dp"
+                app:carbon_elevation="5dp"
+                app:carbon_elevationShadowColor="@color/carbon_grey_500"
+                app:carbon_rippleColor="#40FFFFFF">
+
+                <carbon.widget.TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Continue with Adikala"
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    app:carbon_font="@font/space_grotesk_semibold" />
+            </carbon.widget.LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:orientation="horizontal">
+
+                <carbon.widget.LinearLayout
+                    android:id="@+id/btnGoogle"
+                    android:layout_width="0dp"
+                    android:layout_height="54dp"
+                    android:layout_marginEnd="7dp"
+                    android:layout_weight="1"
+                    android:background="@color/white"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    app:carbon_cornerRadius="27dp"
+                    app:carbon_elevation="3dp"
+                    app:carbon_rippleColor="#1A0D3238"
+                    app:carbon_stroke="#e9bdb0"
+                    app:carbon_strokeWidth="1.5dp">
+
+                    <carbon.widget.ImageView
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:src="@drawable/ic_google" />
+
+                    <carbon.widget.TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="9dp"
+                        android:text="Google"
+                        android:textColor="#0D3238"
+                        android:textSize="15sp"
+                        app:carbon_font="@font/space_grotesk_semibold" />
+                </carbon.widget.LinearLayout>
+
+                <carbon.widget.LinearLayout
+                    android:id="@+id/btnFacebook"
+                    android:layout_width="0dp"
+                    android:layout_height="54dp"
+                    android:layout_marginStart="7dp"
+                    android:layout_weight="1"
+                    android:background="@color/white"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    app:carbon_cornerRadius="27dp"
+                    app:carbon_elevation="3dp"
+                    app:carbon_rippleColor="#1A0D3238"
+                    app:carbon_stroke="#e9bdb0"
+                    app:carbon_strokeWidth="1.5dp">
+
+                    <carbon.widget.ImageView
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:src="@drawable/ic_facebook" />
+
+                    <carbon.widget.TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="9dp"
+                        android:text="Facebook"
+                        android:textColor="#0D3238"
+                        android:textSize="15sp"
+                        app:carbon_font="@font/space_grotesk_semibold" />
+                </carbon.widget.LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1"
+                    android:background="@color/line" />
+
+                <carbon.widget.TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="14dp"
+                    android:layout_marginEnd="14dp"
+                    android:text="OR"
+                    android:textColor="@color/carbon_grey_700"
+                    android:textSize="13sp"
+                    app:carbon_font="@font/space_grotesk_semibold" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1"
+                    android:background="@color/line" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="58dp"
+                android:layout_marginTop="24dp"
+                android:background="@color/white"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="20dp"
+                android:paddingEnd="8dp"
+                app:carbon_cornerRadius="29dp"
+                app:carbon_elevation="3dp"
+                app:carbon_stroke="#e9bdb0"
+                app:carbon_strokeWidth="1.5dp">
+
+                <carbon.widget.EditText
+                    android:id="@+id/etEmail"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:gravity="center_vertical"
+                    android:hint="Email"
+                    android:imeOptions="actionDone"
+                    android:inputType="textEmailAddress"
+                    android:maxLines="1"
+                    android:textColor="#0D3238"
+                    android:textColorHint="#8A8A8A"
+                    android:textSize="16sp"
+                    app:carbon_font="@font/space_grotesk_semibold" />
+
+                <carbon.widget.ImageView
+                    android:id="@+id/btnEmailSubmit"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:background="#F2ECE6"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:padding="11dp"
+                    android:src="@drawable/ic_arrow_right"
+                    app:carbon_cornerRadius="22dp"
+                    app:carbon_rippleColor="#1A0D3238"
+                    app:carbon_tint="#0D3238" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/checkRow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="18dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <carbon.widget.ImageView
+                    android:id="@+id/ivCheck"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:background="#0D3238"
+                    android:padding="4dp"
+                    android:src="@drawable/ic_check"
+                    app:carbon_cornerRadius="8dp"
+                    app:carbon_tint="@color/white" />
+
+                <carbon.widget.TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:text="Email me with news and offers"
+                    android:textColor="#0D3238"
+                    android:textSize="14sp"
+                    app:carbon_font="@font/space_grotesk_semibold" />
+            </LinearLayout>
+
+            <carbon.widget.TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="28dp"
+                android:gravity="center"
+                android:lineSpacingExtra="3dp"
+                android:text="By continuing, you agree to our Terms of Service and Privacy Policy."
+                android:textColor="#B6A89F"
+                android:textSize="12sp"
+                app:carbon_font="@font/space_grotesk_semibold" />
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+</carbon.widget.RelativeLayout>

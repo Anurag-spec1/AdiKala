@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<carbon.widget.RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<carbon.widget.RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
@@ -35,8 +34,8 @@
         android:layout_height="wrap_content"
         android:layout_alignTop="@id/btnBack"
         android:layout_alignBottom="@id/btnBack"
-        android:layout_toEndOf="@id/btnBack"
         android:layout_marginStart="14dp"
+        android:layout_toEndOf="@id/btnBack"
         android:gravity="center_vertical"
         android:orientation="vertical">
 
@@ -63,8 +62,8 @@
         android:id="@+id/scroll"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/btnBack"
         android:layout_above="@id/bottomBar"
+        android:layout_below="@id/btnBack"
         android:layout_marginTop="16dp"
         android:overScrollMode="never"
         android:scrollbars="none">
@@ -79,8 +78,8 @@
                 android:id="@+id/rvCart"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:clipToPadding="false"
                 android:layout_marginTop="10dp"
+                android:clipToPadding="false"
                 android:nestedScrollingEnabled="false"
                 android:paddingStart="20dp"
                 android:paddingEnd="20dp" />
@@ -294,12 +293,12 @@
                 android:id="@+id/btnCheckout"
                 android:layout_width="130dp"
                 android:layout_height="40dp"
-                android:gravity="center"
                 android:layout_gravity="bottom"
-                android:orientation="horizontal"
                 android:background="#0D3238"
                 android:clickable="true"
                 android:focusable="true"
+                android:gravity="center"
+                android:orientation="horizontal"
                 app:carbon_cornerRadius="14dp"
                 app:carbon_elevation="3dp"
                 app:carbon_rippleColor="#33FFFFFF">
@@ -310,7 +309,7 @@
                     android:text="Checkout"
                     android:textColor="@android:color/white"
                     android:textSize="16sp"
-                    app:carbon_font="@font/space_grotesk_semibold"/>
+                    app:carbon_font="@font/space_grotesk_semibold" />
 
             </carbon.widget.LinearLayout>
 
@@ -321,7 +320,7 @@
             android:layout_height="1dp"
             android:layout_marginTop="16dp"
             android:layout_marginBottom="12dp"
-            android:background="#F2F2F2"/>
+            android:background="#F2F2F2" />
 
         <carbon.widget.TextView
             android:layout_width="match_parent"
@@ -330,7 +329,7 @@
             android:textAlignment="center"
             android:textColor="#9A9A9A"
             android:textSize="11sp"
-            app:carbon_font="@font/space_grotesk_semibold"/>
+            app:carbon_font="@font/space_grotesk_semibold" />
 
     </carbon.widget.LinearLayout>
 
