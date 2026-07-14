@@ -196,6 +196,7 @@
                 <carbon.widget.TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:id="@+id/viewallCategories"
                     android:textSize="14sp"
                     android:gravity="top"
                     app:carbon_font="@font/space_grotesk_semibold"

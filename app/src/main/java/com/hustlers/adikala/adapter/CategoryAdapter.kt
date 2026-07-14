@@ -23,7 +23,7 @@ class CategoryAdapter(
             binding.tvChipLabel.text = item.name
 
             Glide.with(binding.ivCategory)
-                .load(item.imgUrl)
+                .load(item.image)
                 .centerCrop()
                 .into(binding.ivCategory)
 

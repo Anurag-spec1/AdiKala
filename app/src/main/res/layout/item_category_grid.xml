@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<carbon.widget.LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cardCategory"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="16dp"
+    android:background="@color/white"
+    android:clickable="true"
+    android:focusable="true"
+    android:orientation="vertical"
+    android:padding="10dp"
+    android:stateListAnimator="@null"
+    app:carbon_cornerRadius="22dp"
+    app:carbon_elevation="7dp"
+    app:carbon_elevationShadowColor="@color/carbon_grey_500"
+    app:carbon_rippleColor="#1A0D3238"
+    app:carbon_stroke="#12000000"
+    app:carbon_strokeWidth="1dp">
+
+    <carbon.widget.RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="150dp">
+
+        <carbon.widget.ImageView
+            android:id="@+id/ivCategory"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#0D3B3E"
+            android:scaleType="centerCrop"
+            app:carbon_cornerRadius="16dp" />
+
+        <carbon.widget.TextView
+            android:id="@+id/tvCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_margin="10dp"
+            android:background="#F2FFFFFF"
+            android:paddingStart="11dp"
+            android:paddingEnd="11dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:text="24 items"
+            android:textColor="#0D3238"
+            android:textSize="12sp"
+            app:carbon_cornerRadius="12dp"
+            app:carbon_elevation="2dp"
+            app:carbon_font="@font/space_grotesk_semibold" />
+    </carbon.widget.RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="6dp"
+        android:paddingEnd="6dp">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <carbon.widget.TextView
+                android:id="@+id/tvChipLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="Temple Décor"
+                android:textColor="#0D3238"
+                android:textSize="19sp"
+                app:carbon_font="@font/space_grotesk_semibold" />
+
+            <carbon.widget.TextView
+                android:id="@+id/tvSubCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="1dp"
+                android:text="6 subcategories"
+                android:textColor="@color/carbon_grey_700"
+                android:textSize="13sp"
+                app:carbon_font="@font/space_grotesk_semibold" />
+        </LinearLayout>
+
+        <carbon.widget.ImageView
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:background="#0D3238"
+            android:padding="9dp"
+            android:src="@drawable/ic_chevron_right"
+            app:carbon_cornerRadius="17dp"
+            app:carbon_tint="@color/white" />
+    </LinearLayout>
+
+    <com.google.android.flexbox.FlexboxLayout
+        android:id="@+id/flexSubChips"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:paddingStart="4dp"
+        android:paddingEnd="4dp"
+        app:flexWrap="wrap" />
+
+</carbon.widget.LinearLayout>

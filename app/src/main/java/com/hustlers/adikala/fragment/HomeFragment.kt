@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.hustlers.adikala.activity.CategoriesActivity
 import com.hustlers.adikala.activity.ProductsActivity
 import com.hustlers.adikala.adapter.CategoryAdapter
 import com.hustlers.adikala.adapter.PopularCollectionAdapter
@@ -40,6 +41,9 @@ class HomeFragment : Fragment() {
 
         binding.userName.setTypeface(null, Typeface.BOLD)
         binding.userName.text = "Anurag".toDisplayName()
+        binding.viewallCategories.setOnClickListener {
+            startActivity(Intent(requireContext(), CategoriesActivity::class.java))
+        }
         binding.rvPopular.layoutManager =
             StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
 
