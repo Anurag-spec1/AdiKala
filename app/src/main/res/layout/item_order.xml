@@ -1,0 +1,355 @@
+<?xml version="1.0" encoding="utf-8"?>
+<carbon.widget.LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cardOrder"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="16dp"
+    android:background="@color/white"
+    android:clickable="true"
+    android:focusable="true"
+    android:orientation="vertical"
+    android:padding="16dp"
+    app:carbon_cornerRadius="22dp"
+    app:carbon_elevation="7dp"
+    app:carbon_elevationShadowColor="@color/carbon_grey_500"
+    app:carbon_rippleColor="#1A0D3238"
+    app:carbon_stroke="#12000000"
+    app:carbon_strokeWidth="1dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <carbon.widget.TextView
+            android:id="@+id/tvOrderId"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="Order #ADK10482"
+            android:textColor="@color/carbon_grey_700"
+            android:textSize="13sp"
+            app:carbon_font="@font/space_grotesk_semibold" />
+
+        <carbon.widget.LinearLayout
+            android:id="@+id/statusBadge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#E4EDF2"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="9dp"
+            android:paddingTop="5dp"
+            android:paddingEnd="11dp"
+            android:paddingBottom="5dp"
+            app:carbon_cornerRadius="10dp">
+
+            <carbon.widget.LinearLayout
+                android:id="@+id/statusDot"
+                android:layout_width="7dp"
+                android:layout_height="7dp"
+                android:background="#3F6076"
+                app:carbon_cornerRadius="4dp" />
+
+            <carbon.widget.TextView
+                android:id="@+id/tvStatusBadge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:text="Shipped"
+                android:textColor="#3F6076"
+                android:textSize="12sp"
+                app:carbon_font="@font/space_grotesk_semibold" />
+        </carbon.widget.LinearLayout>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="14dp"
+        android:layout_marginBottom="14dp"
+        android:background="@color/line" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <carbon.widget.ImageView
+            android:id="@+id/imgOrder"
+            android:layout_width="74dp"
+            android:layout_height="74dp"
+            android:background="#F2ECE6"
+            android:scaleType="centerCrop"
+            app:carbon_cornerRadius="16dp" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="14dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <carbon.widget.TextView
+                android:id="@+id/tvProductName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:lineSpacingExtra="1dp"
+                android:maxLines="2"
+                android:text="Peacock printed MDF Cutout Pack of 4"
+                android:textColor="#0D3238"
+                android:textSize="15sp"
+                app:carbon_font="@font/space_grotesk_semibold" />
+
+            <carbon.widget.TextView
+                android:id="@+id/tvItemCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="2 items"
+                android:textColor="@color/carbon_grey_700"
+                android:textSize="13sp"
+                app:carbon_font="@font/space_grotesk_semibold" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:gravity="end"
+            android:orientation="vertical">
+
+            <carbon.widget.TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:text="Total"
+                android:textColor="@color/carbon_grey_700"
+                android:textSize="11sp"
+                app:carbon_font="@font/space_grotesk_semibold" />
+
+            <carbon.widget.TextView
+                android:id="@+id/tvPrice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginTop="1dp"
+                android:text="₹698"
+                android:textColor="#0D3238"
+                android:textSize="19sp"
+                app:carbon_font="@font/space_grotesk_semibold" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/progressTracker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="18dp"
+        android:layout_marginBottom="2dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <carbon.widget.LinearLayout
+            android:id="@+id/dot1"
+            android:layout_width="13dp"
+            android:layout_height="13dp"
+            android:background="#0D3238"
+            app:carbon_cornerRadius="7dp" />
+
+        <View
+            android:id="@+id/line1"
+            android:layout_width="0dp"
+            android:layout_height="3dp"
+            android:layout_marginHorizontal="4dp"
+            android:layout_weight="1"
+            android:background="#E0D8D0" />
+
+        <carbon.widget.LinearLayout
+            android:id="@+id/dot2"
+            android:layout_width="13dp"
+            android:layout_height="13dp"
+            android:background="#E0D8D0"
+            app:carbon_cornerRadius="7dp" />
+
+        <View
+            android:id="@+id/line2"
+            android:layout_width="0dp"
+            android:layout_height="3dp"
+            android:layout_marginHorizontal="4dp"
+            android:layout_weight="1"
+            android:background="#E0D8D0" />
+
+        <carbon.widget.LinearLayout
+            android:id="@+id/dot3"
+            android:layout_width="13dp"
+            android:layout_height="13dp"
+            android:background="#E0D8D0"
+            app:carbon_cornerRadius="7dp" />
+
+        <View
+            android:id="@+id/line3"
+            android:layout_width="0dp"
+            android:layout_height="3dp"
+            android:layout_marginHorizontal="4dp"
+            android:layout_weight="1"
+            android:background="#E0D8D0" />
+
+        <carbon.widget.LinearLayout
+            android:id="@+id/dot4"
+            android:layout_width="13dp"
+            android:layout_height="13dp"
+            android:background="#E0D8D0"
+            app:carbon_cornerRadius="7dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/progressLabels"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="7dp"
+        android:orientation="horizontal">
+
+        <carbon.widget.TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="start"
+            android:text="Placed"
+            android:textColor="@color/carbon_grey_700"
+            android:textSize="10sp"
+            app:carbon_font="@font/space_grotesk_semibold" />
+
+        <carbon.widget.TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Packed"
+            android:textColor="@color/carbon_grey_700"
+            android:textSize="10sp"
+            app:carbon_font="@font/space_grotesk_semibold" />
+
+        <carbon.widget.TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Shipped"
+            android:textColor="@color/carbon_grey_700"
+            android:textSize="10sp"
+            app:carbon_font="@font/space_grotesk_semibold" />
+
+        <carbon.widget.TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="end"
+            android:text="Out"
+            android:textColor="@color/carbon_grey_700"
+            android:textSize="10sp"
+            app:carbon_font="@font/space_grotesk_semibold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/deliveryStrip"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
+        android:background="#F7F2ED"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="12dp"
+        app:carbon_cornerRadius="14dp">
+
+        <carbon.widget.ImageView
+            android:id="@+id/ivDeliveryIcon"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:src="@drawable/ic_truck"
+            app:carbon_tint="#0D3238" />
+
+        <carbon.widget.TextView
+            android:id="@+id/tvDeliveryInfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="Arriving by 18 Jul"
+            android:textColor="#0D3238"
+            android:textSize="13sp"
+            app:carbon_font="@font/space_grotesk_semibold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
+        android:orientation="horizontal">
+
+        <carbon.widget.LinearLayout
+            android:id="@+id/btnPrimary"
+            android:layout_width="0dp"
+            android:layout_height="46dp"
+            android:layout_marginEnd="10dp"
+            android:layout_weight="1"
+            android:background="#0D3238"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:orientation="horizontal"
+            app:carbon_cornerRadius="23dp"
+            app:carbon_elevation="3dp"
+            app:carbon_rippleColor="#40FFFFFF">
+
+            <carbon.widget.ImageView
+                android:id="@+id/ivPrimaryIcon"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:src="@drawable/ic_truck"
+                app:carbon_tint="@color/white" />
+
+            <carbon.widget.TextView
+                android:id="@+id/tvPrimaryAction"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="Track Order"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                app:carbon_font="@font/space_grotesk_semibold" />
+        </carbon.widget.LinearLayout>
+
+        <carbon.widget.LinearLayout
+            android:id="@+id/btnSecondary"
+            android:layout_width="0dp"
+            android:layout_height="46dp"
+            android:layout_weight="1"
+            android:background="@color/white"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:orientation="horizontal"
+            app:carbon_cornerRadius="23dp"
+            app:carbon_rippleColor="#1A0D3238"
+            app:carbon_stroke="#0D3238"
+            app:carbon_strokeWidth="1.5dp">
+
+            <carbon.widget.TextView
+                android:id="@+id/tvSecondaryAction"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="View Details"
+                android:textColor="#0D3238"
+                android:textSize="14sp"
+                app:carbon_font="@font/space_grotesk_semibold" />
+        </carbon.widget.LinearLayout>
+    </LinearLayout>
+
+</carbon.widget.LinearLayout>
