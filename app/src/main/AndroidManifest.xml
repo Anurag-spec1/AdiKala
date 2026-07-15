@@ -14,7 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AdiKala">
         <activity
-            android:name=".activity.SplashActivity"
+            android:name=".activity.AuthActivity"
             android:exported="false" />
         <activity
             android:name=".activity.MainActivity"
@@ -35,7 +35,7 @@
             android:name=".activity.ProductsActivity"
             android:exported="false" />
         <activity
-            android:name=".activity.AuthActivity"
+            android:name=".activity.SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
