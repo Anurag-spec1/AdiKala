@@ -43,7 +43,7 @@
     <View
         android:id="@+id/topScrim"
         android:layout_width="match_parent"
-        android:layout_height="140dp"
+        android:layout_height="120dp"
         android:layout_gravity="top"
         android:background="@drawable/bg_splash_top_scrim" />
 
@@ -59,54 +59,42 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:layout_marginBottom="64dp"
+        android:layout_marginBottom="56dp"
         android:alpha="0"
         android:gravity="center_horizontal"
         android:orientation="vertical"
-        android:paddingHorizontal="28dp">
-
-        <carbon.widget.ImageView
-            android:id="@+id/logoMark"
-            android:layout_width="72dp"
-            android:layout_height="72dp"
-            android:background="@color/white"
-            android:padding="18dp"
-            android:scaleType="fitCenter"
-            android:src="@drawable/ic_cart"
-            app:carbon_cornerRadius="22dp"
-            app:carbon_elevation="10dp"
-            app:carbon_tint="#0D3238" />
+        android:paddingHorizontal="32dp">
 
         <carbon.widget.TextView
             android:id="@+id/tvBrand"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="18dp"
             android:gravity="center"
-            android:lineSpacingExtra="2dp"
+            android:letterSpacing="-0.02"
+            android:lineSpacingExtra="4dp"
             android:text="Handcrafted\nfor Your Home"
             android:textColor="@color/white"
-            android:textSize="34sp"
+            android:textSize="38sp"
             app:carbon_font="@font/space_grotesk_semibold" />
 
         <carbon.widget.TextView
             android:id="@+id/tvTagline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="14dp"
             android:gravity="center"
-            android:lineSpacingExtra="4dp"
+            android:lineSpacingExtra="6dp"
             android:text="Explore MDF cutouts, beads, décor and\neverything you need to create."
-            android:textColor="#99DCEAE8"
-            android:textSize="14sp"
+            android:textColor="#A6DCEAE8"
+            android:textSize="15sp"
             app:carbon_font="@font/space_grotesk_semibold" />
 
         <FrameLayout
             android:id="@+id/progressTrack"
             android:layout_width="110dp"
             android:layout_height="3dp"
-            android:layout_marginTop="28dp"
-            android:background="#33FFFFFF">
+            android:layout_marginTop="34dp"
+            android:background="#26FFFFFF">
 
             <View
                 android:id="@+id/progressFill"
