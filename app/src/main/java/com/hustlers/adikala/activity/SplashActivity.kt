@@ -1,147 +1,211 @@
 package com.hustlers.adikala.activity
 
 import android.animation.ValueAnimator
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.view.Choreographer
+import android.view.View
+import android.view.ViewGroup
+import android.view.WindowManager
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.DecelerateInterpolator
-import android.view.animation.OvershootInterpolator
+import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.hustlers.adikala.R
+import com.hustlers.adikala.adapter.SplashImageAdapter
 import com.hustlers.adikala.databinding.ActivitySplashBinding
+import kotlin.math.PI
+import kotlin.math.sin
 
 class SplashActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySplashBinding
+
+    private val leftImages = listOf(
+        R.drawable.left_1, R.drawable.left_2, R.drawable.left_3, R.drawable.left_4
+    )
+    private val centerImages = listOf(
+        R.drawable.center_1, R.drawable.center_2, R.drawable.center_3, R.drawable.center_4
+    )
+    private val rightImages = listOf(
+        R.drawable.right_1, R.drawable.right_2, R.drawable.right_3, R.drawable.right_4
+    )
+
+    private val columns = mutableListOf<ColumnScroller>()
+    private var choreographer: Choreographer? = null
+    private var frameCallback: Choreographer.FrameCallback? = null
     private var sweepAnimator: ValueAnimator? = null
 
-    private val totalDuration = 2600L
+    private var lastFrameNanos = 0L
+    private var elapsed = 0f
+    private var running = false
+
+    private val visibleDuration = 5000L
+
+    private class ColumnScroller(
+        val rv: RecyclerView,
+        val speedDp: Float,
+        val direction: Int,
+        val delay: Float
+    ) {
+        private var acc = 0f
+
+        fun tick(dt: Float, elapsed: Float, density: Float) {
+            var factor = 1f
+            if (elapsed < delay) {
+                factor = sin((elapsed / delay) * (PI / 2)).toFloat()
+                if (factor < 0.01f) return
+            }
+            acc += speedDp * density * dt * factor * direction
+            val whole = acc.toInt()
+            if (whole != 0) {
+                rv.scrollBy(0, whole)
+                acc -= whole
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySplashBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.root.post { runSequence() }
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
+        )
+
+        binding.root.post { setupWall() }
     }
 
-    private fun runSequence() {
-        animateRings()
-        animateMark()
-        animateBrand()
-        animateAccentLine()
-        animateProgress()
-        scheduleExit()
+    @SuppressLint("ClickableViewAccessibility")
+    private fun setupWall() {
+        val density = resources.displayMetrics.density
+        val w = binding.root.width.toFloat()
+        val h = binding.root.height.toFloat()
+        if (w == 0f || h == 0f) return
+
+        val gap = 16f * density
+        val cardGap = (18f * density).toInt()
+        val hiddenRatio = 0.35f
+
+        val available = w - gap * 2
+        val sideFull = (available * 0.25f) / (1 - hiddenRatio)
+        val sideVisible = sideFull * (1 - hiddenRatio)
+        val centerWidth = w - 2 * (sideVisible + gap)
+
+        val sideH = (sideFull * 1.60f).toInt()
+        val centerH = (centerWidth * 1.50f).toInt()
+
+        val extraTop = (h * 0.05f).toInt()
+        val extraBottom = (h * 0.10f).toInt()
+        val wallHeight = (h + extraTop + extraBottom).toInt()
+
+        applyColumn(
+            binding.rvLeft, sideFull.toInt(), wallHeight, extraTop,
+            (-(sideFull * hiddenRatio)).toInt(), 0,
+            -sideH * 0.45f, leftImages, sideH, cardGap
+        )
+        applyColumn(
+            binding.rvCenter, centerWidth.toInt(), wallHeight, extraTop,
+            0, 0,
+            -centerH * 0.05f, centerImages, centerH, cardGap
+        )
+        applyColumn(
+            binding.rvRight, sideFull.toInt(), wallHeight, extraTop,
+            0, (-(sideFull * hiddenRatio)).toInt(),
+            sideH * 0.15f, rightImages, sideH, cardGap
+        )
+
+        columns.clear()
+        columns.add(ColumnScroller(binding.rvLeft, 30f, 1, 0.01f))
+        columns.add(ColumnScroller(binding.rvCenter, 15f, -1, 0.40f))
+        columns.add(ColumnScroller(binding.rvRight, 20f, 1, 0.80f))
+
+        startTicker()
+        animateContent()
+        animateSweep()
+
+        binding.root.postDelayed({ exitToNext() }, visibleDuration)
     }
 
-    private fun animateRings() {
-        binding.ringOuter.apply {
-            scaleX = 0.55f
-            scaleY = 0.55f
-            animate()
-                .alpha(1f).scaleX(1f).scaleY(1f)
-                .setStartDelay(120)
-                .setDuration(900)
-                .setInterpolator(DecelerateInterpolator(1.6f))
-                .start()
-        }
-        binding.ringInner.apply {
-            scaleX = 0.55f
-            scaleY = 0.55f
-            animate()
-                .alpha(1f).scaleX(1f).scaleY(1f)
-                .setStartDelay(220)
-                .setDuration(900)
-                .setInterpolator(DecelerateInterpolator(1.6f))
-                .start()
-        }
+    @SuppressLint("ClickableViewAccessibility")
+    private fun applyColumn(
+        rv: RecyclerView,
+        width: Int,
+        height: Int,
+        extraTop: Int,
+        startMargin: Int,
+        endMargin: Int,
+        offsetY: Float,
+        images: List<Int>,
+        itemHeight: Int,
+        gap: Int
+    ) {
+        val lp = rv.layoutParams as FrameLayout.LayoutParams
+        lp.width = width
+        lp.height = height
+        lp.topMargin = -extraTop
+        lp.marginStart = startMargin
+        lp.marginEnd = endMargin
+        rv.layoutParams = lp
+        rv.translationY = offsetY
+
+        rv.layoutManager = LinearLayoutManager(this)
+        rv.adapter = SplashImageAdapter(images, itemHeight, gap)
+        rv.setItemViewCacheSize(6)
+        rv.setOnTouchListener { _, _ -> true }
+        rv.scrollToPosition(Int.MAX_VALUE / 2)
     }
 
-    private fun animateMark() {
-        binding.logoMark.apply {
-            scaleX = 0.4f
-            scaleY = 0.4f
-            rotation = -14f
-            animate()
-                .alpha(1f).scaleX(1f).scaleY(1f).rotation(0f)
-                .setStartDelay(180)
-                .setDuration(760)
-                .setInterpolator(OvershootInterpolator(1.5f))
-                .withEndAction { breathe() }
-                .start()
-        }
-    }
+    private fun startTicker() {
+        running = true
+        val density = resources.displayMetrics.density
+        choreographer = Choreographer.getInstance()
 
-    private fun breathe() {
-        binding.logoMark.animate()
-            .scaleX(1.045f).scaleY(1.045f)
-            .setDuration(900)
-            .setInterpolator(AccelerateDecelerateInterpolator())
-            .withEndAction {
-                binding.logoMark.animate()
-                    .scaleX(1f).scaleY(1f)
-                    .setDuration(900)
-                    .setInterpolator(AccelerateDecelerateInterpolator())
-                    .start()
+        frameCallback = object : Choreographer.FrameCallback {
+            override fun doFrame(frameTimeNanos: Long) {
+                if (!running) return
+                if (lastFrameNanos == 0L) {
+                    lastFrameNanos = frameTimeNanos
+                    choreographer?.postFrameCallback(this)
+                    return
+                }
+                val dt = (frameTimeNanos - lastFrameNanos) / 1_000_000_000f
+                lastFrameNanos = frameTimeNanos
+                elapsed += dt
+
+                columns.forEach { it.tick(dt, elapsed, density) }
+                choreographer?.postFrameCallback(this)
             }
-            .start()
+        }
+        choreographer?.postFrameCallback(frameCallback!!)
     }
 
-    private fun animateBrand() {
-        binding.tvBrand.apply {
-            translationY = 26f
+    private fun animateContent() {
+        binding.contentBlock.apply {
+            translationY = 60f
             animate()
-                .alpha(1f).translationY(0f)
-                .setStartDelay(620)
-                .setDuration(620)
+                .alpha(1f)
+                .translationY(0f)
+                .setStartDelay(250)
+                .setDuration(1000)
                 .setInterpolator(DecelerateInterpolator(2f))
                 .start()
         }
-        binding.tvTagline.apply {
-            translationY = 18f
-            animate()
-                .alpha(1f).translationY(0f)
-                .setStartDelay(780)
-                .setDuration(620)
-                .setInterpolator(DecelerateInterpolator(2f))
-                .start()
-        }
-        binding.tvFooter.animate()
-            .alpha(1f)
-            .setStartDelay(1100)
-            .setDuration(700)
-            .start()
     }
 
-    private fun animateAccentLine() {
-        val line = binding.accentLine
-        val target = (140 * resources.displayMetrics.density).toInt()
+    private fun animateSweep() {
+        val density = resources.displayMetrics.density
+        val track = 110f * density
+        val fill = 38f * density
 
-        ValueAnimator.ofInt(0, target).apply {
+        sweepAnimator = ValueAnimator.ofFloat(0f, track - fill).apply {
             startDelay = 900
-            duration = 700
-            interpolator = DecelerateInterpolator(2f)
-            addUpdateListener { va ->
-                val lp = line.layoutParams
-                lp.width = va.animatedValue as Int
-                line.layoutParams = lp
-            }
-            start()
-        }
-    }
-
-    private fun animateProgress() {
-        binding.progressTrack.animate()
-            .alpha(1f)
-            .setStartDelay(1150)
-            .setDuration(400)
-            .start()
-
-        val trackWidth = (120 * resources.displayMetrics.density)
-        val fillWidth = (40 * resources.displayMetrics.density)
-
-        sweepAnimator = ValueAnimator.ofFloat(0f, trackWidth - fillWidth).apply {
-            startDelay = 1200
-            duration = 700
+            duration = 750
             repeatCount = ValueAnimator.INFINITE
             repeatMode = ValueAnimator.REVERSE
             interpolator = AccelerateDecelerateInterpolator()
@@ -152,21 +216,22 @@ class SplashActivity : AppCompatActivity() {
         }
     }
 
-    private fun scheduleExit() {
-        binding.root.postDelayed({ exitToNext() }, totalDuration)
-    }
-
     private fun exitToNext() {
         if (isFinishing) return
+        running = false
 
-        binding.centerBlock.animate()
-            .alpha(0f).scaleX(1.08f).scaleY(1.08f)
+        binding.contentBlock.animate()
+            .alpha(0f)
+            .setDuration(320)
+            .start()
+
+        binding.wall.animate()
+            .alpha(0f)
+            .scaleX(1.06f)
+            .scaleY(1.06f)
             .setDuration(420)
             .setInterpolator(AccelerateDecelerateInterpolator())
             .start()
-
-        binding.progressTrack.animate().alpha(0f).setDuration(280).start()
-        binding.tvFooter.animate().alpha(0f).setDuration(280).start()
 
         binding.root.postDelayed({
             startActivity(Intent(this, MainActivity::class.java))
@@ -175,9 +240,22 @@ class SplashActivity : AppCompatActivity() {
         }, 380)
     }
 
+    override fun onPause() {
+        super.onPause()
+        running = false
+        frameCallback?.let { choreographer?.removeFrameCallback(it) }
+        lastFrameNanos = 0L
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (columns.isNotEmpty() && !running) startTicker()
+    }
+
     override fun onDestroy() {
+        running = false
+        frameCallback?.let { choreographer?.removeFrameCallback(it) }
         sweepAnimator?.cancel()
-        sweepAnimator = null
         super.onDestroy()
     }
 }

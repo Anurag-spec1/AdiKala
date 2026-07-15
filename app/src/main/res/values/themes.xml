@@ -5,6 +5,12 @@
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
     </style>
 
+    <style name="Theme.Adikala.Splash" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowBackground">#0D3238</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">false</item>
+    </style>
+
     <style name="Theme.Adikala" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Make status bar transparent -->
         <item name="android:statusBarColor">@android:color/transparent</item>

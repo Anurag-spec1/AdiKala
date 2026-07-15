@@ -1,124 +1,119 @@
 <?xml version="1.0" encoding="utf-8"?>
-<carbon.widget.RelativeLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/main_bg"
+    android:background="#0D3238"
     tools:context=".activity.SplashActivity">
 
-    <RelativeLayout
-        android:id="@+id/centerBlock"
+    <FrameLayout
+        android:id="@+id/wall"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipChildren="true">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvCenter"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:overScrollMode="never"
+            android:scrollbars="none" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvLeft"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            android:overScrollMode="never"
+            android:scrollbars="none" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvRight"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="end"
+            android:overScrollMode="never"
+            android:scrollbars="none" />
+    </FrameLayout>
+
+    <View
+        android:id="@+id/topScrim"
+        android:layout_width="match_parent"
+        android:layout_height="140dp"
+        android:layout_gravity="top"
+        android:background="@drawable/bg_splash_top_scrim" />
+
+    <View
+        android:id="@+id/scrim"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="bottom"
+        android:background="@drawable/bg_splash_scrim" />
+
+    <LinearLayout
+        android:id="@+id/contentBlock"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true">
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="64dp"
+        android:alpha="0"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingHorizontal="28dp">
 
-        <FrameLayout
-            android:id="@+id/logoStack"
-            android:layout_width="220dp"
-            android:layout_height="220dp"
-            android:layout_centerHorizontal="true">
-
-            <View
-                android:id="@+id/ringOuter"
-                android:layout_width="220dp"
-                android:layout_height="220dp"
-                android:layout_gravity="center"
-                android:alpha="0"
-                android:background="@drawable/bg_splash_ring" />
-
-            <View
-                android:id="@+id/ringInner"
-                android:layout_width="164dp"
-                android:layout_height="164dp"
-                android:layout_gravity="center"
-                android:alpha="0"
-                android:background="@drawable/bg_splash_ring_inner" />
-
-            <carbon.widget.ImageView
-                android:id="@+id/logoMark"
-                android:layout_width="104dp"
-                android:layout_height="104dp"
-                android:layout_gravity="center"
-                android:alpha="0"
-                android:background="#0D3238"
-                android:padding="26dp"
-                android:scaleType="fitCenter"
-                android:src="@drawable/ic_cart"
-                app:carbon_cornerRadius="30dp"
-                app:carbon_elevation="14dp"
-                app:carbon_elevationShadowColor="@color/carbon_grey_500"
-                app:carbon_tint="@color/white" />
-        </FrameLayout>
+        <carbon.widget.ImageView
+            android:id="@+id/logoMark"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:background="@color/white"
+            android:padding="18dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_cart"
+            app:carbon_cornerRadius="22dp"
+            app:carbon_elevation="10dp"
+            app:carbon_tint="#0D3238" />
 
         <carbon.widget.TextView
             android:id="@+id/tvBrand"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/logoStack"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="10dp"
-            android:alpha="0"
-            android:letterSpacing="0.04"
-            android:text="Adikala"
-            android:textColor="#0D3238"
-            android:textSize="40sp"
+            android:layout_marginTop="18dp"
+            android:gravity="center"
+            android:lineSpacingExtra="2dp"
+            android:text="Handcrafted\nfor Your Home"
+            android:textColor="@color/white"
+            android:textSize="34sp"
             app:carbon_font="@font/space_grotesk_semibold" />
 
         <carbon.widget.TextView
             android:id="@+id/tvTagline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/tvBrand"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="2dp"
-            android:alpha="0"
-            android:letterSpacing="0.12"
-            android:text="CRAFT STORE"
-            android:textColor="@color/carbon_grey_700"
-            android:textSize="13sp"
+            android:layout_marginTop="12dp"
+            android:gravity="center"
+            android:lineSpacingExtra="4dp"
+            android:text="Explore MDF cutouts, beads, décor and\neverything you need to create."
+            android:textColor="#99DCEAE8"
+            android:textSize="14sp"
             app:carbon_font="@font/space_grotesk_semibold" />
 
-        <View
-            android:id="@+id/accentLine"
-            android:layout_width="0dp"
+        <FrameLayout
+            android:id="@+id/progressTrack"
+            android:layout_width="110dp"
             android:layout_height="3dp"
-            android:layout_below="@id/tvTagline"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="22dp"
-            android:background="@drawable/bg_splash_progress" />
-    </RelativeLayout>
+            android:layout_marginTop="28dp"
+            android:background="#33FFFFFF">
 
-    <FrameLayout
-        android:id="@+id/progressTrack"
-        android:layout_width="120dp"
-        android:layout_height="3dp"
-        android:layout_above="@id/tvFooter"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="26dp"
-        android:alpha="0"
-        android:background="@drawable/bg_splash_track">
+            <View
+                android:id="@+id/progressFill"
+                android:layout_width="38dp"
+                android:layout_height="3dp"
+                android:background="#e9bdb0" />
+        </FrameLayout>
+    </LinearLayout>
 
-        <View
-            android:id="@+id/progressFill"
-            android:layout_width="40dp"
-            android:layout_height="3dp"
-            android:background="@drawable/bg_splash_progress" />
-    </FrameLayout>
-
-    <carbon.widget.TextView
-        android:id="@+id/tvFooter"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="28dp"
-        android:alpha="0"
-        android:gravity="center"
-        android:text="Handcrafted in India"
-        android:textColor="#B6A89F"
-        android:textSize="12sp"
-        app:carbon_font="@font/space_grotesk_semibold" />
-
-</carbon.widget.RelativeLayout>
+</FrameLayout>
