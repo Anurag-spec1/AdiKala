@@ -9,29 +9,10 @@
     android:fitsSystemWindows="true"
     tools:context=".activity.AuthActivity">
 
-    <carbon.widget.ImageView
-        android:id="@+id/btnClose"
-        android:layout_width="44dp"
-        android:layout_height="44dp"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="20dp"
-        android:background="@color/white"
-        android:clickable="true"
-        android:focusable="true"
-        android:padding="12dp"
-        android:src="@drawable/ic_close"
-        app:carbon_cornerRadius="22dp"
-        app:carbon_elevation="3dp"
-        app:carbon_rippleColor="#1A0D3238"
-        app:carbon_stroke="#e9bdb0"
-        app:carbon_strokeWidth="1.5dp"
-        app:carbon_tint="#0D3238" />
-
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/btnClose"
+        android:layout_marginTop="50dp"
         android:fillViewport="true"
         android:overScrollMode="never"
         android:scrollbars="none">
@@ -47,6 +28,7 @@
             <FrameLayout
                 android:layout_width="88dp"
                 android:layout_height="88dp"
+                android:layout_gravity="center_horizontal"
                 android:layout_marginTop="8dp">
 
                 <carbon.widget.ImageView
@@ -118,12 +100,13 @@
                     android:clickable="true"
                     android:focusable="true"
                     android:gravity="center"
+                    android:layout_marginVertical="3dp"
                     android:orientation="horizontal"
                     app:carbon_cornerRadius="27dp"
                     app:carbon_elevation="3dp"
                     app:carbon_rippleColor="#1A0D3238"
-                    app:carbon_stroke="#e9bdb0"
-                    app:carbon_strokeWidth="1.5dp">
+                    app:carbon_stroke="#14000000"
+                    app:carbon_strokeWidth="1dp">
 
                     <carbon.widget.ImageView
                         android:layout_width="22dp"
@@ -150,12 +133,13 @@
                     android:clickable="true"
                     android:focusable="true"
                     android:gravity="center"
+                    android:layout_marginVertical="3dp"
                     android:orientation="horizontal"
                     app:carbon_cornerRadius="27dp"
                     app:carbon_elevation="3dp"
                     app:carbon_rippleColor="#1A0D3238"
-                    app:carbon_stroke="#e9bdb0"
-                    app:carbon_strokeWidth="1.5dp">
+                    app:carbon_stroke="#14000000"
+                    app:carbon_strokeWidth="1dp">
 
                     <carbon.widget.ImageView
                         android:layout_width="22dp"
@@ -203,49 +187,89 @@
                     android:background="@color/line" />
             </LinearLayout>
 
-            <LinearLayout
+            <carbon.widget.LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="58dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
-                android:background="@color/white"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingStart="20dp"
-                android:paddingEnd="8dp"
-                app:carbon_cornerRadius="29dp"
-                app:carbon_elevation="3dp"
-                app:carbon_stroke="#e9bdb0"
-                app:carbon_strokeWidth="1.5dp">
+                android:background="#F7F2ED"
+                android:orientation="vertical"
+                android:padding="16dp"
+                app:carbon_cornerRadius="22dp">
 
-                <carbon.widget.EditText
-                    android:id="@+id/etEmail"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@null"
-                    android:gravity="center_vertical"
-                    android:hint="Email"
-                    android:imeOptions="actionDone"
-                    android:inputType="textEmailAddress"
-                    android:maxLines="1"
+                <carbon.widget.TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:text="Sign in with email"
                     android:textColor="#0D3238"
-                    android:textColorHint="#8A8A8A"
-                    android:textSize="16sp"
+                    android:textSize="15sp"
                     app:carbon_font="@font/space_grotesk_semibold" />
 
-                <carbon.widget.ImageView
-                    android:id="@+id/btnEmailSubmit"
-                    android:layout_width="44dp"
-                    android:layout_height="44dp"
-                    android:background="#F2ECE6"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:padding="11dp"
-                    android:src="@drawable/ic_arrow_right"
-                    app:carbon_cornerRadius="22dp"
-                    app:carbon_rippleColor="#1A0D3238"
-                    app:carbon_tint="#0D3238" />
-            </LinearLayout>
+                <carbon.widget.TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginTop="2dp"
+                    android:text="We'll send you a 6-digit code"
+                    android:textColor="@color/carbon_grey_700"
+                    android:textSize="12sp"
+                    app:carbon_font="@font/space_grotesk_semibold" />
+
+                <carbon.widget.LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="58dp"
+                    android:layout_marginTop="12dp"
+                    android:background="@color/white"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="7dp"
+                    app:carbon_cornerRadius="29dp"
+                    app:carbon_elevation="4dp"
+                    app:carbon_elevationShadowColor="@color/carbon_grey_500"
+                    app:carbon_stroke="#14000000"
+                    app:carbon_strokeWidth="1dp">
+
+                    <carbon.widget.ImageView
+                        android:layout_width="19dp"
+                        android:layout_height="19dp"
+                        android:src="@drawable/ic_mail"
+                        app:carbon_tint="#0D3238" />
+
+                    <carbon.widget.EditText
+                        android:id="@+id/etEmail"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="11dp"
+                        android:layout_weight="1"
+                        android:paddingEnd="10dp"
+                        android:background="@null"
+                        android:gravity="center_vertical"
+                        android:hint="email@email.com"
+                        android:imeOptions="actionDone"
+                        android:inputType="textEmailAddress"
+                        android:maxLines="1"
+                        android:textColor="#0D3238"
+                        android:textColorHint="#8A8A8A"
+                        android:textSize="16sp"
+                        app:carbon_font="@font/space_grotesk_semibold" />
+
+                    <carbon.widget.ImageView
+                        android:id="@+id/btnEmailSubmit"
+                        android:layout_width="46dp"
+                        android:layout_height="46dp"
+                        android:background="#0D3238"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:padding="12dp"
+                        android:src="@drawable/ic_arrow_right"
+                        app:carbon_cornerRadius="23dp"
+                        app:carbon_elevation="3dp"
+                        app:carbon_rippleColor="#40FFFFFF"
+                        app:carbon_tint="@color/white" />
+                </carbon.widget.LinearLayout>
+
+            </carbon.widget.LinearLayout>
 
             <LinearLayout
                 android:id="@+id/checkRow"
@@ -277,18 +301,20 @@
                     app:carbon_font="@font/space_grotesk_semibold" />
             </LinearLayout>
 
-            <carbon.widget.TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="28dp"
-                android:gravity="center"
-                android:lineSpacingExtra="3dp"
-                android:text="By continuing, you agree to our Terms of Service and Privacy Policy."
-                android:textColor="#B6A89F"
-                android:textSize="12sp"
-                app:carbon_font="@font/space_grotesk_semibold" />
-
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
+
+    <carbon.widget.TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:gravity="center"
+        android:layout_alignParentBottom="true"
+        android:lineSpacingExtra="3dp"
+        android:text="By continuing, you agree to our Terms of Service and Privacy Policy."
+        android:textColor="#B6A89F"
+        android:textSize="12sp"
+        android:layout_marginBottom="20dp"
+        app:carbon_font="@font/space_grotesk_semibold" />
 
 </carbon.widget.RelativeLayout>

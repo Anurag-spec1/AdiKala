@@ -25,7 +25,6 @@ class AuthActivity : AppCompatActivity() {
     }
 
     private fun setupListeners() {
-        binding.btnClose.setOnClickListener { finish() }
 
         binding.btnPrimary.setOnClickListener {
             Toast.makeText(this, "Continue with Adikala", Toast.LENGTH_SHORT).show()
