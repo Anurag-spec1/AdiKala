@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<carbon.widget.RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/main_bg"
+    tools:context=".activity.SplashActivity">
+
+    <RelativeLayout
+        android:id="@+id/centerBlock"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true">
+
+        <FrameLayout
+            android:id="@+id/logoStack"
+            android:layout_width="220dp"
+            android:layout_height="220dp"
+            android:layout_centerHorizontal="true">
+
+            <View
+                android:id="@+id/ringOuter"
+                android:layout_width="220dp"
+                android:layout_height="220dp"
+                android:layout_gravity="center"
+                android:alpha="0"
+                android:background="@drawable/bg_splash_ring" />
+
+            <View
+                android:id="@+id/ringInner"
+                android:layout_width="164dp"
+                android:layout_height="164dp"
+                android:layout_gravity="center"
+                android:alpha="0"
+                android:background="@drawable/bg_splash_ring_inner" />
+
+            <carbon.widget.ImageView
+                android:id="@+id/logoMark"
+                android:layout_width="104dp"
+                android:layout_height="104dp"
+                android:layout_gravity="center"
+                android:alpha="0"
+                android:background="#0D3238"
+                android:padding="26dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_cart"
+                app:carbon_cornerRadius="30dp"
+                app:carbon_elevation="14dp"
+                app:carbon_elevationShadowColor="@color/carbon_grey_500"
+                app:carbon_tint="@color/white" />
+        </FrameLayout>
+
+        <carbon.widget.TextView
+            android:id="@+id/tvBrand"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/logoStack"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:alpha="0"
+            android:letterSpacing="0.04"
+            android:text="Adikala"
+            android:textColor="#0D3238"
+            android:textSize="40sp"
+            app:carbon_font="@font/space_grotesk_semibold" />
+
+        <carbon.widget.TextView
+            android:id="@+id/tvTagline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tvBrand"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="2dp"
+            android:alpha="0"
+            android:letterSpacing="0.12"
+            android:text="CRAFT STORE"
+            android:textColor="@color/carbon_grey_700"
+            android:textSize="13sp"
+            app:carbon_font="@font/space_grotesk_semibold" />
+
+        <View
+            android:id="@+id/accentLine"
+            android:layout_width="0dp"
+            android:layout_height="3dp"
+            android:layout_below="@id/tvTagline"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="22dp"
+            android:background="@drawable/bg_splash_progress" />
+    </RelativeLayout>
+
+    <FrameLayout
+        android:id="@+id/progressTrack"
+        android:layout_width="120dp"
+        android:layout_height="3dp"
+        android:layout_above="@id/tvFooter"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="26dp"
+        android:alpha="0"
+        android:background="@drawable/bg_splash_track">
+
+        <View
+            android:id="@+id/progressFill"
+            android:layout_width="40dp"
+            android:layout_height="3dp"
+            android:background="@drawable/bg_splash_progress" />
+    </FrameLayout>
+
+    <carbon.widget.TextView
+        android:id="@+id/tvFooter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="28dp"
+        android:alpha="0"
+        android:gravity="center"
+        android:text="Handcrafted in India"
+        android:textColor="#B6A89F"
+        android:textSize="12sp"
+        app:carbon_font="@font/space_grotesk_semibold" />
+
+</carbon.widget.RelativeLayout>
