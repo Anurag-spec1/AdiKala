@@ -181,7 +181,7 @@
 
     <LinearLayout
         android:id="@+id/emptyState"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:gravity="center"
@@ -195,8 +195,8 @@
             app:carbon_cornerRadius="60dp"
             app:carbon_elevation="6dp"
             app:carbon_elevationShadowColor="@color/carbon_grey_500"
-            app:carbon_stroke="#e9bdb0"
-            app:carbon_strokeWidth="1.5dp">
+            app:carbon_stroke="#14000000"
+            app:carbon_strokeWidth="1dp">
 
             <carbon.widget.ImageView
                 android:layout_width="52dp"
@@ -225,6 +225,7 @@
             android:clickable="true"
             android:focusable="true"
             android:gravity="center"
+            android:layout_marginBottom="10dp"
             android:paddingStart="28dp"
             android:paddingEnd="28dp"
             app:carbon_cornerRadius="24dp"
