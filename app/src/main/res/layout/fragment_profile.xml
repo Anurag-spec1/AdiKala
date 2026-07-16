@@ -116,7 +116,7 @@
                     android:layout_marginStart="4dp"
                     android:text="Track Orders"
                     android:textColor="#FFFFFF"
-                    android:textSize="18sp"
+                    android:textSize="17sp"
                     app:carbon_font="@font/space_grotesk_semibold" />
 
                 <carbon.widget.TextView
@@ -258,7 +258,7 @@
                             android:maxLines="1"
                             android:text="anurag.sharma@gmail.com"
                             android:textColor="#0D3238"
-                            android:textSize="18sp"
+                            android:textSize="17sp"
                             app:carbon_font="@font/space_grotesk_semibold" />
                     </LinearLayout>
                 </LinearLayout>
@@ -308,7 +308,7 @@
                             android:maxLines="1"
                             android:text="+91 98765 43210"
                             android:textColor="#0D3238"
-                            android:textSize="18sp"
+                            android:textSize="17sp"
                             app:carbon_font="@font/space_grotesk_semibold" />
                     </LinearLayout>
                 </LinearLayout>
@@ -376,7 +376,7 @@
                             android:layout_marginTop="-2dp"
                             android:text="Home"
                             android:textColor="#0D3238"
-                            android:textSize="18sp"
+                            android:textSize="17sp"
                             app:carbon_font="@font/space_grotesk_semibold" />
                     </LinearLayout>
 
@@ -403,7 +403,7 @@
                     android:paddingBottom="16dp"
                     android:text="142, Rosewood Residency, Boring Road,Patna, Bihar — 800001"
                     android:textColor="#5C5C5C"
-                    android:textSize="18sp"
+                    android:textSize="17sp"
                     app:carbon_font="@font/space_grotesk_semibold" />
 
                 <View
@@ -440,7 +440,7 @@
                             android:layout_marginStart="7dp"
                             android:text="Add New"
                             android:textColor="#FFFFFF"
-                            android:textSize="18sp"
+                            android:textSize="17sp"
                             app:carbon_font="@font/space_grotesk_semibold" />
                     </LinearLayout>
 
@@ -466,7 +466,7 @@
                             android:layout_marginStart="7dp"
                             android:text="Manage"
                             android:textColor="@color/teal"
-                            android:textSize="18sp"
+                            android:textSize="17sp"
                             app:carbon_font="@font/space_grotesk_semibold" />
                     </LinearLayout>
                 </LinearLayout>
@@ -525,7 +525,7 @@
                             android:layout_height="wrap_content"
                             android:text="Help Center"
                             android:textColor="#0D3238"
-                            android:textSize="18sp"
+                            android:textSize="17sp"
                             app:carbon_font="@font/space_grotesk_semibold" />
                     </LinearLayout>
 
@@ -572,7 +572,7 @@
                             android:layout_height="wrap_content"
                             android:text="Contact Us"
                             android:textColor="#0D3238"
-                            android:textSize="18sp"
+                            android:textSize="17sp"
                             app:carbon_font="@font/space_grotesk_semibold" />
                     </LinearLayout>
 
@@ -619,7 +619,7 @@
                             android:layout_height="wrap_content"
                             android:text="Privacy Policy"
                             android:textColor="#0D3238"
-                            android:textSize="18sp"
+                            android:textSize="17sp"
                             app:carbon_font="@font/space_grotesk_semibold" />
                     </LinearLayout>
 
@@ -666,7 +666,7 @@
                             android:layout_height="wrap_content"
                             android:text="Terms &amp; Conditions"
                             android:textColor="#0D3238"
-                            android:textSize="18sp"
+                            android:textSize="17sp"
                             app:carbon_font="@font/space_grotesk_semibold" />
                     </LinearLayout>
 
@@ -710,7 +710,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="14dp"
                 android:gravity="center"
-                android:text="Adorn · Version 1.0.4"
+                android:text="Adikala · Version 1.0.4"
                 android:textColor="#B6A89F"
                 android:textSize="11sp"
                 app:carbon_font="@font/space_grotesk_semibold" />
