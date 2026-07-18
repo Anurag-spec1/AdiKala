@@ -46,7 +46,7 @@
         android:textColor="#16353A"
         android:textSize="16sp"
         app:carbon_font="@font/space_grotesk_semibold"
-        android:maxLines="2"
+        android:maxLines="1"
         android:ellipsize="end"/>
 
 </carbon.widget.LinearLayout>
