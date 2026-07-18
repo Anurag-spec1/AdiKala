@@ -20,26 +20,6 @@ class ShopifyApiService {
         }
     }
 
-    suspend fun getProducts(first: Int = 250, after: String? = null) =
-        executeGraphQL(GraphQLQueries.getProducts(first, after))
-
-    suspend fun getAllProducts(): List<ShopifyProduct> = withContext(Dispatchers.IO) {
-        val allProducts = mutableListOf<ShopifyProduct>()
-        var hasNextPage = true
-        var cursor: String? = null
-
-        while (hasNextPage) {
-            val response = getProducts(first = 250, after = cursor)
-            val products = response.products
-            allProducts.addAll(products?.edges?.mapNotNull { it.node } ?: emptyList())
-            hasNextPage = products?.pageInfo?.hasNextPage ?: false
-            cursor = products?.pageInfo?.endCursor
-        }
-        allProducts
-    }
-
-    suspend fun getCollectionByHandleSorted(handle: String, sortKey: String, reverse: Boolean) =
-        executeGraphQL(GraphQLQueries.getCollectionByHandleSorted(handle, sortKey, reverse))
 
     suspend fun getAllProductsByCollectionSorted(
         handle: String,
@@ -51,7 +31,8 @@ class ShopifyApiService {
         var cursor: String? = null
 
         while (hasNextPage) {
-            val query = GraphQLQueries.getCollectionByHandleSorted(handle, sortKey, reverse, 250, cursor)
+            val query =
+                GraphQLQueries.getCollectionByHandleSorted(handle, sortKey, reverse, 250, cursor)
             val response = executeGraphQL(query)
             val products = response.collectionByHandle?.products
             allProducts.addAll(products?.edges?.mapNotNull { it.node } ?: emptyList())
@@ -61,8 +42,6 @@ class ShopifyApiService {
         allProducts
     }
 
-    suspend fun getProductByHandle(handle: String) =
-        executeGraphQL(GraphQLQueries.getProductByHandle(handle))
 
     suspend fun getCollections() =
         executeGraphQL(GraphQLQueries.GET_COLLECTIONS)
@@ -70,27 +49,9 @@ class ShopifyApiService {
     suspend fun getCollectionByHandle(handle: String, first: Int = 250, after: String? = null) =
         executeGraphQL(GraphQLQueries.getCollectionByHandle(handle, first, after))
 
-    suspend fun getAllProductsByCollection(handle: String): List<ShopifyProduct> = withContext(Dispatchers.IO) {
-        val allProducts = mutableListOf<ShopifyProduct>()
-        var hasNextPage = true
-        var cursor: String? = null
-
-        while (hasNextPage) {
-            val response = getCollectionByHandle(handle, first = 250, after = cursor)
-            val products = response.collectionByHandle?.products
-            allProducts.addAll(products?.edges?.mapNotNull { it.node } ?: emptyList())
-            hasNextPage = products?.pageInfo?.hasNextPage ?: false
-            cursor = products?.pageInfo?.endCursor
-        }
-        allProducts
-    }
-
-    suspend fun searchProducts(query: String) =
-        executeGraphQL(GraphQLQueries.searchProducts(query))
-
     suspend fun getMainMenu() =
         executeGraphQL(GraphQLQueries.GET_MAIN_MENU)
 
-    suspend fun getShopInfo() =
-        executeGraphQL(GraphQLQueries.GET_SHOP_INFO)
+    suspend fun searchProducts(query: String) =
+        executeGraphQL(GraphQLQueries.searchProducts(query))
 }

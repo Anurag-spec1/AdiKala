@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<carbon.widget.RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/main_bg"
+    android:fitsSystemWindows="true"
+    tools:context=".view.activity.SearchActivity">
+
+    <carbon.widget.ImageView
+        android:id="@+id/btnBack"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="15dp"
+        android:background="@color/white"
+        android:clickable="true"
+        android:focusable="true"
+        android:padding="12dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_chevron_left"
+        app:carbon_cornerRadius="22.5dp"
+        app:carbon_elevation="4dp"
+        app:carbon_rippleColor="#1A0D3238"
+        app:carbon_stroke="#14000000"
+        app:carbon_strokeWidth="1dp"
+        app:carbon_tint="#0D3238" />
+
+    <carbon.widget.EditText
+        android:id="@+id/etSearch"
+        android:layout_width="0dp"
+        android:layout_height="45dp"
+        android:layout_alignTop="@id/btnBack"
+        android:layout_alignBottom="@id/btnBack"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="20dp"
+        android:layout_toEndOf="@id/btnBack"
+        android:background="@android:color/white"
+        android:drawableStart="@drawable/ic_search"
+        android:drawablePadding="12dp"
+        android:drawableTint="#0D3238"
+        android:gravity="center_vertical"
+        android:hint="Search products..."
+        android:imeOptions="actionSearch"
+        android:inputType="text"
+        android:maxLines="1"
+        android:paddingStart="18dp"
+        android:paddingEnd="18dp"
+        android:singleLine="true"
+        android:textColor="@android:color/black"
+        android:textColorHint="#8A8A8A"
+        android:textSize="15sp"
+        app:carbon_cornerRadius="22.5dp"
+        app:carbon_elevation="4dp"
+        app:carbon_font="@font/space_grotesk_semibold"
+        app:carbon_stroke="#14000000"
+        app:carbon_strokeWidth="1dp" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/etSearch"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="40dp"
+        android:visibility="gone" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvSearchResults"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/etSearch"
+        android:layout_marginTop="14dp"
+        android:clipToPadding="false"
+        android:overScrollMode="never"
+        android:paddingHorizontal="12dp"
+        android:paddingBottom="24dp"
+        android:scrollbars="none"
+        tools:listitem="@layout/item_products" />
+
+    <LinearLayout
+        android:id="@+id/emptyState"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/etSearch"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="80dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <carbon.widget.ImageView
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:alpha="0.5"
+            android:src="@drawable/ic_search"
+            app:carbon_tint="@color/carbon_grey_500" />
+
+        <carbon.widget.TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:text="No products found"
+            android:textColor="#0D3238"
+            android:textSize="18sp"
+            app:carbon_font="@font/space_grotesk_semibold" />
+    </LinearLayout>
+
+</carbon.widget.RelativeLayout>

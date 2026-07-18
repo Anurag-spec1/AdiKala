@@ -1,4 +1,3 @@
-// view/fragment/HomeFragment.kt
 package com.hustlers.adikala.view.fragment
 
 import android.content.Intent
@@ -7,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.hustlers.adikala.view.activity.CartActivity
 import com.hustlers.adikala.view.activity.CategoriesActivity
 import com.hustlers.adikala.view.activity.ProductsActivity
+import com.hustlers.adikala.view.activity.SearchActivity
 import com.hustlers.adikala.view.activity.SubCategoriesActivity
 import com.hustlers.adikala.view.adapter.CategoryAdapter
 import com.hustlers.adikala.view.adapter.PopularCollectionAdapter
@@ -73,6 +74,24 @@ class HomeFragment : Fragment() {
             navigateToProducts(collection.name, collection.handle)
         }
         binding.rvPopular.adapter = adikalaStoreAdapter
+
+        binding.etSearchBar.setOnClickListener {
+            val intent = Intent(requireContext(), SearchActivity::class.java)
+            intent.putExtra("search_query", binding.etSearchBar.text.toString().trim())
+            startActivity(intent)
+        }
+
+        binding.etSearchBar.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                val query = binding.etSearchBar.text.toString().trim()
+                if (query.isNotEmpty()) {
+                    val intent = Intent(requireContext(), SearchActivity::class.java)
+                    intent.putExtra("search_query", query)
+                    startActivity(intent)
+                }
+                true
+            } else false
+        }
     }
 
     private fun onCategoryClick(category: Category) {

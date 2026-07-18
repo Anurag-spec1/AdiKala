@@ -170,4 +170,16 @@ class HomeRepository {
         return item.title?.lowercase()?.trim()?.replace(" ", "-")?.replace("&", "and") ?: ""
     }
 
+    suspend fun searchProducts(query: String): Result<List<Product>> = withContext(Dispatchers.IO) {
+        try {
+            val response = apiService.searchProducts(query)
+            val products = response.products?.edges?.mapNotNull { edge ->
+                edge.node?.let { ModelMapper.mapToProduct(it) }
+            } ?: emptyList()
+            Result.success(products)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
 }
