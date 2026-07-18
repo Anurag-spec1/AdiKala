@@ -38,6 +38,8 @@ class ProductsActivity : AppCompatActivity() {
         collectionHandle = intent.getStringExtra(EXTRA_COLLECTION_HANDLE) ?: ""
 
         binding.tvCategoryName.text = categoryName
+        binding.tvActiveSort.text = SortOption.FEATURED.label
+
         setupRecycler()
         setupObservers()
         setupListeners()
@@ -76,25 +78,7 @@ class ProductsActivity : AppCompatActivity() {
             } else {
                 binding.emptyState.visibility = View.GONE
                 binding.rvProducts.visibility = View.VISIBLE
-                productAdapter = ProductAdapter(products,
-                    onClick = { product ->
-                        val intent = Intent(this, ProductDetailActivity::class.java)
-                        intent.putExtra(ProductDetailActivity.EXTRA_PRODUCT, product)
-                        startActivity(intent)
-                    },
-                    onAddToCart = { product ->
-                        val variantId = product.variants.firstOrNull()?.id ?: return@ProductAdapter
-                        val intent = Intent(this, CartActivity::class.java)
-                        intent.putExtra("variant_id", variantId)
-                        intent.putExtra("quantity", 1)
-                        startActivity(intent)
-                    },
-                    onWishlistToggle = { product ->
-                        product.isWishlisted = !product.isWishlisted
-                        productAdapter.notifyDataSetChanged()
-                    }
-                )
-                binding.rvProducts.adapter = productAdapter
+                updateAdapter(products)
                 binding.tvResultCount.text = "${products.size} products"
             }
         }
@@ -104,6 +88,28 @@ class ProductsActivity : AppCompatActivity() {
         viewModel.error.observe(this) { error ->
             if (!error.isNullOrEmpty()) Toast.makeText(this, error, Toast.LENGTH_SHORT).show()
         }
+    }
+
+    private fun updateAdapter(products: List<com.hustlers.adikala.model.Product>) {
+        productAdapter = ProductAdapter(products,
+            onClick = { product ->
+                val intent = Intent(this, ProductDetailActivity::class.java)
+                intent.putExtra(ProductDetailActivity.EXTRA_PRODUCT, product)
+                startActivity(intent)
+            },
+            onAddToCart = { product ->
+                val variantId = product.variants.firstOrNull()?.id ?: return@ProductAdapter
+                val intent = Intent(this, CartActivity::class.java)
+                intent.putExtra("variant_id", variantId)
+                intent.putExtra("quantity", 1)
+                startActivity(intent)
+            },
+            onWishlistToggle = { product ->
+                product.isWishlisted = !product.isWishlisted
+                productAdapter.notifyDataSetChanged()
+            }
+        )
+        binding.rvProducts.adapter = productAdapter
     }
 
     private fun setupListeners() {

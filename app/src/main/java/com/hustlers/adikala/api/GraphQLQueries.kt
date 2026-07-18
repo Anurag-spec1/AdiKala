@@ -112,6 +112,52 @@ object GraphQLQueries {
     }
 """.trimIndent()
 
+    fun getCollectionByHandleSorted(
+        handle: String,
+        sortKey: String,
+        reverse: Boolean,
+        first: Int = 250,
+        after: String? = null
+    ) = """
+    query {
+        collectionByHandle(handle: "$handle") {
+            products(first: $first, sortKey: $sortKey, reverse: $reverse${if (after != null) ", after: \"$after\"" else ""}) {
+                edges {
+                    node {
+                        id
+                        title
+                        handle
+                        description
+                        featuredImage { url altText }
+                        images(first: 5) { edges { node { url altText } } }
+                        priceRange { minVariantPrice { amount currencyCode } }
+                        variants(first: 5) {
+                            edges {
+                                node {
+                                    id
+                                    title
+                                    price { amount currencyCode }
+                                    compareAtPrice { amount currencyCode }
+                                    availableForSale
+                                    selectedOptions { name value }
+                                    sku
+                                }
+                            }
+                        }
+                        collections(first: 3) {
+                            edges { node { title handle } }
+                        }
+                    }
+                }
+                pageInfo {
+                    hasNextPage
+                    endCursor
+                }
+            }
+        }
+    }
+""".trimIndent()
+
     fun getCollectionByHandle(handle: String, first: Int = 250, after: String? = null) = """
         query {
             collectionByHandle(handle: "$handle") {

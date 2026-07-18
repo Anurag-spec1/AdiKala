@@ -38,8 +38,28 @@ class ShopifyApiService {
         allProducts
     }
 
-    suspend fun getCollectionByHandleSorted(handle: String, sortKey: String) =
-        executeGraphQL(GraphQLQueries.getCollectionWithSort(handle, sortKey))
+    suspend fun getCollectionByHandleSorted(handle: String, sortKey: String, reverse: Boolean) =
+        executeGraphQL(GraphQLQueries.getCollectionByHandleSorted(handle, sortKey, reverse))
+
+    suspend fun getAllProductsByCollectionSorted(
+        handle: String,
+        sortKey: String,
+        reverse: Boolean
+    ): List<ShopifyProduct> = withContext(Dispatchers.IO) {
+        val allProducts = mutableListOf<ShopifyProduct>()
+        var hasNextPage = true
+        var cursor: String? = null
+
+        while (hasNextPage) {
+            val query = GraphQLQueries.getCollectionByHandleSorted(handle, sortKey, reverse, 250, cursor)
+            val response = executeGraphQL(query)
+            val products = response.collectionByHandle?.products
+            allProducts.addAll(products?.edges?.mapNotNull { it.node } ?: emptyList())
+            hasNextPage = products?.pageInfo?.hasNextPage ?: false
+            cursor = products?.pageInfo?.endCursor
+        }
+        allProducts
+    }
 
     suspend fun getProductByHandle(handle: String) =
         executeGraphQL(GraphQLQueries.getProductByHandle(handle))

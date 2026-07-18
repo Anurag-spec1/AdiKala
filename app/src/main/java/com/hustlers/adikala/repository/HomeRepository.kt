@@ -108,12 +108,14 @@ class HomeRepository {
         }
     }
 
-    suspend fun getProductsByCollectionSorted(collectionHandle: String, sortKey: String): Result<List<Product>> = withContext(Dispatchers.IO) {
+    suspend fun getProductsByCollectionSorted(
+        collectionHandle: String,
+        sortKey: String,
+        reverse: Boolean
+    ): Result<List<Product>> = withContext(Dispatchers.IO) {
         try {
-            val response = apiService.getCollectionByHandleSorted(collectionHandle, sortKey)
-            val products = response.collectionByHandle?.products?.edges?.mapNotNull { edge ->
-                edge.node?.let { ModelMapper.mapToProduct(it) }
-            } ?: emptyList()
+            val allProducts = apiService.getAllProductsByCollectionSorted(collectionHandle, sortKey, reverse)
+            val products = allProducts.map { ModelMapper.mapToProduct(it) }
             Result.success(products)
         } catch (e: Exception) {
             Result.failure(e)

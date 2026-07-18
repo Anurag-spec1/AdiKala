@@ -1,6 +1,6 @@
 package com.hustlers.adikala.viewmodel
 
-
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -9,7 +9,6 @@ import com.hustlers.adikala.model.Product
 import com.hustlers.adikala.model.SortOption
 import com.hustlers.adikala.repository.HomeRepository
 import kotlinx.coroutines.launch
-
 
 class ProductsViewModel : ViewModel() {
 
@@ -32,43 +31,30 @@ class ProductsViewModel : ViewModel() {
 
     fun loadProductsByCollection(handle: String) {
         currentHandle = handle
-        loadWithSort(currentSort)
+        applySort(SortOption.FEATURED)
     }
 
     fun applySort(sort: SortOption) {
         currentSort = sort
-        loadWithSort(sort)
-    }
-
-    private fun loadWithSort(sort: SortOption) {
         viewModelScope.launch {
             _isLoading.value = true
 
-            val sortKey = when (sort) {
-                SortOption.PRICE_LOW_HIGH -> "PRICE"
-                SortOption.PRICE_HIGH_LOW -> "PRICE"
-                SortOption.NAME_ASC -> "TITLE"
-                SortOption.NAME_DESC -> "TITLE"
-                SortOption.DATE_NEW_OLD -> "CREATED"
-                SortOption.DATE_OLD_NEW -> "CREATED"
-                SortOption.BEST_SELLING -> "BEST_SELLING"
-                SortOption.FEATURED -> "MANUAL"
-                SortOption.MOST_RELEVANT -> "RELEVANCE"
+            val (sortKey, reverse) = when (sort) {
+                SortOption.FEATURED -> "MANUAL" to false
+                SortOption.MOST_RELEVANT -> "RELEVANCE" to false
+                SortOption.BEST_SELLING -> "BEST_SELLING" to false
+                SortOption.NAME_ASC -> "TITLE" to false
+                SortOption.NAME_DESC -> "TITLE" to true
+                SortOption.PRICE_LOW_HIGH -> "PRICE" to false
+                SortOption.PRICE_HIGH_LOW -> "PRICE" to true
+                SortOption.DATE_NEW_OLD -> "CREATED" to true
+                SortOption.DATE_OLD_NEW -> "CREATED" to false
             }
 
-            repository.getProductsByCollectionSorted(currentHandle, sortKey).fold(
+            repository.getProductsByCollectionSorted(currentHandle, sortKey, reverse).fold(
                 onSuccess = { products ->
-                    val finalProducts = when (sort) {
-                        SortOption.PRICE_HIGH_LOW -> products.sortedByDescending { it.discountedPrice }
-                        SortOption.PRICE_LOW_HIGH -> products
-                        SortOption.NAME_DESC -> products.sortedByDescending { it.name.lowercase() }
-                        SortOption.NAME_ASC -> products
-                        SortOption.DATE_OLD_NEW -> products
-                        SortOption.DATE_NEW_OLD -> products.sortedByDescending { it.createdAt }
-                        else -> products
-                    }
-                    _products.value = finalProducts
-                    _filteredProducts.value = finalProducts
+                    _products.value = products
+                    _filteredProducts.value = products
                 },
                 onFailure = { _error.value = it.message }
             )
