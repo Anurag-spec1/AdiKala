@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/main_bg"
     android:fitsSystemWindows="true"
-    tools:context=".activity.ProductDetailActivity">
+    tools:context=".view.activity.ProductDetailActivity">
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/scroll"

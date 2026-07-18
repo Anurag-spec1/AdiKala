@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/main_bg"
     android:fitsSystemWindows="true"
-    tools:context=".activity.ProductsActivity">
+    tools:context=".view.activity.ProductsActivity">
 
     <carbon.widget.ImageView
         android:id="@+id/btnBack"

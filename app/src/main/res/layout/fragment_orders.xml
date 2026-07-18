@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/main_bg"
     android:fitsSystemWindows="true"
-    tools:context=".fragment.OrdersFragment">
+    tools:context=".view.fragment.OrdersFragment">
 
     <LinearLayout
         android:id="@+id/headerRow"

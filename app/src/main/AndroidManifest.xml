@@ -14,28 +14,28 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AdiKala">
         <activity
-            android:name=".activity.AuthActivity"
+            android:name=".view.activity.AuthActivity"
             android:exported="false" />
         <activity
-            android:name=".activity.MainActivity"
+            android:name=".view.activity.MainActivity"
             android:exported="false" />
         <activity
-            android:name=".activity.CartActivity"
+            android:name=".view.activity.CartActivity"
             android:exported="false" />
         <activity
-            android:name=".activity.SubCategoriesActivity"
+            android:name=".view.activity.SubCategoriesActivity"
             android:exported="false" />
         <activity
-            android:name=".activity.CategoriesActivity"
+            android:name=".view.activity.CategoriesActivity"
             android:exported="false" />
         <activity
-            android:name=".activity.ProductDetailActivity"
+            android:name=".view.activity.ProductDetailActivity"
             android:exported="false" />
         <activity
-            android:name=".activity.ProductsActivity"
+            android:name=".view.activity.ProductsActivity"
             android:exported="false" />
         <activity
-            android:name=".activity.SplashActivity"
+            android:name=".view.activity.SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

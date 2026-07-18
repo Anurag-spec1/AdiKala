@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/main_bg"
     android:fitsSystemWindows="true"
-    tools:context=".activity.AuthActivity">
+    tools:context=".view.activity.AuthActivity">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
