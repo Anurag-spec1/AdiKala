@@ -1,4 +1,4 @@
-// HomeFragment.kt - UPDATED
+// view/fragment/HomeFragment.kt
 package com.hustlers.adikala.view.fragment
 
 import android.content.Intent
@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -16,6 +15,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.hustlers.adikala.view.activity.CartActivity
 import com.hustlers.adikala.view.activity.CategoriesActivity
 import com.hustlers.adikala.view.activity.ProductsActivity
+import com.hustlers.adikala.view.activity.SubCategoriesActivity
 import com.hustlers.adikala.view.adapter.CategoryAdapter
 import com.hustlers.adikala.view.adapter.PopularCollectionAdapter
 import com.hustlers.adikala.databinding.FragmentHomeBinding
@@ -30,7 +30,7 @@ class HomeFragment : Fragment() {
 
     private lateinit var viewModel: HomeViewModel
     private lateinit var categoryAdapter: CategoryAdapter
-    private lateinit var popularAdapter: PopularCollectionAdapter
+    private lateinit var adikalaStoreAdapter: PopularCollectionAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -42,9 +42,7 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         viewModel = ViewModelProvider(this)[HomeViewModel::class.java]
-
         setupUI()
         observeViewModel()
         viewModel.loadHomeData()
@@ -57,72 +55,74 @@ class HomeFragment : Fragment() {
         binding.viewallCategories.setOnClickListener {
             startActivity(Intent(requireContext(), CategoriesActivity::class.java))
         }
-
         binding.cart.setOnClickListener {
             startActivity(Intent(requireContext(), CartActivity::class.java))
         }
 
+        binding.rvCategories.layoutManager =
+            LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
         binding.rvPopular.layoutManager =
             StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
 
-        binding.rvCategories.layoutManager =
-            LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
-
         categoryAdapter = CategoryAdapter(emptyList()) { category ->
-            openProducts(category.name)
+            onCategoryClick(category)
         }
         binding.rvCategories.adapter = categoryAdapter
 
-        popularAdapter = PopularCollectionAdapter(emptyList()) { collection ->
-            openProducts(collection.name)
+        adikalaStoreAdapter = PopularCollectionAdapter(emptyList()) { collection ->
+            navigateToProducts(collection.name, collection.handle)
         }
-        binding.rvPopular.adapter = popularAdapter
+        binding.rvPopular.adapter = adikalaStoreAdapter
+    }
+
+    private fun onCategoryClick(category: Category) {
+        if (category.subCategories.isNotEmpty()) {
+            val intent = Intent(requireContext(), SubCategoriesActivity::class.java)
+            intent.putExtra(SubCategoriesActivity.EXTRA_CATEGORY, category)
+            startActivity(intent)
+        } else {
+            navigateToProducts(category.name, category.handle)
+        }
     }
 
     private fun observeViewModel() {
         viewModel.categories.observe(viewLifecycleOwner) { categories ->
             if (categories.isNotEmpty()) {
                 categoryAdapter = CategoryAdapter(categories) { category ->
-                    openProducts(category.name)
+                    onCategoryClick(category)
                 }
                 binding.rvCategories.adapter = categoryAdapter
             }
         }
 
-        viewModel.popularCollections.observe(viewLifecycleOwner) { collections ->
+        viewModel.adikalaStoreCollections.observe(viewLifecycleOwner) { collections ->
             if (collections.isNotEmpty()) {
-                popularAdapter = PopularCollectionAdapter(collections) { collection ->
-                    openProducts(collection.name)
+                val popularList = collections.map { cat ->
+                    PopularCollection(id = cat.id, name = cat.name, image = cat.image, handle = cat.handle)
                 }
-                binding.rvPopular.adapter = popularAdapter
+                adikalaStoreAdapter = PopularCollectionAdapter(popularList) { collection ->
+                    navigateToProducts(collection.name, collection.handle)
+                }
+                binding.rvPopular.adapter = adikalaStoreAdapter
             }
         }
 
         viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
             binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
         }
-
-        viewModel.error.observe(viewLifecycleOwner) { errorMessage ->
-            if (errorMessage.isNotEmpty()) {
-                Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show()
-            }
-        }
     }
 
-    private fun openProducts(categoryName: String) {
+    private fun navigateToProducts(name: String, handle: String) {
         val intent = Intent(requireContext(), ProductsActivity::class.java)
-        intent.putExtra(ProductsActivity.EXTRA_CATEGORY, categoryName)
+        intent.putExtra(ProductsActivity.EXTRA_CATEGORY, name)
+        intent.putExtra(ProductsActivity.EXTRA_COLLECTION_HANDLE, handle)
         startActivity(intent)
     }
 
     private fun String.toDisplayName(maxLength: Int = 12): String {
         if (isBlank()) return ""
         val firstName = trim().split("\\s+".toRegex()).first()
-        return if (firstName.length > maxLength) {
-            firstName.take(maxLength) + "..."
-        } else {
-            firstName
-        }
+        return if (firstName.length > maxLength) firstName.take(maxLength) + "..." else firstName
     }
 
     override fun onDestroyView() {

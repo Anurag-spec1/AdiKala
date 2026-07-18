@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hustlers.adikala.model.Category
-import com.hustlers.adikala.model.PopularCollection
 import com.hustlers.adikala.repository.HomeRepository
 import kotlinx.coroutines.launch
 
@@ -16,8 +15,8 @@ class HomeViewModel : ViewModel() {
     private val _categories = MutableLiveData<List<Category>>()
     val categories: LiveData<List<Category>> = _categories
 
-    private val _popularCollections = MutableLiveData<List<PopularCollection>>()
-    val popularCollections: LiveData<List<PopularCollection>> = _popularCollections
+    private val _adikalaStoreCollections = MutableLiveData<List<Category>>()
+    val adikalaStoreCollections: LiveData<List<Category>> = _adikalaStoreCollections
 
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
@@ -29,13 +28,13 @@ class HomeViewModel : ViewModel() {
         viewModelScope.launch {
             _isLoading.value = true
 
-            repository.getCategories().fold(
+            repository.getCategoriesForChips().fold(
                 onSuccess = { _categories.value = it },
                 onFailure = { _error.value = it.message }
             )
 
-            repository.getPopularCollections().fold(
-                onSuccess = { _popularCollections.value = it },
+            repository.getAdikalaStoreCollections().fold(
+                onSuccess = { _adikalaStoreCollections.value = it },
                 onFailure = { _error.value = it.message }
             )
 

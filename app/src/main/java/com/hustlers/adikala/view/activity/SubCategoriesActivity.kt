@@ -31,22 +31,14 @@ class SubCategoriesActivity : AppCompatActivity() {
 
         bindHeader()
         setupGrid()
-
         binding.btnBack.setOnClickListener { finish() }
     }
 
     private fun bindHeader() {
         binding.tvCategoryName.text = category.name
-
         val subCount = category.subCategories.size
-        val subText = if (subCount == 1) "1 subcategory" else "$subCount subcategories"
-        binding.tvSubtitle.text =
-            if (category.itemCount > 0) "$subText · ${category.itemCount} items" else subText
-
-        Glide.with(binding.ivBanner)
-            .load(category.image)
-            .centerCrop()
-            .into(binding.ivBanner)
+        binding.tvSubtitle.text = if (subCount == 1) "1 subcategory" else "$subCount subcategories"
+        Glide.with(binding.ivBanner).load(category.image).centerCrop().into(binding.ivBanner)
     }
 
     private fun setupGrid() {
@@ -58,11 +50,11 @@ class SubCategoriesActivity : AppCompatActivity() {
         }
         binding.rvSubCategories.visibility = View.VISIBLE
         binding.emptyState.visibility = View.GONE
-
         binding.rvSubCategories.layoutManager = GridLayoutManager(this, 2)
         binding.rvSubCategories.adapter = SubCategoryGridAdapter(subs) { sub ->
             val intent = Intent(this, ProductsActivity::class.java)
             intent.putExtra(ProductsActivity.EXTRA_CATEGORY, "${category.name} · ${sub.name}")
+            intent.putExtra(ProductsActivity.EXTRA_COLLECTION_HANDLE, sub.handle)
             startActivity(intent)
         }
     }

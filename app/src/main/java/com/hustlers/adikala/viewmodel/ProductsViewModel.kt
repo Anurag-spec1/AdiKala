@@ -1,5 +1,6 @@
 package com.hustlers.adikala.viewmodel
 
+
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -8,6 +9,7 @@ import com.hustlers.adikala.model.Product
 import com.hustlers.adikala.model.SortOption
 import com.hustlers.adikala.repository.HomeRepository
 import kotlinx.coroutines.launch
+
 
 class ProductsViewModel : ViewModel() {
 
@@ -26,47 +28,52 @@ class ProductsViewModel : ViewModel() {
     val error: LiveData<String> = _error
 
     private var currentSort = SortOption.FEATURED
+    private var currentHandle = ""
 
     fun loadProductsByCollection(handle: String) {
-        viewModelScope.launch {
-            _isLoading.value = true
-            repository.getProductsByCollection(handle).fold(
-                onSuccess = { products ->
-                    _products.value = products
-                    applySort(currentSort)
-                },
-                onFailure = { _error.value = it.message }
-            )
-            _isLoading.value = false
-        }
-    }
-
-    fun loadProductsBySubCategory(collectionHandle: String, subCategoryName: String) {
-        viewModelScope.launch {
-            _isLoading.value = true
-            repository.getProductsBySubCategory(collectionHandle, subCategoryName).fold(
-                onSuccess = { products ->
-                    _products.value = products
-                    applySort(currentSort)
-                },
-                onFailure = { _error.value = it.message }
-            )
-            _isLoading.value = false
-        }
+        currentHandle = handle
+        loadWithSort(currentSort)
     }
 
     fun applySort(sort: SortOption) {
         currentSort = sort
-        val sorted = when (sort) {
-            SortOption.NAME_ASC -> _products.value?.sortedBy { it.name.lowercase() }
-            SortOption.NAME_DESC -> _products.value?.sortedByDescending { it.name.lowercase() }
-            SortOption.PRICE_LOW_HIGH -> _products.value?.sortedBy { it.discountedPrice }
-            SortOption.PRICE_HIGH_LOW -> _products.value?.sortedByDescending { it.discountedPrice }
-            SortOption.DATE_NEW_OLD -> _products.value?.sortedByDescending { it.createdAt }
-            SortOption.DATE_OLD_NEW -> _products.value?.sortedBy { it.createdAt }
-            SortOption.BEST_SELLING -> _products.value?.sortedByDescending { it.salesCount }
-            SortOption.FEATURED, SortOption.MOST_RELEVANT -> _products.value
+        loadWithSort(sort)
+    }
+
+    private fun loadWithSort(sort: SortOption) {
+        viewModelScope.launch {
+            _isLoading.value = true
+
+            val sortKey = when (sort) {
+                SortOption.PRICE_LOW_HIGH -> "PRICE"
+                SortOption.PRICE_HIGH_LOW -> "PRICE"
+                SortOption.NAME_ASC -> "TITLE"
+                SortOption.NAME_DESC -> "TITLE"
+                SortOption.DATE_NEW_OLD -> "CREATED"
+                SortOption.DATE_OLD_NEW -> "CREATED"
+                SortOption.BEST_SELLING -> "BEST_SELLING"
+                SortOption.FEATURED -> "MANUAL"
+                SortOption.MOST_RELEVANT -> "RELEVANCE"
+            }
+
+            repository.getProductsByCollectionSorted(currentHandle, sortKey).fold(
+                onSuccess = { products ->
+                    val finalProducts = when (sort) {
+                        SortOption.PRICE_HIGH_LOW -> products.sortedByDescending { it.discountedPrice }
+                        SortOption.PRICE_LOW_HIGH -> products
+                        SortOption.NAME_DESC -> products.sortedByDescending { it.name.lowercase() }
+                        SortOption.NAME_ASC -> products
+                        SortOption.DATE_OLD_NEW -> products
+                        SortOption.DATE_NEW_OLD -> products.sortedByDescending { it.createdAt }
+                        else -> products
+                    }
+                    _products.value = finalProducts
+                    _filteredProducts.value = finalProducts
+                },
+                onFailure = { _error.value = it.message }
+            )
+
+            _isLoading.value = false
         }
-        _filteredProducts.value = sorted ?: emptyList()
     }
 }

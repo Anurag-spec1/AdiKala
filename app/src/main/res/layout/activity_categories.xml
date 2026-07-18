@@ -54,6 +54,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="-3dp"
             android:text="All Categories"
+            android:id="@+id/tvTitle"
             android:textColor="#0D3238"
             android:textSize="22sp"
             app:carbon_font="@font/space_grotesk_semibold" />

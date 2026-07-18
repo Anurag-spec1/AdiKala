@@ -1,4 +1,3 @@
-// api/GraphQLQueries.kt
 package com.hustlers.adikala.api
 
 object GraphQLQueries {
@@ -12,9 +11,9 @@ object GraphQLQueries {
         }
     """.trimIndent()
 
-    val GET_PRODUCTS = """
+    fun getProducts(first: Int, after: String? = null) = """
         query {
-            products(first: 50) {
+            products(first: $first${if (after != null) ", after: \"$after\"" else ""}) {
                 edges {
                     node {
                         id
@@ -25,8 +24,9 @@ object GraphQLQueries {
                         images(first: 10) { edges { node { url altText } } }
                         priceRange { 
                             minVariantPrice { amount currencyCode }
+                            maxVariantPrice { amount currencyCode }
                         }
-                        variants(first: 10) {
+                        variants(first: 20) {
                             edges {
                                 node {
                                     id
@@ -47,6 +47,10 @@ object GraphQLQueries {
                         productType
                         tags
                     }
+                }
+                pageInfo {
+                    hasNextPage
+                    endCursor
                 }
             }
         }
@@ -86,22 +90,29 @@ object GraphQLQueries {
     """.trimIndent()
 
     val GET_COLLECTIONS = """
-        query {
-            collections(first: 50) {
-                edges {
-                    node {
-                        id
-                        title
-                        handle
-                        description
-                        image { url altText }
+    query {
+        collections(first: 50) {
+            edges {
+                node {
+                    id
+                    title
+                    handle
+                    description
+                    image { url altText }
+                    products(first: 1) {
+                        edges {
+                            node {
+                                id
+                            }
+                        }
                     }
                 }
             }
         }
-    """.trimIndent()
+    }
+""".trimIndent()
 
-    fun getCollectionByHandle(handle: String) = """
+    fun getCollectionByHandle(handle: String, first: Int = 250, after: String? = null) = """
         query {
             collectionByHandle(handle: "$handle") {
                 id
@@ -109,7 +120,7 @@ object GraphQLQueries {
                 description
                 handle
                 image { url altText }
-                products(first: 50) {
+                products(first: $first${if (after != null) ", after: \"$after\"" else ""}) {
                     edges {
                         node {
                             id
@@ -123,7 +134,7 @@ object GraphQLQueries {
                             priceRange { 
                                 minVariantPrice { amount currencyCode }
                             }
-                            variants(first: 3) {
+                            variants(first: 5) {
                                 edges {
                                     node {
                                         id
@@ -136,21 +147,65 @@ object GraphQLQueries {
                                     }
                                 }
                             }
-                            collections(first: 3) {
+                            collections(first: 5) {
                                 edges {
                                     node { title handle }
                                 }
                             }
                         }
                     }
+                    pageInfo {
+                        hasNextPage
+                        endCursor
+                    }
                 }
             }
         }
     """.trimIndent()
 
-    fun searchProducts(query: String) = """
+    fun getCollectionWithSort(handle: String, sortKey: String, first: Int = 50) = """
+    query {
+        collectionByHandle(handle: "$handle") {
+            products(first: $first, sortKey: $sortKey) {
+                edges {
+                    node {
+                        id
+                        title
+                        handle
+                        description
+                        featuredImage { url altText }
+                        images(first: 5) { edges { node { url altText } } }
+                        priceRange { 
+                            minVariantPrice { amount currencyCode }
+                        }
+                        variants(first: 5) {
+                            edges {
+                                node {
+                                    id
+                                    title
+                                    price { amount currencyCode }
+                                    compareAtPrice { amount currencyCode }
+                                    availableForSale
+                                    selectedOptions { name value }
+                                    sku
+                                }
+                            }
+                        }
+                        collections(first: 3) {
+                            edges {
+                                node { title handle }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+""".trimIndent()
+
+    fun searchProducts(query: String, first: Int = 50) = """
         query {
-            products(first: 30, query: "$query") {
+            products(first: $first, query: "$query") {
                 edges {
                     node {
                         id
@@ -186,7 +241,7 @@ object GraphQLQueries {
         }
     """.trimIndent()
 
-    val GET_MENU = """
+    val GET_MAIN_MENU = """
         query {
             menu(handle: "main-menu") {
                 id
@@ -195,10 +250,14 @@ object GraphQLQueries {
                     id
                     title
                     url
+                    type
+                    resourceId
                     items {
                         id
                         title
                         url
+                        type
+                        resourceId
                     }
                 }
             }

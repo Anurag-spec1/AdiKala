@@ -3,6 +3,7 @@ package com.hustlers.adikala.view.activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
@@ -11,7 +12,6 @@ import com.hustlers.adikala.view.adapter.ProductAdapter
 import com.hustlers.adikala.view.adapter.SortAdapter
 import com.hustlers.adikala.databinding.ActivityProductsBinding
 import com.hustlers.adikala.databinding.SheetSortBinding
-import com.hustlers.adikala.model.Product
 import com.hustlers.adikala.model.SortOption
 import com.hustlers.adikala.viewmodel.ProductsViewModel
 
@@ -20,16 +20,12 @@ class ProductsActivity : AppCompatActivity() {
     private lateinit var binding: ActivityProductsBinding
     private lateinit var viewModel: ProductsViewModel
     private lateinit var productAdapter: ProductAdapter
-
     private var currentSort = SortOption.FEATURED
-    private var categoryName = "Products"
     private var collectionHandle = ""
-    private var subCategoryName = ""
 
     companion object {
         const val EXTRA_CATEGORY = "extra_category"
         const val EXTRA_COLLECTION_HANDLE = "extra_collection_handle"
-        const val EXTRA_SUBCATEGORY = "extra_subcategory"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,13 +34,10 @@ class ProductsActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         viewModel = ViewModelProvider(this)[ProductsViewModel::class.java]
-
-        categoryName = intent.getStringExtra(EXTRA_CATEGORY) ?: "Products"
+        val categoryName = intent.getStringExtra(EXTRA_CATEGORY) ?: "Products"
         collectionHandle = intent.getStringExtra(EXTRA_COLLECTION_HANDLE) ?: ""
-        subCategoryName = intent.getStringExtra(EXTRA_SUBCATEGORY) ?: ""
 
         binding.tvCategoryName.text = categoryName
-
         setupRecycler()
         setupObservers()
         setupListeners()
@@ -52,22 +45,24 @@ class ProductsActivity : AppCompatActivity() {
     }
 
     private fun setupRecycler() {
-        productAdapter = ProductAdapter(
-            list = emptyList(),
+        productAdapter = ProductAdapter(emptyList(),
             onClick = { product ->
                 val intent = Intent(this, ProductDetailActivity::class.java)
                 intent.putExtra(ProductDetailActivity.EXTRA_PRODUCT, product)
                 startActivity(intent)
             },
             onAddToCart = { product ->
-                addToCart(product)
+                val variantId = product.variants.firstOrNull()?.id ?: return@ProductAdapter
+                val intent = Intent(this, CartActivity::class.java)
+                intent.putExtra("variant_id", variantId)
+                intent.putExtra("quantity", 1)
+                startActivity(intent)
             },
             onWishlistToggle = { product ->
                 product.isWishlisted = !product.isWishlisted
                 productAdapter.notifyDataSetChanged()
             }
         )
-
         binding.rvProducts.layoutManager = GridLayoutManager(this, 2)
         binding.rvProducts.adapter = productAdapter
     }
@@ -77,18 +72,22 @@ class ProductsActivity : AppCompatActivity() {
             if (products.isEmpty()) {
                 binding.emptyState.visibility = View.VISIBLE
                 binding.rvProducts.visibility = View.GONE
+                binding.tvResultCount.text = "0 products"
             } else {
                 binding.emptyState.visibility = View.GONE
                 binding.rvProducts.visibility = View.VISIBLE
-                productAdapter = ProductAdapter(
-                    list = products,
+                productAdapter = ProductAdapter(products,
                     onClick = { product ->
                         val intent = Intent(this, ProductDetailActivity::class.java)
                         intent.putExtra(ProductDetailActivity.EXTRA_PRODUCT, product)
                         startActivity(intent)
                     },
                     onAddToCart = { product ->
-                        addToCart(product)
+                        val variantId = product.variants.firstOrNull()?.id ?: return@ProductAdapter
+                        val intent = Intent(this, CartActivity::class.java)
+                        intent.putExtra("variant_id", variantId)
+                        intent.putExtra("quantity", 1)
+                        startActivity(intent)
                     },
                     onWishlistToggle = { product ->
                         product.isWishlisted = !product.isWishlisted
@@ -99,9 +98,11 @@ class ProductsActivity : AppCompatActivity() {
                 binding.tvResultCount.text = "${products.size} products"
             }
         }
-
         viewModel.isLoading.observe(this) { isLoading ->
 //            binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+        }
+        viewModel.error.observe(this) { error ->
+            if (!error.isNullOrEmpty()) Toast.makeText(this, error, Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -112,9 +113,7 @@ class ProductsActivity : AppCompatActivity() {
     }
 
     private fun loadProducts() {
-        if (subCategoryName.isNotEmpty() && collectionHandle.isNotEmpty()) {
-            viewModel.loadProductsBySubCategory(collectionHandle, subCategoryName)
-        } else if (collectionHandle.isNotEmpty()) {
+        if (collectionHandle.isNotEmpty()) {
             viewModel.loadProductsByCollection(collectionHandle)
         }
     }
@@ -123,7 +122,6 @@ class ProductsActivity : AppCompatActivity() {
         val sheet = BottomSheetDialog(this)
         val sheetBinding = SheetSortBinding.inflate(layoutInflater)
         sheet.setContentView(sheetBinding.root)
-
         sheetBinding.rvSortOptions.layoutManager =
             androidx.recyclerview.widget.LinearLayoutManager(this)
         sheetBinding.rvSortOptions.adapter = SortAdapter(currentSort) { picked ->
@@ -133,13 +131,5 @@ class ProductsActivity : AppCompatActivity() {
             sheet.dismiss()
         }
         sheet.show()
-    }
-
-    private fun addToCart(product: Product) {
-        val variantId = product.variants.firstOrNull()?.id ?: return
-        val intent = Intent(this, CartActivity::class.java)
-        intent.putExtra("variant_id", variantId)
-        intent.putExtra("quantity", 1)
-        startActivity(intent)
     }
 }

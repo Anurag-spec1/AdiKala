@@ -1,11 +1,8 @@
 package com.hustlers.adikala.repository
 
+import android.util.Log
 import com.hustlers.adikala.api.ShopifyApiService
-import com.hustlers.adikala.model.Category
-import com.hustlers.adikala.model.ModelMapper
-import com.hustlers.adikala.model.PopularCollection
-import com.hustlers.adikala.model.Product
-import com.hustlers.adikala.model.SubCategory
+import com.hustlers.adikala.model.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -13,128 +10,162 @@ class HomeRepository {
 
     private val apiService = ShopifyApiService()
 
-    suspend fun getCategories(): Result<List<Category>> = withContext(Dispatchers.IO) {
+    private val excludedHandles = listOf(
+        "all", "all-products", "best-selling", "new-arrivals", "craft-store",
+        "frontpage", "discount", "sale", "featured", "home-page"
+    )
+
+    private val excludedTitles = listOf(
+        "new arrivals", "craft store", "all products", "our collections", "discount",
+        "discount code"
+    )
+
+
+    suspend fun getCategoriesForChips(): Result<List<Category>> = withContext(Dispatchers.IO) {
         try {
-            val response = apiService.getCollections()
-            val categories = response.collections?.edges?.mapNotNull { edge ->
-                edge.node?.let { collection ->
+            val menuResponse = apiService.getMainMenu()
+            val collectionsResponse = apiService.getCollections()
+
+            val collectionMap = collectionsResponse.collections?.edges
+                ?.mapNotNull { it.node }
+                ?.associateBy { it.title?.lowercase()?.trim() ?: "" } ?: emptyMap()
+
+            val categories = menuResponse.menu?.items
+                ?.filter { item ->
+                    val title = item.title?.lowercase()?.trim() ?: ""
+                    val url = item.url?.lowercase() ?: ""
+                    title.isNotEmpty() &&
+                            title !in excludedTitles &&
+                            !url.contains("discount") &&
+                            !url.contains("pages/") &&
+                            item.type == "COLLECTION"
+                }
+                ?.mapNotNull { item ->
+                    val handle = extractHandle(item)
+                    val collection = collectionMap[item.title?.lowercase()?.trim() ?: ""]
+                    var imageUrl = collection?.image?.url ?: ""
+
+                    if (imageUrl.isBlank() && handle.isNotEmpty()) {
+                        try {
+                            val collectionData = apiService.getCollectionByHandle(handle, first = 1)
+                            val firstProduct = collectionData.collectionByHandle?.products?.edges?.firstOrNull()?.node
+                            imageUrl = firstProduct?.featuredImage?.url
+                                ?: firstProduct?.images?.edges?.firstOrNull()?.node?.url
+                                        ?: ""
+                        } catch (e: Exception) {
+                        }
+                    }
+
+                    val subCategories = item.items?.mapNotNull { subItem ->
+                        val subHandle = extractHandle(subItem)
+                        if (subHandle.isNotEmpty()) {
+                            var subImageUrl = ""
+                            try {
+                                val subCollectionData = apiService.getCollectionByHandle(subHandle, first = 1)
+                                val firstProduct = subCollectionData.collectionByHandle?.products?.edges?.firstOrNull()?.node
+                                subImageUrl = firstProduct?.featuredImage?.url
+                                    ?: firstProduct?.images?.edges?.firstOrNull()?.node?.url
+                                            ?: ""
+                            } catch (e: Exception) {
+                            }
+
+                            SubCategory(
+                                id = subItem.id.hashCode(),
+                                name = subItem.title ?: "",
+                                handle = subHandle,
+                                image = subImageUrl
+                            )
+                        } else null
+                    } ?: emptyList()
+
+                    Category(
+                        id = item.id.hashCode(),
+                        name = item.title ?: "",
+                        handle = handle,
+                        image = imageUrl,
+                        subCategories = subCategories
+                    )
+                } ?: emptyList()
+
+            Log.d("HomeRepository", "Categories loaded: ${categories.size}")
+            Result.success(categories)
+        } catch (e: Exception) {
+            Log.e("HomeRepository", "Failed to load categories", e)
+            Result.failure(e)
+        }
+    }
+
+    suspend fun getFirstProductImage(handle: String): String {
+        return try {
+            val data = apiService.getCollectionByHandle(handle, first = 1)
+            data.collectionByHandle?.products?.edges?.firstOrNull()?.node?.let { product ->
+                product.featuredImage?.url
+                    ?: product.images?.edges?.firstOrNull()?.node?.url
+                    ?: ""
+            } ?: ""
+        } catch (e: Exception) {
+            ""
+        }
+    }
+
+    suspend fun getProductsByCollectionSorted(collectionHandle: String, sortKey: String): Result<List<Product>> = withContext(Dispatchers.IO) {
+        try {
+            val response = apiService.getCollectionByHandleSorted(collectionHandle, sortKey)
+            val products = response.collectionByHandle?.products?.edges?.mapNotNull { edge ->
+                edge.node?.let { ModelMapper.mapToProduct(it) }
+            } ?: emptyList()
+            Result.success(products)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun getAdikalaStoreCollections(): Result<List<Category>> = withContext(Dispatchers.IO) {
+        try {
+            val collectionsResponse = apiService.getCollections()
+            val allCollections = collectionsResponse.collections?.edges?.mapNotNull { it.node } ?: emptyList()
+
+            val categories = allCollections
+                .filter { collection ->
+                    val handle = collection.handle?.lowercase()?.trim() ?: ""
+                    val imageUrl = collection.image?.url
+                    val notExcluded = handle !in excludedHandles
+                    val hasValidImage = !imageUrl.isNullOrBlank()
+                    val productCount = collection.products?.edges?.size ?: 0
+                    notExcluded && hasValidImage && productCount > 0
+                }
+                .map { collection ->
                     Category(
                         id = collection.id.hashCode(),
                         name = collection.title ?: "",
                         handle = collection.handle ?: "",
-                        image = collection.image?.url ?: ""
+                        image = collection.image?.url ?: "",
+                        itemCount = collection.products?.edges?.size ?: 0
                     )
                 }
-            } ?: emptyList()
+                .sortedByDescending { it.itemCount }
+
+            Log.d("HomeRepository", "Adikala Store Collections: ${categories.size}")
             Result.success(categories)
         } catch (e: Exception) {
+            Log.e("HomeRepository", "getAdikalaStoreCollections FAILED", e)
             Result.failure(e)
         }
     }
 
-    suspend fun getPopularCollections(): Result<List<PopularCollection>> = withContext(Dispatchers.IO) {
-        try {
-            val productsResponse = apiService.getProducts()
-            val products = productsResponse.products?.edges?.mapNotNull { edge ->
-                edge.node?.let { ModelMapper.mapToProduct(it) }
-            }?.shuffled()?.take(6) ?: emptyList()
-
-            val popular = products.map { product ->
-                PopularCollection(
-                    id = product.id.hashCode(),
-                    name = product.name,
-                    image = product.imageUrl,
-                    handle = product.handle
-                )
-            }
-            Result.success(popular)
-        } catch (e: Exception) {
-            try {
-                val response = apiService.getCollections()
-                val popular = response.collections?.edges?.mapNotNull { edge ->
-                    edge.node?.let { collection ->
-                        PopularCollection(
-                            id = collection.id.hashCode(),
-                            name = collection.title ?: "",
-                            image = collection.image?.url ?: "",
-                            handle = collection.handle ?: ""
-                        )
-                    }
-                }?.take(6) ?: emptyList()
-                Result.success(popular)
-            } catch (fallbackError: Exception) {
-                Result.failure(fallbackError)
+    private fun extractHandle(item: ShopifyMenuItem): String {
+        item.url?.let { url ->
+            val cleanUrl = url.split("?").first()
+            if (cleanUrl.contains("/collections/")) {
+                return cleanUrl.substringAfter("/collections/").trimEnd('/')
             }
         }
-    }
-
-    suspend fun getCategoryWithSubCategories(collectionHandle: String): Result<Category> = withContext(Dispatchers.IO) {
-        try {
-            val response = apiService.getCollectionByHandle(collectionHandle)
-            val collection = response.collectionByHandle
-                ?: throw Exception("Collection not found")
-
-            val products = collection.products?.edges?.mapNotNull { edge ->
-                edge.node?.let { ModelMapper.mapToProduct(it) }
-            } ?: emptyList()
-
-            val subCategories = products
-                .flatMap { it.collections }
-                .filter { it != collection.title }
-                .distinct()
-                .map { name ->
-                    SubCategory(
-                        id = name.hashCode(),
-                        name = name,
-                        image = products.firstOrNull { it.collections.contains(name) }?.imageUrl ?: "",
-                        itemCount = products.count { it.collections.contains(name) },
-                        handle = name.lowercase().replace(" ", "-")
-                    )
-                }
-                .filter { it.itemCount > 0 }
-                .take(15)
-
-            val category = Category(
-                id = collection.id.hashCode(),
-                name = collection.title ?: "",
-                handle = collection.handle ?: "",
-                image = collection.image?.url ?: "",
-                itemCount = products.size,
-                subCategories = subCategories
-            )
-
-            Result.success(category)
-        } catch (e: Exception) {
-            Result.failure(e)
+        item.resourceId?.let { id ->
+            if (id.contains("gid://shopify/Collection/")) {
+                return id.substringAfter("gid://shopify/Collection/")
+            }
         }
+        return item.title?.lowercase()?.trim()?.replace(" ", "-")?.replace("&", "and") ?: ""
     }
 
-    suspend fun getProductsByCollection(collectionHandle: String): Result<List<Product>> = withContext(Dispatchers.IO) {
-        try {
-            val response = apiService.getCollectionByHandle(collectionHandle)
-            val products = response.collectionByHandle?.products?.edges?.mapNotNull { edge ->
-                edge.node?.let { ModelMapper.mapToProduct(it) }
-            } ?: emptyList()
-            Result.success(products)
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
-    }
-
-    suspend fun getProductsBySubCategory(
-        collectionHandle: String,
-        subCategoryName: String
-    ): Result<List<Product>> = withContext(Dispatchers.IO) {
-        try {
-            val response = apiService.getCollectionByHandle(collectionHandle)
-            val products = response.collectionByHandle?.products?.edges?.mapNotNull { edge ->
-                edge.node?.let { ModelMapper.mapToProduct(it) }
-            }?.filter { product ->
-                product.collections.contains(subCategoryName)
-            } ?: emptyList()
-            Result.success(products)
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
-    }
 }
