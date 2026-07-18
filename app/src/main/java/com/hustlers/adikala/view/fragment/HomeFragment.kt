@@ -250,7 +250,8 @@ class HomeFragment : Fragment() {
 
     private fun hideVoiceOverlay() {
         lottieAnimation?.cancelAnimation()
-        (view?.rootView as? ViewGroup)?.removeView(voiceOverlay)
+        val rootView = view?.rootView as? ViewGroup
+        rootView?.removeView(voiceOverlay)
         voiceOverlay = null
         lottieAnimation = null
     }
@@ -271,9 +272,13 @@ class HomeFragment : Fragment() {
         }
     }
 
+    // HomeFragment.kt - observeViewModel (replace existing)
     private fun observeViewModel() {
         viewModel.categories.observe(viewLifecycleOwner) { categories ->
             if (categories.isNotEmpty()) {
+                binding.shimmerCategories.stopShimmer()
+                binding.shimmerCategories.visibility = View.GONE
+                binding.rvCategories.visibility = View.VISIBLE
                 categoryAdapter = CategoryAdapter(categories) { category ->
                     onCategoryClick(category)
                 }
@@ -283,6 +288,9 @@ class HomeFragment : Fragment() {
 
         viewModel.adikalaStoreCollections.observe(viewLifecycleOwner) { collections ->
             if (collections.isNotEmpty()) {
+                binding.shimmerPopular.stopShimmer()
+                binding.shimmerPopular.visibility = View.GONE
+                binding.rvPopular.visibility = View.VISIBLE
                 val popularList = collections.map { cat ->
                     PopularCollection(id = cat.id, name = cat.name, image = cat.image, handle = cat.handle)
                 }
@@ -291,10 +299,6 @@ class HomeFragment : Fragment() {
                 }
                 binding.rvPopular.adapter = adikalaStoreAdapter
             }
-        }
-
-        viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
-            binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
         }
     }
 
