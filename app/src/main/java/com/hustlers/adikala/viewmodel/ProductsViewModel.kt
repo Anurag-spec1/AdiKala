@@ -8,11 +8,13 @@ import androidx.lifecycle.viewModelScope
 import com.hustlers.adikala.model.Product
 import com.hustlers.adikala.model.SortOption
 import com.hustlers.adikala.repository.HomeRepository
+import com.hustlers.adikala.repository.RatingRepository
 import kotlinx.coroutines.launch
 
 class ProductsViewModel : ViewModel() {
 
     private val repository = HomeRepository()
+    private val ratingRepository = RatingRepository()
 
     private val _products = MutableLiveData<List<Product>>()
     val products: LiveData<List<Product>> = _products
@@ -55,11 +57,28 @@ class ProductsViewModel : ViewModel() {
                 onSuccess = { products ->
                     _products.value = products
                     _filteredProducts.value = products
+                    loadRatingsForProducts(products)
                 },
                 onFailure = { _error.value = it.message }
             )
 
             _isLoading.value = false
         }
+    }
+
+    private suspend fun loadRatingsForProducts(products: List<Product>) {
+        val updatedProducts = products.map { product ->
+            ratingRepository.getProductReviews(product.id).fold(
+                onSuccess = { (summary, _) ->
+                    product.copy(
+                        rating = summary.averageRating,
+                        salesCount = summary.totalReviews
+                    )
+                },
+                onFailure = { product }
+            )
+        }
+        _products.value = updatedProducts
+        _filteredProducts.value = updatedProducts
     }
 }

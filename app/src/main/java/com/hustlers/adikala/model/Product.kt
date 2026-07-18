@@ -31,3 +31,9 @@ data class ProductVariant(
     val sku: String? = null,
     val options: Map<String, String> = emptyMap()
 ) : Serializable
+
+data class ProductRating(
+    val productId: String,
+    val rating: Double,
+    val reviewCount: Int
+)
