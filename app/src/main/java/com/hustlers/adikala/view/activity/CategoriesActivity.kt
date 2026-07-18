@@ -24,6 +24,9 @@ class CategoriesActivity : AppCompatActivity() {
         binding.rvCategories.layoutManager = LinearLayoutManager(this)
 
         viewModel.categories.observe(this) { categories ->
+            binding.shimmerCategories.stopShimmer()
+            binding.shimmerCategories.visibility = View.GONE
+
             if (categories.isEmpty()) {
                 binding.rvCategories.visibility = View.GONE
                 binding.emptyState.visibility = View.VISIBLE
@@ -45,6 +48,15 @@ class CategoriesActivity : AppCompatActivity() {
                         navigateToProducts(sub.name, sub.handle)
                     }
                 )
+            }
+        }
+
+        viewModel.isLoading.observe(this) { isLoading ->
+            if (isLoading) {
+                binding.shimmerCategories.visibility = View.VISIBLE
+                binding.shimmerCategories.startShimmer()
+                binding.rvCategories.visibility = View.GONE
+                binding.emptyState.visibility = View.GONE
             }
         }
 

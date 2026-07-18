@@ -73,19 +73,47 @@
         android:textSize="14sp"
         app:carbon_font="@font/space_grotesk_semibold" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvCategories"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/tvSubtitle"
-        android:layout_marginTop="14dp"
-        android:clipToPadding="false"
-        android:overScrollMode="never"
-        android:paddingStart="20dp"
-        android:paddingEnd="20dp"
-        android:paddingBottom="24dp"
-        android:scrollbars="none"
-        tools:listitem="@layout/item_category_grid" />
+        android:layout_marginTop="14dp">
+
+        <com.facebook.shimmer.ShimmerFrameLayout
+            android:id="@+id/shimmerCategories"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="visible"
+            app:shimmer_auto_start="true"
+            app:shimmer_duration="1200">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingHorizontal="20dp"
+                android:paddingTop="4dp">
+
+                <include layout="@layout/shimmer_category_card" />
+                <include layout="@layout/shimmer_category_card" />
+                <include layout="@layout/shimmer_category_card" />
+                <include layout="@layout/shimmer_category_card" />
+            </LinearLayout>
+        </com.facebook.shimmer.ShimmerFrameLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvCategories"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            android:clipToPadding="false"
+            android:overScrollMode="never"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:paddingBottom="24dp"
+            android:scrollbars="none"
+            tools:listitem="@layout/item_category_grid" />
+    </FrameLayout>
 
     <LinearLayout
         android:id="@+id/emptyState"
