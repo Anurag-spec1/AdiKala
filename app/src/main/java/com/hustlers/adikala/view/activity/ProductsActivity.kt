@@ -71,6 +71,9 @@ class ProductsActivity : AppCompatActivity() {
 
     private fun setupObservers() {
         viewModel.filteredProducts.observe(this) { products ->
+            binding.shimmerProducts.stopShimmer()
+            binding.shimmerProducts.visibility = View.GONE
+
             if (products.isEmpty()) {
                 binding.emptyState.visibility = View.VISIBLE
                 binding.rvProducts.visibility = View.GONE
@@ -83,7 +86,12 @@ class ProductsActivity : AppCompatActivity() {
             }
         }
         viewModel.isLoading.observe(this) { isLoading ->
-//            binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+            if (isLoading) {
+                binding.shimmerProducts.visibility = View.VISIBLE
+                binding.shimmerProducts.startShimmer()
+                binding.rvProducts.visibility = View.GONE
+                binding.emptyState.visibility = View.GONE
+            }
         }
         viewModel.error.observe(this) { error ->
             if (!error.isNullOrEmpty()) Toast.makeText(this, error, Toast.LENGTH_SHORT).show()

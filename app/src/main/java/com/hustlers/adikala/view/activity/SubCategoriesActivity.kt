@@ -29,15 +29,28 @@ class SubCategoriesActivity : AppCompatActivity() {
             return
         }
 
+        showShimmer()
         bindHeader()
         setupGrid()
         binding.btnBack.setOnClickListener { finish() }
     }
 
+    private fun showShimmer() {
+        binding.shimmerSubCategories.visibility = View.VISIBLE
+        binding.shimmerSubCategories.startShimmer()
+
+        binding.ivBanner.postDelayed({
+            binding.shimmerSubCategories.stopShimmer()
+            binding.shimmerSubCategories.visibility = View.GONE
+        }, 800)
+    }
+
     private fun bindHeader() {
         binding.tvCategoryName.text = category.name
         val subCount = category.subCategories.size
-        binding.tvSubtitle.text = if (subCount == 1) "1 subcategory" else "$subCount subcategories"
+        val itemCount = category.itemCount
+        val subText = if (subCount == 1) "1 subcategory" else "$subCount subcategories"
+        binding.tvSubtitle.text = if (itemCount > 0) "$subText · $itemCount items" else subText
         Glide.with(binding.ivBanner).load(category.image).centerCrop().into(binding.ivBanner)
     }
 
