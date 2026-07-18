@@ -60,4 +60,5 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp")
     implementation("com.squareup.okhttp3:logging-interceptor")
     implementation("com.squareup.retrofit2:retrofit:3.0.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.9.2")
 }
