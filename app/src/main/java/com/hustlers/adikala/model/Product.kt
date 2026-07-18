@@ -16,5 +16,18 @@ data class Product(
     val brand: String = "adikala.in",
     val images: List<String> = emptyList(),
     val fullDescription: String = "",
-    val features: List<String> = emptyList()
+    val features: List<String> = emptyList(),
+    val handle: String = "",
+    val variants: List<ProductVariant> = emptyList(),
+    val collections: List<String> = emptyList()
+) : Serializable
+
+data class ProductVariant(
+    val id: String,
+    val title: String,
+    val price: Double,
+    val compareAtPrice: Double? = null,
+    val available: Boolean,
+    val sku: String? = null,
+    val options: Map<String, String> = emptyMap()
 ) : Serializable
