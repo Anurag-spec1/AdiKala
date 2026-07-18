@@ -4,107 +4,92 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.hustlers.adikala.view.adapter.CategoryGridAdapter
 import com.hustlers.adikala.databinding.ActivityCategoriesBinding
 import com.hustlers.adikala.model.Category
 import com.hustlers.adikala.model.SubCategory
+import com.hustlers.adikala.viewmodel.CategoriesViewModel
 
 class CategoriesActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityCategoriesBinding
-    private val categories = mutableListOf<Category>()
+    private lateinit var viewModel: CategoriesViewModel
+    private lateinit var adapter: CategoryGridAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityCategoriesBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        viewModel = ViewModelProvider(this)[CategoriesViewModel::class.java]
+
         binding.rvCategories.layoutManager = LinearLayoutManager(this)
 
-        loadCategories()
-        render()
+        setupObservers()
+        viewModel.loadCategories()
 
         binding.btnBack.setOnClickListener { finish() }
     }
 
-    private fun loadCategories() {
-        categories.clear()
-        categories.addAll(
-            listOf(
-                Category(
-                    1, "Temple Décor",
-                    "https://www.adikala.in/cdn/shop/collections/pichwai.jpg?v=1737890053&width=1080",
-                    24,
-                    listOf(
-                        SubCategory(101, "Toran","https://www.adikala.in/cdn/shop/collections/decoration.jpg?v=1674844832&width=1080",3),
-                        SubCategory(102, "Bandhanwar","https://www.adikala.in/cdn/shop/products/657_cdb4596c-0ceb-47dc-9652-09be375b15c0.jpg?v=1657903140&width=1080",5),
-                        SubCategory(103, "Pooja Thali","https://www.adikala.in/cdn/shop/collections/for-DIY.jpg?v=1674845390&width=1080",7),
-                        SubCategory(104, "Diya","https://www.adikala.in/cdn/shop/collections/pichwai.jpg?v=1737890053&width=1080",9),
-                        SubCategory(105, "Mandir","https://www.adikala.in/cdn/shop/collections/decoration.jpg?v=1674844832&width=1080",11)
-                    )
-                ),
-                Category(
-                    2, "Decoration",
-                    "https://www.adikala.in/cdn/shop/collections/decoration.jpg?v=1674844832&width=1080",
-                    38,
-                    listOf(
-                        SubCategory(201, "Wall Hanging"),
-                        SubCategory(202, "Backdrop"),
-                        SubCategory(203, "Rangoli")
-                    )
-                ),
-                Category(
-                    3, "Wooden Beads",
-                    "https://www.adikala.in/cdn/shop/products/657_cdb4596c-0ceb-47dc-9652-09be375b15c0.jpg?v=1657903140&width=1080",
-                    16,
-                    listOf(
-                        SubCategory(301, "Round Beads"),
-                        SubCategory(302, "Flat Beads")
-                    )
-                ),
-                Category(
-                    4, "DIY Bases",
-                    "https://www.adikala.in/cdn/shop/collections/for-DIY.jpg?v=1674845390&width=1080",
-                    42,
-                    listOf(
-                        SubCategory(401, "MDF Cutouts"),
-                        SubCategory(402, "Round Base"),
-                        SubCategory(403, "Square Base"),
-                        SubCategory(404, "Keychain Base")
-                    )
-                )
-            )
-        )
+    private fun setupObservers() {
+        viewModel.categories.observe(this) { categories ->
+            if (categories.isNotEmpty()) {
+                renderCategories(categories)
+            }
+        }
+
+        viewModel.isLoading.observe(this) { isLoading ->
+//            binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+        }
+
+        viewModel.error.observe(this) { error ->
+            if (error.isNotEmpty()) {
+                binding.emptyState.visibility = View.VISIBLE
+                binding.rvCategories.visibility = View.GONE
+            }
+        }
     }
 
-    private fun render() {
+    private fun renderCategories(categories: List<Category>) {
         if (categories.isEmpty()) {
             binding.rvCategories.visibility = View.GONE
             binding.emptyState.visibility = View.VISIBLE
             return
         }
+
         binding.rvCategories.visibility = View.VISIBLE
         binding.emptyState.visibility = View.GONE
 
-        binding.rvCategories.adapter = CategoryGridAdapter(
+        adapter = CategoryGridAdapter(
             categories,
             onCategoryClick = { category ->
-                if (category.subCategories.isNotEmpty()) {
-                    val i = Intent(this, SubCategoriesActivity::class.java)
-                    i.putExtra(SubCategoriesActivity.EXTRA_CATEGORY, category)
-                    startActivity(i)
-                } else {
-                    val i = Intent(this, ProductsActivity::class.java)
-                    i.putExtra(ProductsActivity.EXTRA_CATEGORY, category.name)
-                    startActivity(i)
+                viewModel.loadCategoryWithSubCategories(category.handle)
+                category.handle.let { handle ->
+                    viewModel.selectedCategory.observe(this) { categoryWithSubs ->
+                        if (categoryWithSubs.subCategories.isNotEmpty()) {
+                            val intent = Intent(this, SubCategoriesActivity::class.java)
+                            intent.putExtra(SubCategoriesActivity.EXTRA_CATEGORY, categoryWithSubs)
+                            startActivity(intent)
+                        } else {
+                            val intent = Intent(this, ProductsActivity::class.java)
+                            intent.putExtra(ProductsActivity.EXTRA_CATEGORY, category.name)
+                            intent.putExtra(ProductsActivity.EXTRA_COLLECTION_HANDLE, category.handle)
+                            startActivity(intent)
+                        }
+                    }
                 }
             },
             onSubCategoryClick = { category, sub ->
-                val i = Intent(this, ProductsActivity::class.java)
-                i.putExtra(ProductsActivity.EXTRA_CATEGORY, "${category.name} · ${sub.name}")
-                startActivity(i)
+                val intent = Intent(this, ProductsActivity::class.java)
+                intent.putExtra(ProductsActivity.EXTRA_CATEGORY, "${category.name} · ${sub.name}")
+                intent.putExtra(ProductsActivity.EXTRA_COLLECTION_HANDLE, category.handle)
+                intent.putExtra(ProductsActivity.EXTRA_SUBCATEGORY, sub.name)
+                startActivity(intent)
             }
         )
+
+        binding.rvCategories.adapter = adapter
     }
 }
