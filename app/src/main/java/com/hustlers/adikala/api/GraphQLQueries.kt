@@ -1,3 +1,4 @@
+// api/GraphQLQueries.kt
 package com.hustlers.adikala.api
 
 object GraphQLQueries {
@@ -43,6 +44,8 @@ object GraphQLQueries {
                                 node { title handle }
                             }
                         }
+                        productType
+                        tags
                     }
                 }
             }
@@ -56,6 +59,8 @@ object GraphQLQueries {
                 title
                 description
                 handle
+                productType
+                tags
                 featuredImage { url altText }
                 images(first: 10) { edges { node { url altText } } }
                 variants(first: 20) {
@@ -90,29 +95,6 @@ object GraphQLQueries {
                         handle
                         description
                         image { url altText }
-                        products(first: 20) {
-                            edges {
-                                node {
-                                    id
-                                    title
-                                    handle
-                                    featuredImage { url altText }
-                                    priceRange { 
-                                        minVariantPrice { amount currencyCode }
-                                    }
-                                    variants(first: 3) {
-                                        edges {
-                                            node {
-                                                id
-                                                title
-                                                price { amount currencyCode }
-                                                availableForSale
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
                     }
                 }
             }
@@ -133,6 +115,9 @@ object GraphQLQueries {
                             id
                             title
                             handle
+                            description
+                            productType
+                            tags
                             featuredImage { url altText }
                             images(first: 5) { edges { node { url altText } } }
                             priceRange { 
@@ -172,6 +157,8 @@ object GraphQLQueries {
                         title
                         handle
                         description
+                        productType
+                        tags
                         featuredImage { url altText }
                         images(first: 5) { edges { node { url altText } } }
                         priceRange { 
@@ -185,8 +172,6 @@ object GraphQLQueries {
                                     price { amount currencyCode }
                                     compareAtPrice { amount currencyCode }
                                     availableForSale
-                                    selectedOptions { name value }
-                                    sku
                                 }
                             }
                         }
@@ -194,32 +179,6 @@ object GraphQLQueries {
                             edges {
                                 node { title handle }
                             }
-                        }
-                    }
-                }
-            }
-        }
-    """.trimIndent()
-
-    fun getProductRecommendations(productId: String) = """
-        query {
-            productRecommendations(productId: "gid://shopify/Product/$productId") {
-                id
-                title
-                handle
-                description
-                featuredImage { url altText }
-                priceRange { 
-                    minVariantPrice { amount currencyCode }
-                }
-                variants(first: 3) {
-                    edges {
-                        node {
-                            id
-                            title
-                            price { amount currencyCode }
-                            compareAtPrice { amount currencyCode }
-                            availableForSale
                         }
                     }
                 }

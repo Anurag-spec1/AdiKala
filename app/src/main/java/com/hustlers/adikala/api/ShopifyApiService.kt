@@ -1,7 +1,6 @@
 package com.hustlers.adikala.api
 
 import com.hustlers.adikala.model.GraphQLRequest
-import com.hustlers.adikala.model.GraphQLResponse
 import com.hustlers.adikala.model.ShopifyData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -30,8 +29,6 @@ class ShopifyApiService {
     suspend fun getCollectionByHandle(handle: String) = executeGraphQL(GraphQLQueries.getCollectionByHandle(handle))
 
     suspend fun searchProducts(query: String) = executeGraphQL(GraphQLQueries.searchProducts(query))
-
-    suspend fun getProductRecommendations(productId: String) = executeGraphQL(GraphQLQueries.getProductRecommendations(productId))
 
     suspend fun getMenu() = executeGraphQL(GraphQLQueries.GET_MENU)
 

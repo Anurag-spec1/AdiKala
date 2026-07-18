@@ -28,9 +28,6 @@ data class ShopifyData(
     @SerializedName("collectionByHandle")
     val collectionByHandle: ShopifyCollection? = null,
 
-    @SerializedName("productRecommendations")
-    val productRecommendations: List<ShopifyProduct>? = null,
-
     @SerializedName("menu")
     val menu: ShopifyMenu? = null
 )
@@ -65,6 +62,12 @@ data class ShopifyProduct(
 
     @SerializedName("description")
     val description: String? = null,
+
+    @SerializedName("productType")
+    val productType: String? = null,
+
+    @SerializedName("tags")
+    val tags: List<String>? = null,
 
     @SerializedName("featuredImage")
     val featuredImage: ShopifyImage? = null,

@@ -28,39 +28,18 @@ class HomeViewModel : ViewModel() {
     fun loadHomeData() {
         viewModelScope.launch {
             _isLoading.value = true
-            loadCategories()
-            loadPopularCollections()
+
+            repository.getCategories().fold(
+                onSuccess = { _categories.value = it },
+                onFailure = { _error.value = it.message }
+            )
+
+            repository.getPopularCollections().fold(
+                onSuccess = { _popularCollections.value = it },
+                onFailure = { _error.value = it.message }
+            )
+
             _isLoading.value = false
         }
-    }
-
-    private suspend fun loadCategories() {
-        repository.getCategories().fold(
-            onSuccess = { categories ->
-                _categories.value = categories
-            },
-            onFailure = { exception ->
-                _error.value = exception.message ?: "Failed to load categories"
-            }
-        )
-    }
-
-    private suspend fun loadPopularCollections() {
-        repository.getPopularCollections().fold(
-            onSuccess = { collections ->
-                _popularCollections.value = collections
-            },
-            onFailure = { exception ->
-                _error.value = exception.message ?: "Failed to load collections"
-            }
-        )
-    }
-
-    fun onCategoryClick(category: Category) {
-        // Navigation handled in Fragment
-    }
-
-    fun onPopularCollectionClick(collection: PopularCollection) {
-        // Navigation handled in Fragment
     }
 }

@@ -1,8 +1,5 @@
 package com.hustlers.adikala.model
 
-import java.text.NumberFormat
-import java.util.Locale
-
 object ModelMapper {
 
     fun mapToProduct(shopifyProduct: ShopifyProduct): Product {
@@ -37,6 +34,7 @@ object ModelMapper {
         val firstVariant = variants.firstOrNull()
         val price = firstVariant?.price ?: 0.0
         val compareAtPrice = firstVariant?.compareAtPrice
+        val collections = shopifyProduct.collections?.edges?.mapNotNull { it.node?.title } ?: emptyList()
 
         return Product(
             id = shopifyProduct.id?.removePrefix("gid://shopify/Product/") ?: "",
@@ -49,47 +47,37 @@ object ModelMapper {
             discountedPrice = compareAtPrice?.toInt() ?: price.toInt(),
             images = images,
             variants = variants,
-            collections = shopifyProduct.collections?.edges?.mapNotNull { it.node?.title } ?: emptyList()
+            collections = collections,
+            brand = "adikala.in"
         )
     }
 
     fun mapToCategory(shopifyCollection: ShopifyCollection, index: Int): Category {
-        val subCategories = shopifyCollection.products?.edges?.mapNotNull { productEdge ->
-            val product = productEdge.node
-            if (product?.collections?.edges?.isNotEmpty() == true) {
-                val subCollection = product.collections.edges.firstOrNull()?.node
-                SubCategory(
-                    id = subCollection?.id?.hashCode() ?: 0,
-                    name = subCollection?.title ?: "",
-                    handle = subCollection?.handle ?: "",
-                    image = subCollection?.image?.url ?: "",
-                    itemCount = subCollection?.products?.edges?.size ?: 0
-                )
-            } else {
-                null
-            }
-        }?.distinctBy { it.name }?.take(10) ?: emptyList()
-
         return Category(
-            id = shopifyCollection.id?.hashCode() ?: index,
+            id = index,
             name = shopifyCollection.title ?: "",
             handle = shopifyCollection.handle ?: "",
             image = shopifyCollection.image?.url ?: "",
-            itemCount = shopifyCollection.products?.edges?.size ?: 0,
-            subCategories = subCategories
+            itemCount = shopifyCollection.products?.edges?.size ?: 0
         )
     }
 
-    fun mapToPopularCollection(shopifyCollection: ShopifyCollection, index: Int): PopularCollection {
-        return PopularCollection(
-            id = shopifyCollection.id?.hashCode() ?: index,
-            name = shopifyCollection.title ?: "",
-            handle = shopifyCollection.handle ?: "",
-            image = shopifyCollection.image?.url ?: ""
-        )
-    }
-
-    fun extractNumericId(gid: String): String {
-        return gid.substringAfterLast("/").split("?").first()
+    fun mapToSubCategories(products: List<Product>, collectionTitle: String): List<SubCategory> {
+        return products
+            .flatMap { it.collections }
+            .filter { it != collectionTitle }
+            .distinct()
+            .map { collectionName ->
+                val matchingProducts = products.filter { it.collections.contains(collectionName) }
+                SubCategory(
+                    id = collectionName.hashCode(),
+                    name = collectionName,
+                    image = matchingProducts.firstOrNull()?.imageUrl ?: "",
+                    itemCount = matchingProducts.size,
+                    handle = collectionName.lowercase().replace(" ", "-")
+                )
+            }
+            .filter { it.itemCount > 0 }
+            .take(15)
     }
 }
