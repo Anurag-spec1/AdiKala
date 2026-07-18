@@ -178,6 +178,7 @@ class HomeRepository {
             } ?: emptyList()
             Result.success(products)
         } catch (e: Exception) {
+            Log.e("HomeRepository", "Search failed for: $query", e)
             Result.failure(e)
         }
     }

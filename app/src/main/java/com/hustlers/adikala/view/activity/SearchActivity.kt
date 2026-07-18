@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.TextWatcher
 import android.view.View
+import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
@@ -35,6 +36,8 @@ class SearchActivity : AppCompatActivity() {
             binding.etSearch.setSelection(query.length)
             viewModel.searchProducts(query)
         }
+
+        binding.etSearch.requestFocus()
     }
 
     private fun setupRecycler() {
@@ -64,8 +67,10 @@ class SearchActivity : AppCompatActivity() {
         viewModel.searchResults.observe(this) { products ->
             if (products.isEmpty()) {
                 binding.rvSearchResults.visibility = View.GONE
+                binding.emptyState.visibility = View.GONE
             } else {
                 binding.rvSearchResults.visibility = View.VISIBLE
+                binding.emptyState.visibility = View.GONE
                 productAdapter = ProductAdapter(products,
                     onClick = { product ->
                         val intent = Intent(this, ProductDetailActivity::class.java)
@@ -100,10 +105,14 @@ class SearchActivity : AppCompatActivity() {
     private fun setupListeners() {
         binding.btnBack.setOnClickListener { finish() }
 
-        binding.etSearch.setOnEditorActionListener { _, _, _ ->
-            val query = binding.etSearch.text.toString().trim()
-            viewModel.searchProducts(query)
-            true
+        binding.etSearch.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                val query = binding.etSearch.text.toString().trim()
+                if (query.isNotEmpty()) {
+                    viewModel.searchProducts(query)
+                }
+                true
+            } else false
         }
 
         binding.etSearch.addTextChangedListener(object : TextWatcher {

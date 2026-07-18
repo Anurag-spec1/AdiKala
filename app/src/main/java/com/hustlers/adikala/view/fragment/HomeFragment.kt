@@ -75,11 +75,6 @@ class HomeFragment : Fragment() {
         }
         binding.rvPopular.adapter = adikalaStoreAdapter
 
-        binding.etSearchBar.setOnClickListener {
-            val intent = Intent(requireContext(), SearchActivity::class.java)
-            intent.putExtra("search_query", binding.etSearchBar.text.toString().trim())
-            startActivity(intent)
-        }
 
         binding.etSearchBar.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {

@@ -1,5 +1,6 @@
 package com.hustlers.adikala.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -35,13 +36,29 @@ class SearchViewModel : ViewModel() {
         }
 
         searchJob = viewModelScope.launch {
-            delay(300)
+            delay(200)
             _isLoading.value = true
 
-            repository.searchProducts(query).fold(
+            val formattedQuery = query.trim().replace(Regex("\\s+"), " ")
+            Log.d("SearchVM", "Searching: '$formattedQuery'")
+
+            repository.searchProducts(formattedQuery).fold(
                 onSuccess = { products ->
-                    _searchResults.value = products
-                    _isEmpty.value = products.isEmpty()
+                    val sorted = products.sortedByDescending { product ->
+                        var score = 0
+                        val name = product.name.lowercase()
+                        val q = formattedQuery.lowercase()
+
+                        if (name == q) score += 100
+                        else if (name.startsWith(q)) score += 80
+                        else if (name.contains(q)) score += 60
+                        else if (product.collections.any { it.lowercase().contains(q) }) score += 40
+                        else if (product.description.lowercase().contains(q)) score += 20
+
+                        score
+                    }
+                    _searchResults.value = sorted
+                    _isEmpty.value = sorted.isEmpty()
                 },
                 onFailure = {
                     _searchResults.value = emptyList()

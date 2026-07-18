@@ -25,16 +25,17 @@ object GraphQLQueries {
     }
 """.trimIndent()
 
-    // api/GraphQLQueries.kt - Add search query
     fun searchProducts(query: String, first: Int = 50) = """
     query {
-        products(first: $first, query: "$query") {
+        products(first: $first, query: "title:*$query* OR tag:*$query* OR product_type:*$query*") {
             edges {
                 node {
                     id
                     title
                     handle
                     description
+                    productType
+                    tags
                     featuredImage { url altText }
                     images(first: 5) { edges { node { url altText } } }
                     priceRange { minVariantPrice { amount currencyCode } }
