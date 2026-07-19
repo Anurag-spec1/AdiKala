@@ -8,714 +8,821 @@
     android:fitsSystemWindows="true"
     tools:context=".view.fragment.ProfileFragment">
 
-    <ScrollView
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/layoutLoggedOut"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="60dp"
-        android:fillViewport="true"
-        android:overScrollMode="never"
-        android:scrollbars="none">
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="40dp"
+        android:visibility="visible">
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <carbon.widget.ImageView
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:alpha="0.8"
+            android:scaleType="centerCrop"
+            app:carbon_cornerRadius="60dp"
+            android:src="@drawable/user_image" />
+
+        <carbon.widget.TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:clipChildren="false"
-            android:clipToPadding="false"
-            android:orientation="vertical"
-            android:paddingHorizontal="20dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="32dp">
+            android:layout_marginTop="24dp"
+            android:text="Welcome to Adikala"
+            android:textColor="#0D3238"
+            android:textSize="26sp"
+            app:carbon_font="@font/space_grotesk_semibold" />
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+        <carbon.widget.TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:lineSpacingExtra="3dp"
+            android:text="Sign in to track orders, save addresses\nand get personalized recommendations"
+            android:textColor="#5C5C5C"
+            android:textSize="15sp"
+            app:carbon_font="@font/space_grotesk_semibold" />
 
-                <carbon.widget.LinearLayout
-                    android:id="@+id/btnEditProfile"
-                    android:layout_width="45dp"
-                    android:layout_height="45dp"
-                    android:background="#0D3238"
-                    app:carbon_cornerRadius="22.5dp"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginTop="-5dp"
-                    android:clickable="true"
-                    android:focusable="true"
-                    app:carbon_elevation="4dp"
-                    app:carbon_stroke="#14000000"
-                    app:carbon_strokeWidth="1dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:paddingHorizontal="14dp"
-                    android:paddingVertical="10dp">
+        <carbon.widget.LinearLayout
+            android:id="@+id/btnSignIn"
+            android:layout_width="match_parent"
+            android:layout_height="54dp"
+            android:layout_marginTop="32dp"
+            android:background="#0D3238"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            app:carbon_cornerRadius="27dp"
+            app:carbon_elevation="4dp"
+            app:carbon_rippleColor="#40FFFFFF">
 
-                    <carbon.widget.ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:src="@drawable/ic_edit"
+            <carbon.widget.TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sign In"
+                android:textColor="@color/white"
+                android:textSize="17sp"
+                app:carbon_font="@font/space_grotesk_semibold" />
+        </carbon.widget.LinearLayout>
 
-                        app:carbon_tint="#FFFFFF" />
+        <carbon.widget.LinearLayout
+            android:id="@+id/btnCreateAccount"
+            android:layout_width="match_parent"
+            android:layout_height="54dp"
+            android:layout_marginTop="14dp"
+            android:background="@color/white"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            app:carbon_cornerRadius="27dp"
+            app:carbon_elevation="2dp"
+            app:carbon_stroke="#0D3238"
+            app:carbon_strokeWidth="1.5dp"
+            app:carbon_rippleColor="#1A0D3238">
 
-                </carbon.widget.LinearLayout>
+            <carbon.widget.TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Create Account"
+                android:textColor="#0D3238"
+                android:textSize="17sp"
+                app:carbon_font="@font/space_grotesk_semibold" />
+        </carbon.widget.LinearLayout>
+    </LinearLayout>
 
-                <!-- Profile Content -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="35dp"
-                    android:gravity="center_horizontal"
-                    android:orientation="vertical">
+    <LinearLayout
+        android:id="@+id/layoutLoggedIn"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
 
-                    <FrameLayout
-                        android:layout_width="100dp"
-                        android:layout_height="100dp">
-
-                        <View
-                            android:layout_width="100dp"
-                            android:layout_height="100dp"
-                            android:background="@drawable/avatar_ring" />
-
-                        <carbon.widget.TextView
-                            android:layout_width="90dp"
-                            android:layout_height="90dp"
-                            android:layout_gravity="center"
-                            android:background="@drawable/avatar_inner"
-                            android:gravity="center"
-                            android:text="A"
-                            android:textColor="@color/avatar_text"
-                            android:textSize="32sp"
-                            app:carbon_font="@font/space_grotesk_semibold" />
-                    </FrameLayout>
-
-                    <carbon.widget.TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:text="Anurag"
-                        android:textColor="#0D3238"
-                        android:textSize="27sp"
-                        app:carbon_font="@font/space_grotesk_semibold" />
-
-                </LinearLayout>
-
-            </RelativeLayout>
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="60dp"
+            android:fillViewport="true"
+            android:overScrollMode="never"
+            android:scrollbars="none">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:background="@drawable/bg_orders"
-                android:elevation="10dp"
+                android:clipChildren="false"
+                android:clipToPadding="false"
                 android:orientation="vertical"
-                android:padding="20dp">
+                android:paddingHorizontal="20dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="32dp">
 
-                <carbon.widget.TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
-                    android:text="Track Orders"
-                    android:textColor="#FFFFFF"
-                    android:textSize="17sp"
-                    app:carbon_font="@font/space_grotesk_semibold" />
-
-                <carbon.widget.TextView
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    android:lineSpacingExtra="2dp"
-                    android:paddingHorizontal="4dp"
-                    android:text="Enter your order ID to see live status, courier &amp; delivery date."
-                    android:textColor="@color/muted_peach"
-                    android:textSize="14sp"
-                    app:carbon_font="@font/space_grotesk_semibold" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
+                    android:layout_height="wrap_content">
 
                     <carbon.widget.LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="52dp"
-                        android:layout_weight="1"
-                        android:background="@color/white"
+                        android:id="@+id/btnEditProfile"
+                        android:layout_width="45dp"
+                        android:layout_height="45dp"
+                        android:background="#0D3238"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginTop="-5dp"
+                        android:clickable="true"
+                        android:focusable="true"
                         android:gravity="center_vertical"
                         android:orientation="horizontal"
-                        android:paddingHorizontal="16dp"
-                        app:carbon_cornerRadius="18dp"
+                        android:paddingHorizontal="14dp"
+                        android:paddingVertical="10dp"
+                        app:carbon_cornerRadius="22.5dp"
                         app:carbon_elevation="4dp"
                         app:carbon_stroke="#14000000"
                         app:carbon_strokeWidth="1dp">
 
                         <carbon.widget.ImageView
-                            android:layout_width="18dp"
-                            android:layout_height="18dp"
-                            android:src="@drawable/ic_search"
-                            app:carbon_tint="@color/teal" />
-
-                        <carbon.widget.EditText
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_marginStart="10dp"
-                            android:background="@null"
-                            android:gravity="center_vertical"
-                            android:hint="Enter Your Order ID"
-                            android:inputType="text"
-                            android:maxLines="1"
-                            android:singleLine="true"
-                            android:textColor="#0D3238"
-                            android:textColorHint="@color/hint"
-                            android:textSize="18sp"
-                            app:carbon_font="@font/space_grotesk_semibold" />
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/ic_edit"
+                            app:carbon_tint="#FFFFFF" />
                     </carbon.widget.LinearLayout>
 
                     <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="52dp"
-                        android:layout_marginStart="10dp"
-                        android:background="@drawable/bg_track_button"
-                        android:clickable="true"
-                        android:elevation="6dp"
-                        android:focusable="true"
-                        android:gravity="center"
-                        android:orientation="horizontal"
-                        android:paddingHorizontal="18dp">
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="35dp"
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical">
+
+                        <FrameLayout
+                            android:layout_width="100dp"
+                            android:layout_height="100dp">
+
+                            <View
+                                android:layout_width="100dp"
+                                android:layout_height="100dp"
+                                android:background="@drawable/avatar_ring" />
+
+                            <carbon.widget.TextView
+                                android:id="@+id/tvAvatarInitial"
+                                android:layout_width="90dp"
+                                android:layout_height="90dp"
+                                android:layout_gravity="center"
+                                android:background="@drawable/avatar_inner"
+                                android:gravity="center"
+                                android:text="U"
+                                android:textColor="@color/avatar_text"
+                                android:textSize="32sp"
+                                app:carbon_font="@font/space_grotesk_semibold" />
+                        </FrameLayout>
 
                         <carbon.widget.TextView
+                            android:id="@+id/tvUserName"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="7dp"
-                            android:text="Track"
-                            android:textColor="@color/teal"
-                            android:textSize="15sp"
+                            android:layout_marginTop="4dp"
+                            android:text="User"
+                            android:textColor="#0D3238"
+                            android:textSize="27sp"
                             app:carbon_font="@font/space_grotesk_semibold" />
                     </LinearLayout>
-                </LinearLayout>
-            </LinearLayout>
-
-            <carbon.widget.TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:layout_marginTop="24dp"
-                android:layout_marginBottom="12dp"
-                android:text="Personal Information"
-                android:textColor="#0D3238"
-                android:textSize="22sp"
-                app:carbon_font="@font/space_grotesk_semibold" />
-
-            <carbon.widget.LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/white"
-                android:orientation="vertical"
-                android:paddingHorizontal="18dp"
-                app:carbon_cornerRadius="24dp"
-                app:carbon_elevation="4dp"
-                app:carbon_stroke="#14000000"
-                app:carbon_strokeWidth="1dp">
+                </RelativeLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:paddingVertical="16dp">
-
-                    <carbon.widget.ImageView
-                        android:layout_width="44dp"
-                        android:layout_height="44dp"
-                        android:background="#0D3238"
-                        android:padding="12dp"
-                        android:scaleType="fitCenter"
-                        android:src="@drawable/ic_mail"
-                        app:carbon_cornerRadius="15dp"
-                        app:carbon_tint="@color/white" />
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="14dp"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <carbon.widget.TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Email address"
-                            android:textColor="@color/muted"
-                            android:textSize="15sp"
-                            app:carbon_font="@font/space_grotesk_semibold" />
-
-                        <carbon.widget.TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="-2dp"
-                            android:ellipsize="end"
-                            android:maxLines="1"
-                            android:text="anurag.sharma@gmail.com"
-                            android:textColor="#0D3238"
-                            android:textSize="17sp"
-                            app:carbon_font="@font/space_grotesk_semibold" />
-                    </LinearLayout>
-                </LinearLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/line" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:paddingVertical="16dp">
-
-                    <carbon.widget.ImageView
-                        android:layout_width="44dp"
-                        android:layout_height="44dp"
-                        android:background="#0D3238"
-                        android:padding="12dp"
-                        android:scaleType="fitCenter"
-                        android:src="@drawable/ic_phone"
-                        app:carbon_cornerRadius="15dp"
-                        app:carbon_tint="@color/white" />
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="14dp"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <carbon.widget.TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Phone number"
-                            android:textColor="@color/muted"
-                            android:textSize="15sp"
-                            app:carbon_font="@font/space_grotesk_semibold" />
-
-                        <carbon.widget.TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="-2dp"
-                            android:ellipsize="end"
-                            android:maxLines="1"
-                            android:text="+91 98765 43210"
-                            android:textColor="#0D3238"
-                            android:textSize="17sp"
-                            app:carbon_font="@font/space_grotesk_semibold" />
-                    </LinearLayout>
-                </LinearLayout>
-            </carbon.widget.LinearLayout>
-
-            <carbon.widget.TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:layout_marginTop="24dp"
-                android:layout_marginBottom="12dp"
-                android:text="Saved Addresses"
-                android:textColor="#0D3238"
-                android:textSize="22sp"
-                app:carbon_font="@font/space_grotesk_semibold" />
-
-            <carbon.widget.LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/white"
-                android:orientation="vertical"
-                android:paddingHorizontal="18dp"
-                android:paddingBottom="16dp"
-                app:carbon_cornerRadius="24dp"
-                app:carbon_elevation="4dp"
-                app:carbon_stroke="#14000000"
-                app:carbon_strokeWidth="1dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:paddingTop="16dp"
-                    android:paddingBottom="8dp">
-
-                    <carbon.widget.ImageView
-                        android:layout_width="44dp"
-                        android:layout_height="44dp"
-                        android:background="#0D3238"
-                        android:padding="12dp"
-                        android:scaleType="fitCenter"
-                        android:src="@drawable/ic_home"
-                        app:carbon_cornerRadius="15dp"
-                        app:carbon_tint="@color/white" />
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="14dp"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <carbon.widget.TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Default address"
-                            android:textColor="@color/muted"
-                            android:textSize="15sp"
-                            app:carbon_font="@font/space_grotesk_semibold" />
-
-                        <carbon.widget.TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="-2dp"
-                            android:text="Home"
-                            android:textColor="#0D3238"
-                            android:textSize="17sp"
-                            app:carbon_font="@font/space_grotesk_semibold" />
-                    </LinearLayout>
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/bg_orders"
+                    android:elevation="10dp"
+                    android:orientation="vertical"
+                    android:padding="20dp">
 
                     <carbon.widget.TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/badge_default"
-                        android:paddingHorizontal="11dp"
-                        android:paddingVertical="5dp"
-                        android:text="DEFAULT"
-                        android:textColor="@color/lake"
-                        android:textSize="13sp"
+                        android:layout_marginStart="4dp"
+                        android:text="Track Orders"
+                        android:textColor="#FFFFFF"
+                        android:textSize="17sp"
+                        app:carbon_font="@font/space_grotesk_semibold" />
+
+                    <carbon.widget.TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:lineSpacingExtra="2dp"
+                        android:paddingHorizontal="4dp"
+                        android:text="Enter your order ID to see live status, courier &amp; delivery date."
+                        android:textColor="@color/muted_peach"
+                        android:textSize="14sp"
+                        app:carbon_font="@font/space_grotesk_semibold" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <carbon.widget.LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="52dp"
+                            android:layout_weight="1"
+                            android:background="@color/white"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:paddingHorizontal="16dp"
+                            app:carbon_cornerRadius="18dp"
+                            app:carbon_elevation="4dp"
+                            app:carbon_stroke="#14000000"
+                            app:carbon_strokeWidth="1dp">
+
+                            <carbon.widget.ImageView
+                                android:layout_width="18dp"
+                                android:layout_height="18dp"
+                                android:src="@drawable/ic_search"
+                                app:carbon_tint="@color/teal" />
+
+                            <carbon.widget.EditText
+                                android:id="@+id/etOrderId"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_marginStart="10dp"
+                                android:background="@null"
+                                android:gravity="center_vertical"
+                                android:hint="Enter Your Order ID"
+                                android:inputType="text"
+                                android:maxLines="1"
+                                android:singleLine="true"
+                                android:textColor="#0D3238"
+                                android:textColorHint="@color/hint"
+                                android:textSize="18sp"
+                                app:carbon_font="@font/space_grotesk_semibold" />
+                        </carbon.widget.LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/btnTrackOrder"
+                            android:layout_width="wrap_content"
+                            android:layout_height="52dp"
+                            android:layout_marginStart="10dp"
+                            android:background="@drawable/bg_track_button"
+                            android:clickable="true"
+                            android:elevation="6dp"
+                            android:focusable="true"
+                            android:gravity="center"
+                            android:orientation="horizontal"
+                            android:paddingHorizontal="18dp">
+
+                            <carbon.widget.TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="7dp"
+                                android:text="Track"
+                                android:textColor="@color/teal"
+                                android:textSize="15sp"
+                                app:carbon_font="@font/space_grotesk_semibold" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <carbon.widget.TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginBottom="12dp"
+                    android:text="Personal Information"
+                    android:textColor="#0D3238"
+                    android:textSize="22sp"
+                    app:carbon_font="@font/space_grotesk_semibold" />
+
+                <carbon.widget.LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:orientation="vertical"
+                    android:paddingHorizontal="18dp"
+                    app:carbon_cornerRadius="24dp"
+                    app:carbon_elevation="4dp"
+                    app:carbon_stroke="#14000000"
+                    app:carbon_strokeWidth="1dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingVertical="16dp">
+
+                        <carbon.widget.ImageView
+                            android:layout_width="44dp"
+                            android:layout_height="44dp"
+                            android:background="#0D3238"
+                            android:padding="12dp"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/ic_mail"
+                            app:carbon_cornerRadius="15dp"
+                            app:carbon_tint="@color/white" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="14dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <carbon.widget.TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Email address"
+                                android:textColor="@color/muted"
+                                android:textSize="15sp"
+                                app:carbon_font="@font/space_grotesk_semibold" />
+
+                            <carbon.widget.TextView
+                                android:id="@+id/tvUserEmail"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="-2dp"
+                                android:ellipsize="end"
+                                android:maxLines="1"
+                                android:text="user@email.com"
+                                android:textColor="#0D3238"
+                                android:textSize="17sp"
+                                app:carbon_font="@font/space_grotesk_semibold" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/line" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingVertical="16dp">
+
+                        <carbon.widget.ImageView
+                            android:layout_width="44dp"
+                            android:layout_height="44dp"
+                            android:background="#0D3238"
+                            android:padding="12dp"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/ic_phone"
+                            app:carbon_cornerRadius="15dp"
+                            app:carbon_tint="@color/white" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="14dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <carbon.widget.TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Phone number"
+                                android:textColor="@color/muted"
+                                android:textSize="15sp"
+                                app:carbon_font="@font/space_grotesk_semibold" />
+
+                            <carbon.widget.TextView
+                                android:id="@+id/tvUserPhone"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="-2dp"
+                                android:ellipsize="end"
+                                android:maxLines="1"
+                                android:text="+91 98765 43210"
+                                android:textColor="#0D3238"
+                                android:textSize="17sp"
+                                app:carbon_font="@font/space_grotesk_semibold" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </carbon.widget.LinearLayout>
+
+                <carbon.widget.TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginBottom="12dp"
+                    android:text="Saved Addresses"
+                    android:textColor="#0D3238"
+                    android:textSize="22sp"
+                    app:carbon_font="@font/space_grotesk_semibold" />
+
+                <carbon.widget.LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:orientation="vertical"
+                    android:paddingHorizontal="18dp"
+                    android:paddingBottom="16dp"
+                    app:carbon_cornerRadius="24dp"
+                    app:carbon_elevation="4dp"
+                    app:carbon_stroke="#14000000"
+                    app:carbon_strokeWidth="1dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingTop="16dp"
+                        android:paddingBottom="8dp">
+
+                        <carbon.widget.ImageView
+                            android:layout_width="44dp"
+                            android:layout_height="44dp"
+                            android:background="#0D3238"
+                            android:padding="12dp"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/ic_home"
+                            app:carbon_cornerRadius="15dp"
+                            app:carbon_tint="@color/white" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="14dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <carbon.widget.TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Default address"
+                                android:textColor="@color/muted"
+                                android:textSize="15sp"
+                                app:carbon_font="@font/space_grotesk_semibold" />
+
+                            <carbon.widget.TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="-2dp"
+                                android:text="Home"
+                                android:textColor="#0D3238"
+                                android:textSize="17sp"
+                                app:carbon_font="@font/space_grotesk_semibold" />
+                        </LinearLayout>
+
+                        <carbon.widget.TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/badge_default"
+                            android:paddingHorizontal="11dp"
+                            android:paddingVertical="5dp"
+                            android:text="DEFAULT"
+                            android:textColor="@color/lake"
+                            android:textSize="13sp"
+                            app:carbon_font="@font/space_grotesk_semibold" />
+                    </LinearLayout>
+
+                    <carbon.widget.TextView
+                        android:id="@+id/tvDefaultAddress"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:lineSpacingExtra="3dp"
+                        android:maxLines="3"
+                        android:paddingStart="58dp"
+                        android:paddingTop="4dp"
+                        android:paddingBottom="16dp"
+                        android:text="No address saved yet"
+                        android:textColor="#5C5C5C"
+                        android:textSize="17sp"
+                        app:carbon_font="@font/space_grotesk_semibold" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/line" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:paddingTop="16dp">
+
+                        <LinearLayout
+                            android:id="@+id/btnAddAddress"
+                            android:layout_width="0dp"
+                            android:layout_height="48dp"
+                            android:layout_marginEnd="10dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_solid"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:gravity="center"
+                            android:orientation="horizontal">
+
+                            <carbon.widget.ImageView
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:src="@drawable/ic_plus"
+                                app:carbon_tint="#FFFFFF" />
+
+                            <carbon.widget.TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="7dp"
+                                android:text="Add New"
+                                android:textColor="#FFFFFF"
+                                android:textSize="17sp"
+                                app:carbon_font="@font/space_grotesk_semibold" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/btnManageAddress"
+                            android:layout_width="0dp"
+                            android:layout_height="48dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_ghost"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:gravity="center"
+                            android:orientation="horizontal">
+
+                            <carbon.widget.ImageView
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:src="@drawable/ic_edit"
+                                app:carbon_tint="@color/teal" />
+
+                            <carbon.widget.TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="7dp"
+                                android:text="Manage"
+                                android:textColor="@color/teal"
+                                android:textSize="17sp"
+                                app:carbon_font="@font/space_grotesk_semibold" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </carbon.widget.LinearLayout>
+
+                <carbon.widget.TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginBottom="12dp"
+                    android:text="Support &amp; About"
+                    android:textColor="#0D3238"
+                    android:textSize="22sp"
+                    app:carbon_font="@font/space_grotesk_semibold" />
+
+                <carbon.widget.LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:orientation="vertical"
+                    android:paddingHorizontal="18dp"
+                    app:carbon_cornerRadius="24dp"
+                    app:carbon_elevation="4dp"
+                    app:carbon_stroke="#14000000"
+                    app:carbon_strokeWidth="1dp">
+
+                    <LinearLayout
+                        android:id="@+id/btnHelpCenter"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingVertical="16dp">
+
+                        <carbon.widget.ImageView
+                            android:layout_width="44dp"
+                            android:layout_height="44dp"
+                            android:background="#0D3238"
+                            android:padding="12dp"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/ic_help"
+                            app:carbon_cornerRadius="15dp"
+                            app:carbon_tint="@color/white" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="14dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <carbon.widget.TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Help Center"
+                                android:textColor="#0D3238"
+                                android:textSize="17sp"
+                                app:carbon_font="@font/space_grotesk_semibold" />
+                        </LinearLayout>
+
+                        <carbon.widget.ImageView
+                            android:layout_width="19dp"
+                            android:layout_height="19dp"
+                            android:src="@drawable/ic_chevron_right"
+                            app:carbon_tint="@color/chev" />
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/line" />
+
+                    <LinearLayout
+                        android:id="@+id/btnContactUs"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingVertical="16dp">
+
+                        <carbon.widget.ImageView
+                            android:layout_width="44dp"
+                            android:layout_height="44dp"
+                            android:background="#0D3238"
+                            android:padding="12dp"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/ic_message"
+                            app:carbon_cornerRadius="15dp"
+                            app:carbon_tint="@color/white" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="14dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <carbon.widget.TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Contact Us"
+                                android:textColor="#0D3238"
+                                android:textSize="17sp"
+                                app:carbon_font="@font/space_grotesk_semibold" />
+                        </LinearLayout>
+
+                        <carbon.widget.ImageView
+                            android:layout_width="19dp"
+                            android:layout_height="19dp"
+                            android:src="@drawable/ic_chevron_right"
+                            app:carbon_tint="@color/chev" />
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/line" />
+
+                    <LinearLayout
+                        android:id="@+id/btnPrivacyPolicy"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingVertical="16dp">
+
+                        <carbon.widget.ImageView
+                            android:layout_width="44dp"
+                            android:layout_height="44dp"
+                            android:background="#0D3238"
+                            android:padding="12dp"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/ic_shield"
+                            app:carbon_cornerRadius="15dp"
+                            app:carbon_tint="@color/white" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="14dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <carbon.widget.TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Privacy Policy"
+                                android:textColor="#0D3238"
+                                android:textSize="17sp"
+                                app:carbon_font="@font/space_grotesk_semibold" />
+                        </LinearLayout>
+
+                        <carbon.widget.ImageView
+                            android:layout_width="19dp"
+                            android:layout_height="19dp"
+                            android:src="@drawable/ic_chevron_right"
+                            app:carbon_tint="@color/chev" />
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/line" />
+
+                    <LinearLayout
+                        android:id="@+id/btnTerms"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingVertical="16dp">
+
+                        <carbon.widget.ImageView
+                            android:layout_width="44dp"
+                            android:layout_height="44dp"
+                            android:background="#0D3238"
+                            android:padding="12dp"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/ic_file"
+                            app:carbon_cornerRadius="15dp"
+                            app:carbon_tint="@color/white" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="14dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <carbon.widget.TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Terms &amp; Conditions"
+                                android:textColor="#0D3238"
+                                android:textSize="17sp"
+                                app:carbon_font="@font/space_grotesk_semibold" />
+                        </LinearLayout>
+
+                        <carbon.widget.ImageView
+                            android:layout_width="19dp"
+                            android:layout_height="19dp"
+                            android:src="@drawable/ic_chevron_right"
+                            app:carbon_tint="@color/chev" />
+                    </LinearLayout>
+                </carbon.widget.LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/btnSignOut"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:layout_marginTop="26dp"
+                    android:background="@drawable/bg_signout"
+                    android:clickable="true"
+                    android:elevation="3dp"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <carbon.widget.ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:src="@drawable/ic_logout"
+                        app:carbon_tint="@color/carbon_red_900" />
+
+                    <carbon.widget.TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="9dp"
+                        android:text="Sign Out"
+                        android:textColor="@color/carbon_red_900"
+                        android:textSize="18sp"
                         app:carbon_font="@font/space_grotesk_semibold" />
                 </LinearLayout>
 
                 <carbon.widget.TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:ellipsize="end"
-                    android:lineSpacingExtra="3dp"
-                    android:maxLines="3"
-                    android:paddingStart="58dp"
-                    android:paddingTop="4dp"
-                    android:paddingBottom="16dp"
-                    android:text="142, Rosewood Residency, Boring Road,Patna, Bihar — 800001"
-                    android:textColor="#5C5C5C"
-                    android:textSize="17sp"
+                    android:layout_marginTop="14dp"
+                    android:gravity="center"
+                    android:text="Adikala · Version 1.0.4"
+                    android:textColor="#B6A89F"
+                    android:textSize="11sp"
                     app:carbon_font="@font/space_grotesk_semibold" />
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/line" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:paddingTop="16dp">
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="48dp"
-                        android:layout_marginEnd="10dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/bg_solid"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:gravity="center"
-                        android:orientation="horizontal">
-
-                        <carbon.widget.ImageView
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:src="@drawable/ic_plus"
-                            app:carbon_tint="#FFFFFF" />
-
-                        <carbon.widget.TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="7dp"
-                            android:text="Add New"
-                            android:textColor="#FFFFFF"
-                            android:textSize="17sp"
-                            app:carbon_font="@font/space_grotesk_semibold" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="48dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/bg_ghost"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:gravity="center"
-                        android:orientation="horizontal">
-
-                        <carbon.widget.ImageView
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:src="@drawable/ic_edit"
-                            app:carbon_tint="@color/teal" />
-
-                        <carbon.widget.TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="7dp"
-                            android:text="Manage"
-                            android:textColor="@color/teal"
-                            android:textSize="17sp"
-                            app:carbon_font="@font/space_grotesk_semibold" />
-                    </LinearLayout>
-                </LinearLayout>
-            </carbon.widget.LinearLayout>
-
-            <carbon.widget.TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:layout_marginTop="24dp"
-                android:layout_marginBottom="12dp"
-                android:text="Support &amp; About"
-                android:textColor="#0D3238"
-                android:textSize="22sp"
-                app:carbon_font="@font/space_grotesk_semibold" />
-
-            <carbon.widget.LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/white"
-                android:orientation="vertical"
-                android:paddingHorizontal="18dp"
-                app:carbon_cornerRadius="24dp"
-                app:carbon_elevation="4dp"
-                app:carbon_stroke="#14000000"
-                app:carbon_strokeWidth="1dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:paddingVertical="16dp">
-
-                    <carbon.widget.ImageView
-                        android:layout_width="44dp"
-                        android:layout_height="44dp"
-                        android:background="#0D3238"
-                        android:padding="12dp"
-                        android:scaleType="fitCenter"
-                        android:src="@drawable/ic_help"
-                        app:carbon_cornerRadius="15dp"
-                        app:carbon_tint="@color/white" />
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="14dp"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <carbon.widget.TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Help Center"
-                            android:textColor="#0D3238"
-                            android:textSize="17sp"
-                            app:carbon_font="@font/space_grotesk_semibold" />
-                    </LinearLayout>
-
-                    <carbon.widget.ImageView
-                        android:layout_width="19dp"
-                        android:layout_height="19dp"
-                        android:src="@drawable/ic_chevron_right"
-                        app:carbon_tint="@color/chev" />
-                </LinearLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/line" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:paddingVertical="16dp">
-
-                    <carbon.widget.ImageView
-                        android:layout_width="44dp"
-                        android:layout_height="44dp"
-                        android:background="#0D3238"
-                        android:padding="12dp"
-                        android:scaleType="fitCenter"
-                        android:src="@drawable/ic_message"
-                        app:carbon_cornerRadius="15dp"
-                        app:carbon_tint="@color/white" />
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="14dp"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <carbon.widget.TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Contact Us"
-                            android:textColor="#0D3238"
-                            android:textSize="17sp"
-                            app:carbon_font="@font/space_grotesk_semibold" />
-                    </LinearLayout>
-
-                    <carbon.widget.ImageView
-                        android:layout_width="19dp"
-                        android:layout_height="19dp"
-                        android:src="@drawable/ic_chevron_right"
-                        app:carbon_tint="@color/chev" />
-                </LinearLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/line" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:paddingVertical="16dp">
-
-                    <carbon.widget.ImageView
-                        android:layout_width="44dp"
-                        android:layout_height="44dp"
-                        android:background="#0D3238"
-                        android:padding="12dp"
-                        android:scaleType="fitCenter"
-                        android:src="@drawable/ic_shield"
-                        app:carbon_cornerRadius="15dp"
-                        app:carbon_tint="@color/white" />
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="14dp"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <carbon.widget.TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Privacy Policy"
-                            android:textColor="#0D3238"
-                            android:textSize="17sp"
-                            app:carbon_font="@font/space_grotesk_semibold" />
-                    </LinearLayout>
-
-                    <carbon.widget.ImageView
-                        android:layout_width="19dp"
-                        android:layout_height="19dp"
-                        android:src="@drawable/ic_chevron_right"
-                        app:carbon_tint="@color/chev" />
-                </LinearLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/line" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:paddingVertical="16dp">
-
-                    <carbon.widget.ImageView
-                        android:layout_width="44dp"
-                        android:layout_height="44dp"
-                        android:background="#0D3238"
-                        android:padding="12dp"
-                        android:scaleType="fitCenter"
-                        android:src="@drawable/ic_file"
-                        app:carbon_cornerRadius="15dp"
-                        app:carbon_tint="@color/white" />
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="14dp"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <carbon.widget.TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Terms &amp; Conditions"
-                            android:textColor="#0D3238"
-                            android:textSize="17sp"
-                            app:carbon_font="@font/space_grotesk_semibold" />
-                    </LinearLayout>
-
-                    <carbon.widget.ImageView
-                        android:layout_width="19dp"
-                        android:layout_height="19dp"
-                        android:src="@drawable/ic_chevron_right"
-                        app:carbon_tint="@color/chev" />
-                </LinearLayout>
-            </carbon.widget.LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="52dp"
-                android:layout_marginTop="26dp"
-                android:background="@drawable/bg_signout"
-                android:clickable="true"
-                android:elevation="3dp"
-                android:focusable="true"
-                android:gravity="center"
-                android:orientation="horizontal">
-
-                <carbon.widget.ImageView
-                    android:layout_width="18dp"
-                    android:layout_height="18dp"
-                    android:src="@drawable/ic_logout"
-                    app:carbon_tint="@color/carbon_red_900" />
-
-                <carbon.widget.TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="9dp"
-                    android:text="Sign Out"
-                    android:textColor="@color/carbon_red_900"
-                    android:textSize="18sp"
-                    app:carbon_font="@font/space_grotesk_semibold" />
             </LinearLayout>
-
-            <carbon.widget.TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="14dp"
-                android:gravity="center"
-                android:text="Adikala · Version 1.0.4"
-                android:textColor="#B6A89F"
-                android:textSize="11sp"
-                app:carbon_font="@font/space_grotesk_semibold" />
-
-        </LinearLayout>
-    </ScrollView>
+        </ScrollView>
+    </LinearLayout>
 
 </carbon.widget.RelativeLayout>

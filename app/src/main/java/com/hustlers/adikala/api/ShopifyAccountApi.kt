@@ -1,7 +1,7 @@
 package com.hustlers.adikala.api
 
+import com.hustlers.adikala.model.AccountGraphQLResponse
 import com.hustlers.adikala.model.GraphQLRequest
-import com.hustlers.adikala.model.GraphQLResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.Header
@@ -15,5 +15,5 @@ interface ShopifyAccountApi {
         @Query("operation") operationName: String,
         @Header("Authorization") authorization: String,
         @Body request: GraphQLRequest
-    ): Response<GraphQLResponse>
+    ): Response<AccountGraphQLResponse>
 }
