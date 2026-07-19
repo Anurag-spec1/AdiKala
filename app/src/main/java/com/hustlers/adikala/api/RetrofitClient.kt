@@ -9,6 +9,7 @@ import java.util.concurrent.TimeUnit
 object RetrofitClient {
 
     private const val BASE_URL = "https://www.adikala.in/"
+    private const val ACCOUNT_URL = "https://account.adikala.in/"
 
     private val loggingInterceptor = HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.BODY
@@ -28,5 +29,14 @@ object RetrofitClient {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(ShopifyStorefrontApi::class.java)
+    }
+
+    val accountApi: ShopifyAccountApi by lazy {
+        Retrofit.Builder()
+            .baseUrl(ACCOUNT_URL)
+            .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(ShopifyAccountApi::class.java)
     }
 }
