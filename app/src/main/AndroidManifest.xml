@@ -15,6 +15,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AdiKala">
         <activity
+            android:name=".view.activity.LoginActivity"
+            android:exported="false" />
+        <activity
             android:name=".view.activity.SearchActivity"
             android:exported="false" />
         <activity
