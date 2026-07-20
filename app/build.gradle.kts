@@ -65,6 +65,8 @@ dependencies {
     implementation("androidx.browser:browser:1.8.0")
     implementation("com.airbnb.android:lottie:6.1.0")
     implementation("com.facebook.shimmer:shimmer:0.5.0")
+    implementation("net.openid:appauth:0.11.1")
+    implementation("androidx.security:security-crypto:1.1.0-alpha06")
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

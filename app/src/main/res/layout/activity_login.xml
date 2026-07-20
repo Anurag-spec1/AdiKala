@@ -6,6 +6,18 @@
     android:background="@drawable/main_bg"
     android:fitsSystemWindows="true">
 
+
+    <carbon.widget.TextView
+        android:id="@+id/tvError"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="Something went wrong"
+        android:textColor="#C97B4A"
+        android:textSize="16sp"
+        android:visibility="gone"
+        app:carbon_font="@font/space_grotesk_semibold" />
+
     <carbon.widget.ImageView
         android:id="@+id/btnBack"
         android:layout_width="44dp"
