@@ -53,14 +53,13 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     }
 
     private fun fetchProfileFromServer() {
-        val token = authManager.getToken() ?: return
+        val token = authManager.getAccessToken() ?: return
         viewModelScope.launch {
             _isLoading.value = true
             try {
                 val profile = customerRepository.getProfile(token)
                 if (profile != null) {
-                    authManager.saveLoginData(
-                        token = token,
+                    authManager.saveProfile(
                         firstName = profile.firstName,
                         lastName = profile.lastName,
                         email = profile.email,
@@ -83,7 +82,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     }
 
     fun logout() {
-        authManager.logout()
+        authManager.clear()
         _isLoggedIn.value = false
         _userName.value = ""
         _userEmail.value = ""

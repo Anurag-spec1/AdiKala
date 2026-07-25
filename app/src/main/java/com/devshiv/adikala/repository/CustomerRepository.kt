@@ -17,7 +17,7 @@ class CustomerRepository {
     suspend fun getProfile(token: String): CustomerProfile? = withContext(Dispatchers.IO) {
         try {
             val request = GraphQLRequest(query = CustomerQueries.GET_PROFILE)
-            val response = api.executeCustomerGraphQL("Profile", token, request)
+            val response = api.executeCustomerGraphQL( token, request)
 
             if (response.isSuccessful) {
                 val data: JsonObject = response.body()?.data ?: return@withContext null
