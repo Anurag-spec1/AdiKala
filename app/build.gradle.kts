@@ -4,13 +4,13 @@ plugins {
 }
 
 android {
-    namespace = "com.hustlers.adikala"
+    namespace = "com.devshiv.adikala"
     compileSdk {
         version = release(36)
     }
 
     defaultConfig {
-        applicationId = "com.hustlers.adikala"
+        applicationId = "com.devshiv.adikala"
         minSdk = 25
         targetSdk = 36
         versionCode = 1
