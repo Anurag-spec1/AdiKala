@@ -14,10 +14,16 @@ class CustomerRepository {
 
     private val api = RetrofitClient.accountApi
 
-    suspend fun getProfile(token: String): CustomerProfile? = withContext(Dispatchers.IO) {
+    /**
+     * @param accessToken RAW access token — do NOT prefix with "Bearer ".
+     * Shopify's Customer Account API requires the Authorization header to be
+     * the token value directly (confirmed in Shopify's own docs/examples).
+     * A "Bearer " prefix will cause every request to fail authentication.
+     */
+    suspend fun getProfile(accessToken: String): CustomerProfile? = withContext(Dispatchers.IO) {
         try {
             val request = GraphQLRequest(query = CustomerQueries.GET_PROFILE)
-            val response = api.executeCustomerGraphQL( token, request)
+            val response = api.executeCustomerGraphQL(accessToken, request)
 
             if (response.isSuccessful) {
                 val data: JsonObject = response.body()?.data ?: return@withContext null
@@ -58,6 +64,11 @@ class CustomerRepository {
 
                 Log.d("CustomerRepo", "Profile loaded: ${profile.email}")
                 profile
+            } else if (response.code() == 401) {
+                // Access token expired/invalid — caller should refresh via
+                // ShopifyAuthService.refreshAccessToken() and retry once.
+                Log.w("CustomerRepo", "401 Unauthorized — token likely expired")
+                null
             } else {
                 Log.e("CustomerRepo", "Failed: ${response.code()} - ${response.errorBody()?.string()}")
                 null

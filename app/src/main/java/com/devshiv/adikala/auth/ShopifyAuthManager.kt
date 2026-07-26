@@ -49,7 +49,6 @@ class ShopifyAuthManager(context: Context) {
 
     fun isLoggedIn(): Boolean = !getRefreshToken().isNullOrEmpty()
 
-
     fun saveProfile(firstName: String?, lastName: String?, email: String?, phone: String?) {
         prefs.edit()
             .putString(KEY_FIRST_NAME, firstName)

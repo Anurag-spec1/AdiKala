@@ -12,9 +12,6 @@ import kotlinx.coroutines.launch
 /**
  * Starts the Shopify Customer Account OAuth flow. Shopify hosts the actual
  * email/OTP/passkey step in a Custom Tab; we just launch it and catch the redirect.
- *
- * The old WebView + token-scraping approach is gone — the shcat_ token is never
- * exposed to JS/cookies, so it could never be read that way.
  */
 class LoginActivity : AppCompatActivity() {
 
