@@ -44,6 +44,9 @@ class MainActivity : AppCompatActivity() {
 
         val idToken = ShopifyAuthManager(this).getIdToken()
         Log.d("ID_TOKEN", "ID Token: $idToken")
+
+        val accesstoken = ShopifyAuthManager(this).getAccessToken()
+        Log.d("Access_token","Access_token: $accesstoken")
     }
 
     private fun loadFragment(fragment: Fragment) {
