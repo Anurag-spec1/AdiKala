@@ -80,11 +80,31 @@ class CartViewModel(application: Application) : AndroidViewModel(application) {
                 _totalAmount.value = cart.totalAmount
                 _checkoutUrl.value = cart.checkoutUrl
                 _isEmpty.value = false
+
+                // Load recommendations based on cart products
+                loadDynamicSuggestions(cart.items.map { it.variantId })
             } else {
                 CartManager.clear(app)
                 _isEmpty.value = true
+                loadBestSellers()
             }
             _isLoading.value = false
+        }
+    }
+
+    private fun loadDynamicSuggestions(productIds: List<String>) {
+        Log.d("CartVM", "=== LOADING DYNAMIC SUGGESTIONS ===")
+        Log.d("CartVM", "Product IDs in cart: $productIds")
+        viewModelScope.launch {
+            val suggestions = repository.getRecommendedProducts(productIds)
+            Log.d("CartVM", "Got ${suggestions.size} suggestions")
+            _suggestions.value = suggestions
+        }
+    }
+
+    private fun loadBestSellers() {
+        viewModelScope.launch {
+            _suggestions.value = repository.getBestSellers()
         }
     }
 

@@ -187,6 +187,117 @@ class CartRepository {
         }
     }
 
+    suspend fun getRecommendedProducts(variantIds: List<String>): List<ProductSuggestion> = withContext(Dispatchers.IO) {
+        try {
+            Log.d("CartRepo", "=== GET RECOMMENDATIONS ===")
+            Log.d("CartRepo", "Variant IDs: $variantIds")
+
+            if (variantIds.isEmpty()) {
+                Log.d("CartRepo", "No products in cart, falling back to best sellers")
+                return@withContext getBestSellers()
+            }
+
+            // First, get the Product ID from the Variant ID
+            val variantId = variantIds.first()
+            val productQuery = """
+        query {
+            node(id: "$variantId") {
+                ... on ProductVariant {
+                    product { id }
+                }
+            }
+        }
+        """.trimIndent()
+
+            val productResponse = execute(productQuery)
+            val productId = productResponse.optJSONObject("data")?.optJSONObject("node")?.optJSONObject("product")?.optString("id")
+
+            Log.d("CartRepo", "Product ID from variant: $productId")
+
+            if (productId == null) {
+                Log.d("CartRepo", "Could not find product ID, falling back to best sellers")
+                return@withContext getBestSellers()
+            }
+
+            // Now get recommendations using Product ID
+            val query = """
+        query {
+            productRecommendations(productId: "$productId") {
+                id
+                title
+                featuredImage { url }
+                priceRange { minVariantPrice { amount currencyCode } }
+                variants(first: 1) { nodes { id } }
+            }
+        }
+        """.trimIndent()
+
+            val response = execute(query)
+            Log.d("CartRepo", "Recommendations response: $response")
+
+            val nodes = response.optJSONObject("data")?.optJSONArray("productRecommendations")
+            Log.d("CartRepo", "Recommendations count: ${nodes?.length() ?: 0}")
+
+            if (nodes == null || nodes.length() == 0) {
+                Log.d("CartRepo", "No recommendations, falling back to best sellers")
+                return@withContext getBestSellers()
+            }
+
+            val result = (0 until nodes.length()).map { i ->
+                val p = nodes.getJSONObject(i)
+                ProductSuggestion(
+                    id = p.optString("id"),
+                    title = p.optString("title"),
+                    imageUrl = p.optJSONObject("featuredImage")?.optString("url") ?: "",
+                    price = p.optJSONObject("priceRange")?.optJSONObject("minVariantPrice")?.optString("amount") ?: "0",
+                    variantId = p.optJSONObject("variants")?.optJSONArray("nodes")?.getJSONObject(0)?.optString("id") ?: ""
+                )
+            }
+
+            Log.d("CartRepo", "=== RECOMMENDATIONS RESULT: ${result.size} items ===")
+            result
+        } catch (e: Exception) {
+            Log.e("CartRepo", "getRecommendedProducts failed", e)
+            getBestSellers()
+        }
+    }
+
+   suspend fun getBestSellers(): List<ProductSuggestion> = withContext(Dispatchers.IO) {
+        try {
+            val query = """
+        query {
+            products(first: 10, sortKey: BEST_SELLING) {
+                nodes {
+                    id
+                    title
+                    featuredImage { url }
+                    priceRange { minVariantPrice { amount currencyCode } }
+                    variants(first: 1) { nodes { id } }
+                }
+            }
+        }
+        """.trimIndent()
+
+            val response = execute(query)
+            val products = response.optJSONObject("data")?.optJSONObject("products")?.optJSONArray("nodes")
+                ?: return@withContext emptyList()
+
+            (0 until products.length()).map { i ->
+                val p = products.getJSONObject(i)
+                ProductSuggestion(
+                    id = p.optString("id"),
+                    title = p.optString("title"),
+                    imageUrl = p.optJSONObject("featuredImage")?.optString("url") ?: "",
+                    price = p.optJSONObject("priceRange")?.optJSONObject("minVariantPrice")?.optString("amount") ?: "0",
+                    variantId = p.optJSONObject("variants")?.optJSONArray("nodes")?.getJSONObject(0)?.optString("id") ?: ""
+                )
+            }
+        } catch (e: Exception) {
+            Log.e("CartRepo", "getBestSellers failed", e)
+            emptyList()
+        }
+    }
+
     suspend fun getProductSuggestions(limit: Int = 10): List<ProductSuggestion> = withContext(Dispatchers.IO) {
         try {
             val query = """
