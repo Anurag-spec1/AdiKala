@@ -1,35 +1,51 @@
 package com.devshiv.adikala.model
 
 data class JudgeMeReviewsResponse(
-    val rating: Double? = null,
-    val reviewNumber: Int? = null,
-    val reviews: List<JudgeMeReviewData>? = null,
-    val ratingDistribution: List<List<Any>>? = null,
-    val curPage: Int? = null,
-    val totalPage: Int? = null
+    val rating: Double?,
+    val reviewNumber: Int?,
+    val reviews: List<JudgeMeReviewData>?
 )
 
 data class JudgeMeReviewData(
-    val id: Long? = null,
-    val rating: Int? = null,
-    val title: String? = null,
-    val body: String? = null,
-    val reviewer_name: String? = null,
-    val reviewer_email: String? = null,
-    val created_at: String? = null,
-    val pictures: List<JudgeMePicture>? = null,
-    val verified_buyer: Boolean? = null,
-    val featured: Boolean? = null
+    val id: Int?,
+    val title: String?,
+    val body: String?,
+    val rating: Int?,
+    val product_handle: String?,
+    val reviewer: JudgeMeReviewer?,
+    val created_at: String?,
+    val verified_buyer: Boolean?,
+    val pictures: List<JudgeMePicture>?
+)
+
+data class JudgeMeReviewer(
+    val name: String?,
+    val email: String?
 )
 
 data class JudgeMePicture(
-    val url: String? = null,
-    val thumb_url: String? = null
+    val url: String?,
+    val urls: JudgeMePictureUrls?
+)
+
+data class JudgeMePictureUrls(
+    val original: String?,
+    val small: String?,
+    val compact: String?,
+    val huge: String?
+)
+
+data class JudgeMeProductResponse(
+    val product: JudgeMeProduct?
+)
+
+data class JudgeMeProduct(
+    val id: Int?,
+    val external_id: String?,
+    val handle: String?
 )
 
 data class JudgeMeSubmitReviewResponse(
-    val id: Long? = null,
-    val status: String? = null,
-    val message: String? = null,
-    val error: String? = null
+    val id: Int?,
+    val status: String?
 )

@@ -6,6 +6,7 @@ import android.content.Intent
 import android.graphics.Paint
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.util.Patterns
 import android.view.View
 import android.widget.Toast
@@ -346,6 +347,7 @@ class ProductDetailActivity : AppCompatActivity() {
         }
 
         viewModel.reviews.observe(this) { reviews ->
+            Log.d("ProductDetail", "Got ${reviews.size} reviews for current product")
             reviewAdapter = ReviewAdapter(reviews)
             binding.rvReviews.adapter = reviewAdapter
         }

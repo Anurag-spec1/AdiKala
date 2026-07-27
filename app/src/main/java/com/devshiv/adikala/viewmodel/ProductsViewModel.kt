@@ -67,7 +67,7 @@ class ProductsViewModel : ViewModel() {
 
     private suspend fun loadRatingsForProducts(products: List<Product>) {
         val updatedProducts = products.map { product ->
-            ratingRepository.getProductReviews(product.id).fold(
+            ratingRepository.getProductReviews(product.handle, product.id).fold(
                 onSuccess = { (summary, _) ->
                     product.copy(
                         rating = summary.averageRating,

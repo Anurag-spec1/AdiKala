@@ -1,5 +1,6 @@
 package com.devshiv.adikala.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -34,14 +35,14 @@ class ProductDetailViewModel : ViewModel() {
 
     fun loadProduct(product: Product) {
         _product.value = product
-        loadReviews(product.id)
+        loadReviews(product.handle, product.id)
     }
 
-    private fun loadReviews(productId: String) {
+
+    private fun loadReviews(productHandle: String, productId: String) {
         viewModelScope.launch {
             _isLoadingReviews.value = true
-
-            ratingRepository.getProductReviews(productId).fold(  // Changed from getProductRating
+            ratingRepository.getProductReviews(productHandle, productId).fold(
                 onSuccess = { (summary, reviews) ->
                     _ratingSummary.value = summary
                     _reviews.value = reviews
@@ -51,7 +52,6 @@ class ProductDetailViewModel : ViewModel() {
                     _reviews.value = emptyList()
                 }
             )
-
             _isLoadingReviews.value = false
         }
     }
@@ -71,7 +71,9 @@ class ProductDetailViewModel : ViewModel() {
             ratingRepository.submitReview(productId, rating, title, body, name, email).fold(
                 onSuccess = {
                     _submitResult.value = "Review submitted successfully!"
-                    loadReviews(productId)
+                    // Fix: pass both handle and id
+                    val product = _product.value
+                    loadReviews(product?.handle ?: "", product?.id ?: "")
                 },
                 onFailure = {
                     _submitResult.value = it.message ?: "Failed to submit review"
