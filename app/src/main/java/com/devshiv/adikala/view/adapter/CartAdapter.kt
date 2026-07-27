@@ -3,61 +3,57 @@ package com.devshiv.adikala.view.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.devshiv.adikala.databinding.ItemCartBinding
-import com.devshiv.adikala.model.CartItem
+import com.devshiv.adikala.repository.CartRepository.CartLineItem
 
 class CartAdapter(
-    private val list: MutableList<CartItem>,
-    private val onQtyChanged: (CartItem) -> Unit,
-    private val onRemove: (CartItem) -> Unit
-) : RecyclerView.Adapter<CartAdapter.ViewHolder>() {
+    private val onQuantityChanged: (lineId: String, quantity: Int) -> Unit,
+    private val onRemove: (lineId: String) -> Unit
+) : ListAdapter<CartLineItem, CartAdapter.VH>(DiffCallback) {
 
-    inner class ViewHolder(val binding: ItemCartBinding) : RecyclerView.ViewHolder(binding.root) {
+    class VH(val b: ItemCartBinding) : RecyclerView.ViewHolder(b.root)
 
-        fun bind(item: CartItem) {
-            binding.tvName.text = item.name
-            binding.tvQty.text = item.quantity.toString()
-            binding.tvPrice.text = "₹${item.price * item.quantity}"
+    object DiffCallback : DiffUtil.ItemCallback<CartLineItem>() {
+        override fun areItemsTheSame(old: CartLineItem, new: CartLineItem) = old.lineId == new.lineId
+        override fun areContentsTheSame(old: CartLineItem, new: CartLineItem) = old == new
+    }
 
-            if (item.size.isNotBlank()) {
-                binding.tvSize.visibility = View.VISIBLE
-                binding.tvSize.text = "Size: ${item.size}"
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
+        return VH(ItemCartBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+    }
+
+    override fun onBindViewHolder(holder: VH, position: Int) {
+        val item = getItem(position)
+        with(holder.b) {
+            tvName.text = item.title
+            tvQty.text = item.quantity.toString()
+            tvPrice.text = item.price
+
+            if (!item.size.isNullOrBlank()) {
+                tvSize.visibility = View.VISIBLE
+                tvSize.text = "Size: ${item.size}"
             } else {
-                binding.tvSize.visibility = View.GONE
+                tvSize.visibility = View.GONE
             }
 
-            binding.btnMinus.alpha = if (item.quantity > 1) 1f else 0.35f
+            btnMinus.alpha = if (item.quantity > 1) 1f else 0.35f
 
-            Glide.with(binding.imgItem).load(item.imageUrl).centerCrop().into(binding.imgItem)
+            Glide.with(imgItem).load(item.imageUrl).centerCrop().into(imgItem)
 
-            binding.btnPlus.setOnClickListener {
-                if (item.quantity < 99) {
-                    item.quantity++
-                    notifyItemChanged(bindingAdapterPosition)
-                    onQtyChanged(item)
-                }
+            btnPlus.setOnClickListener {
+                val newQty = item.quantity + 1
+                if (newQty <= 99) onQuantityChanged(item.lineId, newQty)
             }
-            binding.btnMinus.setOnClickListener {
+            btnMinus.setOnClickListener {
                 if (item.quantity > 1) {
-                    item.quantity--
-                    notifyItemChanged(bindingAdapterPosition)
-                    onQtyChanged(item)
+                    onQuantityChanged(item.lineId, item.quantity - 1)
                 }
             }
-            binding.btnRemove.setOnClickListener { onRemove(item) }
+            btnRemove.setOnClickListener { onRemove(item.lineId) }
         }
     }
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding = ItemCartBinding.inflate(
-            LayoutInflater.from(parent.context), parent, false
-        )
-        return ViewHolder(binding)
-    }
-
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) = holder.bind(list[position])
-
-    override fun getItemCount() = list.size
 }

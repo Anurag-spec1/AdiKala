@@ -1,45 +1,46 @@
 package com.devshiv.adikala.view.activity
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.devshiv.adikala.databinding.ActivityCartBinding
+import com.devshiv.adikala.repository.CartRepository.CartLineItem
 import com.devshiv.adikala.view.adapter.CartAdapter
 import com.devshiv.adikala.view.adapter.CartSuggestionAdapter
-import com.devshiv.adikala.databinding.ActivityCartBinding
-import com.devshiv.adikala.model.CartItem
+import com.devshiv.adikala.viewmodel.CartViewModel
 import com.devshiv.adikala.model.Product
 
 class CartActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityCartBinding
+    private lateinit var viewModel: CartViewModel
     private lateinit var cartAdapter: CartAdapter
-    private val cartItems = mutableListOf<CartItem>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityCartBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        loadCart()
+        viewModel = ViewModelProvider(this)[CartViewModel::class.java]
+
         setupCart()
         setupSuggestions()
         setupListeners()
-        render()
+        observeViewModel()
     }
 
     private fun setupCart() {
         cartAdapter = CartAdapter(
-            cartItems,
-            onQtyChanged = { updateTotals() },
-            onRemove = { item ->
-                val index = cartItems.indexOfFirst { it.id == item.id }
-                if (index != -1) {
-                    cartItems.removeAt(index)
-                    cartAdapter.notifyItemRemoved(index)
-                    render()
-                }
+            onQuantityChanged = { lineId, quantity ->
+                viewModel.updateQuantity(lineId, quantity)
+            },
+            onRemove = { lineId ->
+                viewModel.removeItem(lineId)
             }
         )
         binding.rvCart.layoutManager = LinearLayoutManager(this)
@@ -48,53 +49,53 @@ class CartActivity : AppCompatActivity() {
 
     private fun setupSuggestions() {
         val suggestions = listOf(
-            Product("s1", "Peacock printed MDF Cutout Pack of 4", "", "https://www.adikala.in/cdn/shop/collections/pichwai.jpg?v=1737890053&width=1080", 399, 349),
-            Product("s2", "Decorative Wooden Beads Assorted", "", "https://www.adikala.in/cdn/shop/products/657_cdb4596c-0ceb-47dc-9652-09be375b15c0.jpg?v=1657903140&width=1080", 299, 249),
-            Product("s3", "MDF Base Round Pack of 6", "", "https://www.adikala.in/cdn/shop/collections/for-DIY.jpg?v=1674845390&width=1080", 499, 429)
+            Product("s1", "Peacock printed MDF Cutout Pack of 4", "", "", 399, 349),
+            Product("s2", "Decorative Wooden Beads Assorted", "", "", 299, 249),
+            Product("s3", "MDF Base Round Pack of 6", "", "", 499, 429)
         )
 
-        binding.rvSuggest.layoutManager =
-            LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        binding.rvSuggest.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         binding.rvSuggest.adapter = CartSuggestionAdapter(
             suggestions,
             onAdd = { product ->
-                cartItems.add(CartItem(product.id, product.name, product.imageUrl, product.discountedPrice, 1))
-                cartAdapter.notifyItemInserted(cartItems.size - 1)
-                render()
+                viewModel.addItem(product.id)
                 Toast.makeText(this, "Added to cart", Toast.LENGTH_SHORT).show()
             },
-            onClick = { }
+            onClick = { /* Navigate to product detail */ }
         )
     }
 
     private fun setupListeners() {
         binding.btnBack.setOnClickListener { finish() }
-        binding.btnCheckout.setOnClickListener { }
+        binding.btnCheckout.setOnClickListener {
+            viewModel.getCheckoutUrl()?.let { url ->
+                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+            } ?: Toast.makeText(this, "Checkout unavailable", Toast.LENGTH_SHORT).show()
+        }
         binding.btnShopEmpty.setOnClickListener { finish() }
     }
 
-    private fun render() {
-        val empty = cartItems.isEmpty()
+    private fun observeViewModel() {
+        viewModel.cartData.observe(this) { cart ->
+            if (cart != null) {
+                cartAdapter.submitList(cart.items)
+                binding.tvItemTotal.text = cart.totalAmount
+                binding.tvSubtotal.text = cart.totalAmount
+                render(false)
+            } else {
+                render(true)
+            }
+        }
+
+        viewModel.isEmpty.observe(this) { empty -> render(empty) }
+//        viewModel.isLoading.observe(this) { binding.progressBar.visibility = if (it) View.VISIBLE else View.GONE }
+        viewModel.error.observe(this) { it?.let { Toast.makeText(this, it, Toast.LENGTH_SHORT).show(); viewModel.clearError() } }
+        viewModel.itemAdded.observe(this) { if (it == true) viewModel.clearItemAdded() }
+    }
+
+    private fun render(empty: Boolean) {
         binding.scroll.visibility = if (empty) View.GONE else View.VISIBLE
         binding.bottomBar.visibility = if (empty) View.GONE else View.VISIBLE
         binding.emptyState.visibility = if (empty) View.VISIBLE else View.GONE
-        if (!empty) updateTotals()
-    }
-
-    private fun updateTotals() {
-        val total = cartItems.sumOf { it.price * it.quantity }
-        val formatted = "₹%,d".format(total)
-        binding.tvItemTotal.text = formatted
-        binding.tvSubtotal.text = formatted
-    }
-
-    private fun loadCart() {
-        cartItems.clear()
-        cartItems.addAll(
-            listOf(
-                CartItem("1", "Sea Shell Mother of Pearl Two Hole Square Buttons Set of 25 For Sewing, suit, shirt and Crafting", "https://www.adikala.in/cdn/shop/products/657_cdb4596c-0ceb-47dc-9652-09be375b15c0.jpg?v=1657903140&width=1080", 150, 5),
-                CartItem("2", "White Raffia Ring Pack of 10 | for Wedding & Festive Decoration, DIY Art & Craft", "https://www.adikala.in/cdn/shop/collections/for-DIY.jpg?v=1674845390&width=1080", 1000, 5, "8IN")
-            )
-        )
     }
 }
