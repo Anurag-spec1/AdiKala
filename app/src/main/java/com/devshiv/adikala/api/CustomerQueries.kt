@@ -16,7 +16,7 @@ object CustomerQueries {
                     city
                     country
                     zip
-                    phone
+                    phoneNumber
                 }
             }
         }
@@ -29,7 +29,7 @@ object CustomerQueries {
                     edges {
                         node {
                             id
-                            orderNumber
+                            number
                             name
                             processedAt
                             fulfillmentStatus
@@ -67,7 +67,7 @@ object CustomerQueries {
                             city
                             country
                             zip
-                            phone
+                            phoneNumber
                             firstName
                             lastName
                         }

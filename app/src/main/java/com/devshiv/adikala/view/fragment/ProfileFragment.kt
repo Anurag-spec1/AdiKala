@@ -1,16 +1,18 @@
 package com.devshiv.adikala.view.fragment
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import com.devshiv.adikala.auth.ShopifyAuthService
 import com.devshiv.adikala.databinding.FragmentProfileBinding
-import com.devshiv.adikala.view.activity.LoginActivity
 import com.devshiv.adikala.viewmodel.ProfileViewModel
+import kotlinx.coroutines.launch
 
 class ProfileFragment : Fragment() {
 
@@ -18,6 +20,7 @@ class ProfileFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var viewModel: ProfileViewModel
+    private lateinit var authService: ShopifyAuthService
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -30,6 +33,8 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(this)[ProfileViewModel::class.java]
+        authService = ShopifyAuthService(requireContext())
+
         setupClickListeners()
         observeViewModel()
     }
@@ -41,16 +46,15 @@ class ProfileFragment : Fragment() {
 
     private fun setupClickListeners() {
         binding.btnSignIn.setOnClickListener {
-            startActivity(Intent(requireContext(), LoginActivity::class.java))
+            viewModel.launchLogin()
         }
 
         binding.btnCreateAccount.setOnClickListener {
-            startActivity(Intent(requireContext(), LoginActivity::class.java))
+            viewModel.launchLogin()
         }
 
         binding.btnSignOut.setOnClickListener {
-            viewModel.logout()
-            Toast.makeText(requireContext(), "Signed out", Toast.LENGTH_SHORT).show()
+            showSignOutDialog()
         }
 
         binding.btnEditProfile.setOnClickListener {
@@ -88,6 +92,50 @@ class ProfileFragment : Fragment() {
 
         binding.btnTerms.setOnClickListener {
             Toast.makeText(requireContext(), "Terms coming soon", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun showSignOutDialog() {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Sign Out")
+            .setMessage("Are you sure you want to sign out?")
+            .setPositiveButton("Sign Out") { _, _ ->
+                performSignOut()
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
+    private fun performSignOut() {
+        val progressDialog = AlertDialog.Builder(requireContext())
+            .setMessage("Signing out...")
+            .setCancelable(false)
+            .create()
+        progressDialog.show()
+
+        lifecycleScope.launch {
+            try {
+                authService.signOut()
+
+                progressDialog.dismiss()
+
+                Toast.makeText(
+                    requireContext(),
+                    "Signed out successfully",
+                    Toast.LENGTH_SHORT
+                ).show()
+
+                // Refresh the UI - stay on the same screen
+                viewModel.checkLoginStatus()
+
+            } catch (e: Exception) {
+                progressDialog.dismiss()
+                Toast.makeText(
+                    requireContext(),
+                    "Sign out failed: ${e.message}",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
         }
     }
 

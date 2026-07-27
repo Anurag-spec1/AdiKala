@@ -11,6 +11,9 @@
             <category android:name="android.intent.category.BROWSABLE" />
             <data android:scheme="https" />
         </intent>
+        <intent>
+            <action android:name="android.support.customtabs.action.CustomTabsService" />
+        </intent>
     </queries>
 
     <application
@@ -22,17 +25,41 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AdiKala">
+
+        <!--
+            This is the ONLY component allowed to declare the redirect URI
+            intent-filter. Do NOT add the same filter to LoginActivity or
+            anywhere else — having two matching components in the same app
+            is exactly what causes Android to show an "Open with" chooser
+            and can route the redirect to the wrong Activity.
+        -->
+        <activity
+            android:name="net.openid.appauth.RedirectUriReceiverActivity"
+            android:exported="true"
+            tools:node="replace">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="shop.26970751043.app"
+                    android:host="callback" />
+            </intent-filter>
+        </activity>
+
         <activity
             android:name=".view.activity.LoginActivity"
-            android:exported="false" />
-        <activity
-            android:name=".view.activity.SearchActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:launchMode="singleTask" />
+
         <activity
             android:name=".view.activity.AuthActivity"
             android:exported="false" />
         <activity
             android:name=".view.activity.MainActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.activity.SearchActivity"
             android:exported="false" />
         <activity
             android:name=".view.activity.CartActivity"
@@ -54,7 +81,6 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

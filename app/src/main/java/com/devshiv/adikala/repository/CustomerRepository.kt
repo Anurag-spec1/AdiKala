@@ -10,25 +10,28 @@ import com.devshiv.adikala.model.GraphQLRequest
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
+private const val TAG = "AdikalaAuth"
+
 class CustomerRepository {
 
     private val api = RetrofitClient.accountApi
 
-    /**
-     * @param accessToken RAW access token — do NOT prefix with "Bearer ".
-     * Shopify's Customer Account API requires the Authorization header to be
-     * the token value directly (confirmed in Shopify's own docs/examples).
-     * A "Bearer " prefix will cause every request to fail authentication.
-     */
     suspend fun getProfile(accessToken: String): CustomerProfile? = withContext(Dispatchers.IO) {
+        Log.d(TAG, "getProfile() called, accessToken present=${accessToken.isNotEmpty()}, length=${accessToken.length}")
         try {
             val request = GraphQLRequest(query = CustomerQueries.GET_PROFILE)
             val response = api.executeCustomerGraphQL(accessToken, request)
 
+            Log.d(TAG, "getProfile() HTTP response code=${response.code()}")
+
             if (response.isSuccessful) {
-                val data: JsonObject = response.body()?.data ?: return@withContext null
+                val data: JsonObject = response.body()?.data ?: run {
+                    Log.e(TAG, "getProfile() response body/data is null despite 2xx")
+                    return@withContext null
+                }
 
                 if (!data.has("customer") || data.get("customer").isJsonNull) {
+                    Log.w(TAG, "getProfile() response has no 'customer' field — check GraphQL query/scopes")
                     return@withContext null
                 }
 
@@ -58,23 +61,22 @@ class CustomerRepository {
                         city = addressObj.get("city")?.asString ?: "",
                         country = addressObj.get("country")?.asString ?: "",
                         zip = addressObj.get("zip")?.asString ?: "",
-                        phone = addressObj.get("phone")?.asString ?: ""
+                        phone = addressObj.get("phoneNumber")?.asString ?: ""
                     )
                 }
 
-                Log.d("CustomerRepo", "Profile loaded: ${profile.email}")
+                Log.d(TAG, "getProfile() SUCCESS: email=${profile.email}")
                 profile
             } else if (response.code() == 401) {
-                // Access token expired/invalid — caller should refresh via
-                // ShopifyAuthService.refreshAccessToken() and retry once.
-                Log.w("CustomerRepo", "401 Unauthorized — token likely expired")
+                Log.w(TAG, "getProfile() 401 Unauthorized — access token expired/invalid, caller should refresh and retry")
                 null
             } else {
-                Log.e("CustomerRepo", "Failed: ${response.code()} - ${response.errorBody()?.string()}")
+                val errorBody = response.errorBody()?.string()
+                Log.e(TAG, "getProfile() failed: code=${response.code()}, body=$errorBody")
                 null
             }
         } catch (e: Exception) {
-            Log.e("CustomerRepo", "Error: ${e.message}", e)
+            Log.e(TAG, "getProfile() exception: ${e.message}", e)
             null
         }
     }

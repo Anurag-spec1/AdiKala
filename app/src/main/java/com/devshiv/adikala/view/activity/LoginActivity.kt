@@ -1,5 +1,6 @@
 package com.devshiv.adikala.view.activity
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -9,10 +10,6 @@ import com.devshiv.adikala.auth.ShopifyAuthService
 import com.devshiv.adikala.databinding.ActivityLoginBinding
 import kotlinx.coroutines.launch
 
-/**
- * Starts the Shopify Customer Account OAuth flow. Shopify hosts the actual
- * email/OTP/passkey step in a Custom Tab; we just launch it and catch the redirect.
- */
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginBinding
@@ -20,22 +17,11 @@ class LoginActivity : AppCompatActivity() {
 
     private val authLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            val data = result.data
-            if (data == null) {
+            if (result.resultCode == RESULT_OK && result.data != null) {
+                handleAuthSuccess(result.data!!)
+            } else {
                 Toast.makeText(this, "Sign-in cancelled", Toast.LENGTH_SHORT).show()
-                finish()
-                return@registerForActivityResult
-            }
-            lifecycleScope.launch {
-                binding.progressBar?.visibility = android.view.View.VISIBLE
-                val ok = authService.handleAuthResponse(data)
-                if (ok) {
-                    Toast.makeText(this@LoginActivity, "Signed in", Toast.LENGTH_SHORT).show()
-                    setResult(RESULT_OK)
-                } else {
-                    Toast.makeText(this@LoginActivity, "Sign-in failed. Please try again.", Toast.LENGTH_LONG).show()
-                    setResult(RESULT_CANCELED)
-                }
+                setResult(RESULT_CANCELED)
                 finish()
             }
         }
@@ -44,29 +30,38 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        authService = ShopifyAuthService(this)
 
+        authService = ShopifyAuthService(this)
         startAuthFlow()
     }
 
     private fun startAuthFlow() {
+        try {
+            val intent = authService.buildAuthIntent()
+            authLauncher.launch(intent)
+        } catch (e: Exception) {
+            Toast.makeText(this, "Could not start sign-in", Toast.LENGTH_SHORT).show()
+            setResult(RESULT_CANCELED)
+            finish()
+        }
+    }
+
+    private fun handleAuthSuccess(data: Intent) {
         lifecycleScope.launch {
-            try {
-                val intent = authService.buildAuthIntent()
-                authLauncher.launch(intent)
-            } catch (e: Exception) {
-                Toast.makeText(
-                    this@LoginActivity,
-                    "Couldn't start sign-in: ${e.message}",
-                    Toast.LENGTH_LONG
-                ).show()
-                finish()
+            val success = authService.handleAuthResponse(data)
+            if (success) {
+                Toast.makeText(this@LoginActivity, "Signed in!", Toast.LENGTH_SHORT).show()
+                setResult(RESULT_OK)
+            } else {
+                Toast.makeText(this@LoginActivity, "Sign-in failed", Toast.LENGTH_LONG).show()
+                setResult(RESULT_CANCELED)
             }
+            finish()
         }
     }
 
     override fun onDestroy() {
-        authService.dispose()
         super.onDestroy()
+        authService.dispose()
     }
 }
