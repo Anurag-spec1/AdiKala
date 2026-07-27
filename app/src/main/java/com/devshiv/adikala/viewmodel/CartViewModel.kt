@@ -1,10 +1,12 @@
 package com.devshiv.adikala.viewmodel
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.devshiv.adikala.auth.ShopifyAuthManager
 import com.devshiv.adikala.repository.CartRepository
 import com.devshiv.adikala.utils.CartManager
 import kotlinx.coroutines.launch
@@ -13,9 +15,20 @@ class CartViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repository = CartRepository()
     private val app = application
+    private val authManager = ShopifyAuthManager(application)
 
-    private val _cartData = MutableLiveData<CartRepository.CartData?>()
-    val cartData: LiveData<CartRepository.CartData?> = _cartData
+    data class CartItemDisplay(
+        val lineId: String,
+        val variantId: String,
+        val name: String,
+        val imageUrl: String,
+        val price: String,
+        val size: String?,
+        var quantity: Int
+    )
+
+    private val _cartItems = MutableLiveData<List<CartItemDisplay>>()
+    val cartItems: LiveData<List<CartItemDisplay>> = _cartItems
 
     private val _isEmpty = MutableLiveData(true)
     val isEmpty: LiveData<Boolean> = _isEmpty
@@ -23,24 +36,49 @@ class CartViewModel(application: Application) : AndroidViewModel(application) {
     private val _isLoading = MutableLiveData(false)
     val isLoading: LiveData<Boolean> = _isLoading
 
+    private val _totalAmount = MutableLiveData("₹0")
+    val totalAmount: LiveData<String> = _totalAmount
+
+    private val _checkoutUrl = MutableLiveData<String?>()
+    val checkoutUrl: LiveData<String?> = _checkoutUrl
+
     private val _error = MutableLiveData<String?>()
     val error: LiveData<String?> = _error
+
+    private val _operationMessage = MutableLiveData<String?>()
+    val operationMessage: LiveData<String?> = _operationMessage
 
     private val _itemAdded = MutableLiveData<Boolean>()
     val itemAdded: LiveData<Boolean> = _itemAdded
 
-    init { loadCart() }
+    private val _suggestions = MutableLiveData<List<CartRepository.ProductSuggestion>>()
+    val suggestions: LiveData<List<CartRepository.ProductSuggestion>> = _suggestions
+
+    init {
+        loadCart()
+        loadSuggestions()
+    }
 
     fun loadCart() {
-        val cartId = CartManager.getCartId(app) ?: run {
-            _isEmpty.value = true
-            return
-        }
+        val cartId = CartManager.getCartId(app) ?: run { _isEmpty.value = true; return }
         viewModelScope.launch {
             _isLoading.value = true
             val cart = repository.getCart(cartId)
             if (cart != null && cart.items.isNotEmpty()) {
-                _cartData.value = cart
+                _cartItems.value = cart.items.map { line ->
+                    val productName = CartManager.getProductName(app, line.variantId)
+                    CartItemDisplay(
+                        lineId = line.lineId,
+                        variantId = line.variantId,
+                        name = productName ?: line.title,
+                        imageUrl = line.imageUrl ?: "",
+                        price = line.price,
+                        size = line.size,
+                        quantity = line.quantity
+                    )
+                }
+                _totalAmount.value = cart.totalAmount
+                _checkoutUrl.value = cart.checkoutUrl
                 _isEmpty.value = false
             } else {
                 CartManager.clear(app)
@@ -50,26 +88,66 @@ class CartViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun addItem(variantId: String, quantity: Int = 1) {
+    fun addItem(variantId: String, productName: String, quantity: Int = 1) {
+        CartManager.saveProductName(app, variantId, productName)
         viewModelScope.launch {
             _isLoading.value = true
-            val cartId = CartManager.getCartId(app)
+            _operationMessage.value = "Adding to cart..."
 
-            val cart = if (cartId == null) {
-                repository.createCart(variantId, quantity)?.also {
-                    CartManager.saveCartId(app, it.id)
+            val cartId = CartManager.getCartId(app)
+            val token = authManager.getAccessToken()
+
+            if (cartId == null) {
+                val cart = repository.createCart(variantId, quantity)
+                cart?.id?.let {
+                    CartManager.saveCartId(app, it)
+                    if (token != null) {
+                        repository.setCartBuyerIdentity(it, token)
+                    }
                 }
             } else {
                 repository.addToCart(cartId, variantId, quantity)
             }
 
-            if (cart != null) {
-                _cartData.value = cart
-                _isEmpty.value = false
-                _itemAdded.value = true
+            loadCart()
+            _itemAdded.value = true
+            _operationMessage.value = "Added to cart"
+            _isLoading.value = false
+        }
+    }
+
+    fun removeItem(lineId: String, variantId: String) {
+        val cartId = CartManager.getCartId(app) ?: return
+        viewModelScope.launch {
+            _isLoading.value = true
+            _operationMessage.value = "Removing item..."
+
+            val result = repository.removeFromCart(cartId, listOf(lineId))
+            CartManager.removeProductName(app, variantId)
+
+            if (result != null) {
+                // Update UI directly with the returned cart data
+                _cartItems.value = result.items.map { line ->
+                    val productName = CartManager.getProductName(app, line.variantId)
+                    CartItemDisplay(
+                        lineId = line.lineId,
+                        variantId = line.variantId,
+                        name = productName ?: line.title,
+                        imageUrl = line.imageUrl ?: "",
+                        price = line.price,
+                        size = line.size,
+                        quantity = line.quantity
+                    )
+                }
+                _totalAmount.value = result.totalAmount
+                _checkoutUrl.value = result.checkoutUrl
+                _isEmpty.value = result.items.isEmpty()
             } else {
-                _error.value = "Failed to add item"
+                // If result is null, reload from API
+                loadCart()
             }
+
+            _operationMessage.value = "Item removed"
             _isLoading.value = false
         }
     }
@@ -78,36 +156,54 @@ class CartViewModel(application: Application) : AndroidViewModel(application) {
         val cartId = CartManager.getCartId(app) ?: return
         viewModelScope.launch {
             _isLoading.value = true
-            val cart = repository.updateQuantity(cartId, lineId, quantity)
-            if (cart != null) {
-                _cartData.value = cart
-                _isEmpty.value = cart.items.isEmpty()
-            }
-            _isLoading.value = false
-        }
-    }
+            val result = repository.updateQuantity(cartId, lineId, quantity)
 
-    fun removeItem(lineId: String) {
-        val cartId = CartManager.getCartId(app) ?: return
-        viewModelScope.launch {
-            _isLoading.value = true
-            val cart = repository.removeFromCart(cartId, listOf(lineId))
-            if (cart != null) {
-                if (cart.items.isEmpty()) {
-                    CartManager.clear(app)
-                    _cartData.value = null
-                    _isEmpty.value = true
-                } else {
-                    _cartData.value = cart
-                    _isEmpty.value = false
+            if (result != null) {
+                _cartItems.value = result.items.map { line ->
+                    val productName = CartManager.getProductName(app, line.variantId)
+                    CartItemDisplay(
+                        lineId = line.lineId,
+                        variantId = line.variantId,
+                        name = productName ?: line.title,
+                        imageUrl = line.imageUrl ?: "",
+                        price = line.price,
+                        size = line.size,
+                        quantity = line.quantity
+                    )
                 }
+                _totalAmount.value = result.totalAmount
+                _checkoutUrl.value = result.checkoutUrl
+            } else {
+                loadCart()
             }
             _isLoading.value = false
         }
     }
 
-    fun getCheckoutUrl(): String? = _cartData.value?.checkoutUrl
+    fun getCheckoutUrl(): String? {
+        return _checkoutUrl.value
+    }
 
-    fun clearError() { _error.value = null }
+    fun getAuthenticatedCheckoutUrl(onResult: (String?) -> Unit) {
+        val cartId = CartManager.getCartId(app)
+        val token = authManager.getAccessToken()
+
+        if (cartId == null || token == null) {
+            onResult(null)
+            return
+        }
+
+        viewModelScope.launch {
+            val url = repository.getCheckoutUrlWithAuth(cartId, token)
+            onResult(url)
+        }
+    }
+
     fun clearItemAdded() { _itemAdded.value = false }
+
+    private fun loadSuggestions() {
+        viewModelScope.launch {
+            _suggestions.value = repository.getProductSuggestions()
+        }
+    }
 }

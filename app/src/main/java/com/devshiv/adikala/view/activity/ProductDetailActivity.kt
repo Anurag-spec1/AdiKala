@@ -23,12 +23,14 @@ import com.devshiv.adikala.databinding.ActivityProductDetailBinding
 import com.devshiv.adikala.databinding.ItemDiscountBinding
 import com.devshiv.adikala.databinding.ItemFeatureBinding
 import com.devshiv.adikala.model.Product
+import com.devshiv.adikala.viewmodel.CartViewModel
 import com.devshiv.adikala.viewmodel.ProductDetailViewModel
 
 class ProductDetailActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityProductDetailBinding
     private lateinit var viewModel: ProductDetailViewModel
+    private lateinit var cartViewModel: CartViewModel
     private lateinit var product: Product
     private lateinit var thumbAdapter: ThumbnailAdapter
     private lateinit var reviewAdapter: ReviewAdapter
@@ -36,6 +38,7 @@ class ProductDetailActivity : AppCompatActivity() {
     private lateinit var images: List<String>
     private var quantity = 1
     private var userRating = 0
+    private var selectedVariantId: String? = null
 
     companion object {
         const val EXTRA_PRODUCT = "extra_product"
@@ -59,8 +62,12 @@ class ProductDetailActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         viewModel = ViewModelProvider(this)[ProductDetailViewModel::class.java]
+        cartViewModel = ViewModelProvider(this)[CartViewModel::class.java]
 
         product = (intent.getSerializableExtra(EXTRA_PRODUCT) as? Product) ?: run { finish(); return }
+
+        // Set default variant
+        selectedVariantId = product.variants.firstOrNull()?.id
 
         viewModel.loadProduct(product)
 
@@ -69,6 +76,7 @@ class ProductDetailActivity : AppCompatActivity() {
         setupFeatures()
         setupOffers()
         setupSections()
+        setupVariants()
         setupQuantity()
         setupActions()
         setupReviews()
@@ -167,6 +175,34 @@ class ProductDetailActivity : AppCompatActivity() {
         }
     }
 
+    private fun setupVariants() {
+        val variants = product.variants
+        if (variants.isEmpty() || variants.size <= 1 && variants.firstOrNull()?.title == "Default Title") {
+            binding.variantContainer.visibility = View.GONE
+            return
+        }
+
+        binding.variantContainer.visibility = View.VISIBLE
+        binding.variantContainer.removeAllViews()
+
+        variants.forEach { variant ->
+            val chip = com.google.android.material.chip.Chip(this).apply {
+                text = variant.title
+                isCheckable = true
+                isChecked = variant.id == selectedVariantId
+                setOnClickListener {
+                    selectedVariantId = variant.id
+                    // Update all chips
+                    for (i in 0 until binding.variantContainer.childCount) {
+                        (binding.variantContainer.getChildAt(i) as? com.google.android.material.chip.Chip)?.isChecked = false
+                    }
+                    isChecked = true
+                }
+            }
+            binding.variantContainer.addView(chip)
+        }
+    }
+
     private fun setupQuantity() {
         updateQty()
         binding.btnMinus.setOnClickListener { if (quantity > 1) { quantity--; updateQty() } }
@@ -176,6 +212,12 @@ class ProductDetailActivity : AppCompatActivity() {
     private fun updateQty() {
         binding.tvQty.text = quantity.toString()
         binding.btnMinus.alpha = if (quantity > 1) 1f else 0.35f
+    }
+
+    private fun getVariantId(): String {
+        return selectedVariantId?.let { id ->
+            if (id.startsWith("gid://")) id else "gid://shopify/ProductVariant/$id"
+        } ?: "gid://shopify/ProductVariant/${product.variants.firstOrNull()?.id ?: product.id}"
     }
 
     private fun setupActions() {
@@ -209,10 +251,14 @@ class ProductDetailActivity : AppCompatActivity() {
         }
 
         binding.btnAddToCart.setOnClickListener {
+            cartViewModel.addItem(getVariantId(), product.name, quantity)
             Toast.makeText(this, "Added $quantity to cart", Toast.LENGTH_SHORT).show()
         }
 
-        binding.btnBuyNow.setOnClickListener { }
+        binding.btnBuyNow.setOnClickListener {
+            cartViewModel.addItem(getVariantId(), product.name, quantity)
+            startActivity(Intent(this, CartActivity::class.java))
+        }
 
         binding.btnSubmitQuery.setOnClickListener { submitQuery() }
     }
@@ -267,10 +313,7 @@ class ProductDetailActivity : AppCompatActivity() {
         val name = binding.etReviewerName.text.toString().trim()
         val email = binding.etReviewerEmail.text.toString().trim()
 
-        if (userRating == 0) {
-            Toast.makeText(this, "Please select a rating", Toast.LENGTH_SHORT).show()
-            return
-        }
+        if (userRating == 0) { Toast.makeText(this, "Select a rating", Toast.LENGTH_SHORT).show(); return }
         if (name.isEmpty()) { binding.etReviewerName.error = "Enter your name"; return }
         if (email.isEmpty() || !Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             binding.etReviewerEmail.error = "Enter valid email"; return
@@ -316,9 +359,11 @@ class ProductDetailActivity : AppCompatActivity() {
         }
 
         viewModel.submitResult.observe(this) { result ->
-            if (result.isNotEmpty()) {
-                Toast.makeText(this, result, Toast.LENGTH_SHORT).show()
-            }
+            if (result.isNotEmpty()) Toast.makeText(this, result, Toast.LENGTH_SHORT).show()
+        }
+
+        cartViewModel.itemAdded.observe(this) { added ->
+            if (added == true) cartViewModel.clearItemAdded()
         }
     }
 

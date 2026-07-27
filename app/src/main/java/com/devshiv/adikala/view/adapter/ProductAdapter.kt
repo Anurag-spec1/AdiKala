@@ -12,11 +12,16 @@ import com.devshiv.adikala.databinding.ItemProductsBinding
 import com.devshiv.adikala.model.Product
 
 class ProductAdapter(
-    private val list: List<Product>,
+    private var list: List<Product>,
     private val onClick: ((Product) -> Unit)? = null,
     private val onAddToCart: ((Product) -> Unit)? = null,
     private val onWishlistToggle: ((Product) -> Unit)? = null
 ) : RecyclerView.Adapter<ProductAdapter.ViewHolder>() {
+
+    fun updateList(newList: List<Product>) {
+        list = newList
+        notifyDataSetChanged()
+    }
 
     inner class ViewHolder(
         val binding: ItemProductsBinding
@@ -46,7 +51,7 @@ class ProductAdapter(
             binding.btnWishlist.setImageResource(
                 if (item.isWishlisted) R.drawable.ic_heart_filled else R.drawable.ic_heart
             )
-            binding.btnWishlist.setTint(
+            binding.btnWishlist.setColorFilter(
                 Color.parseColor(if (item.isWishlisted) "#C2707D" else "#0D3238")
             )
 

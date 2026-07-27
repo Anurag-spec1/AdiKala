@@ -7,6 +7,7 @@
     android:layout_height="wrap_content"
     android:layout_marginBottom="14dp"
     android:background="@color/white"
+    android:gravity="center_vertical"
     android:orientation="horizontal"
     android:padding="12dp"
     app:carbon_cornerRadius="20dp"
@@ -33,6 +34,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center_vertical"
             android:orientation="horizontal">
 
             <carbon.widget.TextView
@@ -41,7 +43,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:ellipsize="end"
-                android:lineSpacingExtra="1dp"
+                android:includeFontPadding="false"
+                android:lineSpacingExtra="2dp"
                 android:maxLines="2"
                 android:text="Sea Shell Mother of Pearl Two Hole Square Buttons"
                 android:textColor="#0D3238"
@@ -52,7 +55,7 @@
                 android:id="@+id/btnRemove"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:layout_marginStart="6dp"
+                android:layout_marginStart="8dp"
                 android:background="#F7EDED"
                 android:clickable="true"
                 android:focusable="true"
@@ -67,12 +70,13 @@
             android:id="@+id/tvSize"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="6dp"
             android:background="#F2ECE6"
+            android:includeFontPadding="false"
             android:paddingStart="8dp"
             android:paddingEnd="8dp"
-            android:paddingTop="3dp"
-            android:paddingBottom="3dp"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
             android:text="Size: 8IN"
             android:textColor="#5C5C5C"
             android:textSize="11sp"
@@ -82,7 +86,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="12dp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
@@ -110,9 +114,14 @@
 
                 <carbon.widget.TextView
                     android:id="@+id/tvQty"
-                    android:layout_width="30dp"
-                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
                     android:gravity="center"
+                    android:includeFontPadding="false"
+                    android:minWidth="26dp"
+                    android:paddingStart="2dp"
+                    android:paddingEnd="2dp"
                     android:text="5"
                     android:textColor="#0D3238"
                     android:textSize="16sp"
@@ -136,7 +145,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:gravity="end"
+                android:gravity="end|center_vertical"
+                android:includeFontPadding="false"
                 android:text="₹150"
                 android:textColor="#0D3238"
                 android:textSize="18sp"

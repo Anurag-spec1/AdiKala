@@ -13,12 +13,14 @@ import com.devshiv.adikala.view.adapter.SortAdapter
 import com.devshiv.adikala.databinding.ActivityProductsBinding
 import com.devshiv.adikala.databinding.SheetSortBinding
 import com.devshiv.adikala.model.SortOption
+import com.devshiv.adikala.viewmodel.CartViewModel
 import com.devshiv.adikala.viewmodel.ProductsViewModel
 
 class ProductsActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityProductsBinding
     private lateinit var viewModel: ProductsViewModel
+    private lateinit var cartViewModel: CartViewModel
     private lateinit var productAdapter: ProductAdapter
     private var currentSort = SortOption.FEATURED
     private var collectionHandle = ""
@@ -34,6 +36,8 @@ class ProductsActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         viewModel = ViewModelProvider(this)[ProductsViewModel::class.java]
+        cartViewModel = ViewModelProvider(this)[CartViewModel::class.java]
+
         val categoryName = intent.getStringExtra(EXTRA_CATEGORY) ?: "Products"
         collectionHandle = intent.getStringExtra(EXTRA_COLLECTION_HANDLE) ?: ""
 
@@ -49,16 +53,14 @@ class ProductsActivity : AppCompatActivity() {
     private fun setupRecycler() {
         productAdapter = ProductAdapter(emptyList(),
             onClick = { product ->
-                val intent = Intent(this, ProductDetailActivity::class.java)
-                intent.putExtra(ProductDetailActivity.EXTRA_PRODUCT, product)
-                startActivity(intent)
+                startActivity(Intent(this, ProductDetailActivity::class.java).apply {
+                    putExtra(ProductDetailActivity.EXTRA_PRODUCT, product)
+                })
             },
             onAddToCart = { product ->
-                val variantId = product.variants.firstOrNull()?.id ?: return@ProductAdapter
-                val intent = Intent(this, CartActivity::class.java)
-                intent.putExtra("variant_id", variantId)
-                intent.putExtra("quantity", 1)
-                startActivity(intent)
+                val variantId = "gid://shopify/ProductVariant/${product.variants.firstOrNull()?.id ?: product.id}"
+                cartViewModel.addItem(variantId, product.name)
+                Toast.makeText(this, "${product.name} added to cart", Toast.LENGTH_SHORT).show()
             },
             onWishlistToggle = { product ->
                 product.isWishlisted = !product.isWishlisted
@@ -81,7 +83,7 @@ class ProductsActivity : AppCompatActivity() {
             } else {
                 binding.emptyState.visibility = View.GONE
                 binding.rvProducts.visibility = View.VISIBLE
-                updateAdapter(products)
+                productAdapter.updateList(products)
                 binding.tvResultCount.text = "${products.size} products"
             }
         }
@@ -96,28 +98,6 @@ class ProductsActivity : AppCompatActivity() {
         viewModel.error.observe(this) { error ->
             if (!error.isNullOrEmpty()) Toast.makeText(this, error, Toast.LENGTH_SHORT).show()
         }
-    }
-
-    private fun updateAdapter(products: List<com.devshiv.adikala.model.Product>) {
-        productAdapter = ProductAdapter(products,
-            onClick = { product ->
-                val intent = Intent(this, ProductDetailActivity::class.java)
-                intent.putExtra(ProductDetailActivity.EXTRA_PRODUCT, product)
-                startActivity(intent)
-            },
-            onAddToCart = { product ->
-                val variantId = product.variants.firstOrNull()?.id ?: return@ProductAdapter
-                val intent = Intent(this, CartActivity::class.java)
-                intent.putExtra("variant_id", variantId)
-                intent.putExtra("quantity", 1)
-                startActivity(intent)
-            },
-            onWishlistToggle = { product ->
-                product.isWishlisted = !product.isWishlisted
-                productAdapter.notifyDataSetChanged()
-            }
-        )
-        binding.rvProducts.adapter = productAdapter
     }
 
     private fun setupListeners() {

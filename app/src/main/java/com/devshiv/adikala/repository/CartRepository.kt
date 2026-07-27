@@ -30,6 +30,14 @@ class CartRepository {
         val items: List<CartLineItem>
     )
 
+    data class ProductSuggestion(
+        val id: String,
+        val title: String,
+        val imageUrl: String,
+        val price: String,
+        val variantId: String
+    )
+
     data class CartLineItem(
         val lineId: String,
         val variantId: String,
@@ -42,13 +50,14 @@ class CartRepository {
 
     suspend fun createCart(variantId: String, quantity: Int): CartData? = withContext(Dispatchers.IO) {
         try {
+            Log.d("CartRepo", "=== CREATE CART ===")
+            Log.d("CartRepo", "Variant ID: $variantId, Quantity: $quantity")
+
             val query = """
             mutation CartCreate {
                 cartCreate(input: { lines: [{ merchandiseId: "$variantId", quantity: $quantity }] }) {
                     cart {
-                        id
-                        checkoutUrl
-                        totalQuantity
+                        id checkoutUrl totalQuantity
                         cost { totalAmount { amount currencyCode } }
                         lines(first: 100) { nodes { id quantity merchandise {
                             ... on ProductVariant {
@@ -65,9 +74,21 @@ class CartRepository {
             """.trimIndent()
 
             val response = execute(query)
-            val cartJson = response.optJSONObject("data")
-                ?.optJSONObject("cartCreate")
-                ?.optJSONObject("cart")
+            Log.d("CartRepo", "Create cart response: $response")
+
+            val data = response.optJSONObject("data")?.optJSONObject("cartCreate")
+            val cartJson = data?.optJSONObject("cart")
+            val userErrors = data?.optJSONArray("userErrors")
+
+            if (userErrors != null && userErrors.length() > 0) {
+                Log.e("CartRepo", "User errors: $userErrors")
+                return@withContext null
+            }
+
+            if (response.has("errors")) {
+                Log.e("CartRepo", "GraphQL errors: ${response.optJSONArray("errors")}")
+                return@withContext null
+            }
 
             parseCart(cartJson)
         } catch (e: Exception) {
@@ -76,8 +97,137 @@ class CartRepository {
         }
     }
 
+    suspend fun getCheckoutUrl(cartId: String, accessToken: String): String? = withContext(Dispatchers.IO) {
+        try {
+            val query = """
+        query {
+            cart(id: "$cartId") {
+                checkoutUrl
+            }
+        }
+        """.trimIndent()
+
+            val response = execute(query)
+            val url = response.optJSONObject("data")?.optJSONObject("cart")?.optString("checkoutUrl")
+            Log.d("CartRepo", "Checkout URL: $url")
+            url
+        } catch (e: Exception) {
+            Log.e("CartRepo", "Error getting checkout URL", e)
+            null
+        }
+    }
+
+    suspend fun setCartBuyerIdentity(cartId: String, accessToken: String): Boolean = withContext(Dispatchers.IO) {
+        try {
+            Log.d("CartRepo", "=== SET CART BUYER IDENTITY ===")
+
+            val query = """
+        mutation {
+            cartBuyerIdentityUpdate(cartId: "$cartId", buyerIdentity: {
+                customerAccessToken: "$accessToken"
+            }) {
+                cart { id }
+                userErrors { field message }
+            }
+        }
+        """.trimIndent()
+
+            val response = execute(query)
+            Log.d("CartRepo", "Buyer identity response: $response")
+
+            val userErrors = response.optJSONObject("data")?.optJSONObject("cartBuyerIdentityUpdate")?.optJSONArray("userErrors")
+            if (userErrors != null && userErrors.length() > 0) {
+                Log.e("CartRepo", "Buyer identity errors: $userErrors")
+                return@withContext false
+            }
+
+            !response.has("errors")
+        } catch (e: Exception) {
+            Log.e("CartRepo", "Error setting buyer identity", e)
+            false
+        }
+    }
+
+    suspend fun getCheckoutUrlWithAuth(cartId: String, accessToken: String): String? = withContext(Dispatchers.IO) {
+        try {
+            Log.d("CartRepo", "=== GET CHECKOUT URL WITH AUTH ===")
+
+            // Step 1: Set buyer identity on cart
+            val identitySet = setCartBuyerIdentity(cartId, accessToken)
+            if (!identitySet) {
+                Log.e("CartRepo", "Failed to set buyer identity")
+            }
+
+            // Step 2: Get updated checkout URL
+            val query = """
+        query {
+            cart(id: "$cartId") {
+                checkoutUrl
+            }
+        }
+        """.trimIndent()
+
+            val response = execute(query)
+            val baseUrl = response.optJSONObject("data")?.optJSONObject("cart")?.optString("checkoutUrl")
+
+            // Step 3: Append sso=silent for browser session SSO
+            val finalUrl = if (baseUrl != null) {
+                if (baseUrl.contains("?")) {
+                    "$baseUrl&sso=silent"
+                } else {
+                    "$baseUrl?sso=silent"
+                }
+            } else null
+
+            Log.d("CartRepo", "Final checkout URL: $finalUrl")
+            finalUrl
+        } catch (e: Exception) {
+            Log.e("CartRepo", "Error", e)
+            null
+        }
+    }
+
+    suspend fun getProductSuggestions(limit: Int = 10): List<ProductSuggestion> = withContext(Dispatchers.IO) {
+        try {
+            val query = """
+        query {
+            products(first: $limit, sortKey: BEST_SELLING) {
+                nodes {
+                    id
+                    title
+                    featuredImage { url }
+                    priceRange { minVariantPrice { amount currencyCode } }
+                    variants(first: 1) { nodes { id } }
+                }
+            }
+        }
+        """.trimIndent()
+
+            val response = execute(query)
+            val products = response.optJSONObject("data")?.optJSONObject("products")?.optJSONArray("nodes")
+                ?: return@withContext emptyList()
+
+            (0 until products.length()).map { i ->
+                val p = products.getJSONObject(i)
+                ProductSuggestion(
+                    id = p.optString("id"),
+                    title = p.optString("title"),
+                    imageUrl = p.optJSONObject("featuredImage")?.optString("url") ?: "",
+                    price = p.optJSONObject("priceRange")?.optJSONObject("minVariantPrice")?.optString("amount") ?: "0",
+                    variantId = p.optJSONObject("variants")?.optJSONArray("nodes")?.getJSONObject(0)?.optString("id") ?: ""
+                )
+            }
+        } catch (e: Exception) {
+            Log.e("CartRepo", "getProductSuggestions failed", e)
+            emptyList()
+        }
+    }
+
     suspend fun getCart(cartId: String): CartData? = withContext(Dispatchers.IO) {
         try {
+            Log.d("CartRepo", "=== GET CART ===")
+            Log.d("CartRepo", "Cart ID: $cartId")
+
             val query = """
             query CartGet {
                 cart(id: "$cartId") {
@@ -96,8 +246,14 @@ class CartRepository {
             """.trimIndent()
 
             val response = execute(query)
-            val cartJson = response.optJSONObject("data")?.optJSONObject("cart")
-            parseCart(cartJson)
+            Log.d("CartRepo", "Get cart response: $response")
+
+            if (response.has("errors")) {
+                Log.e("CartRepo", "GraphQL errors: ${response.optJSONArray("errors")}")
+                return@withContext null
+            }
+
+            parseCart(response.optJSONObject("data")?.optJSONObject("cart"))
         } catch (e: Exception) {
             Log.e("CartRepo", "getCart failed", e)
             null
@@ -106,6 +262,9 @@ class CartRepository {
 
     suspend fun addToCart(cartId: String, variantId: String, quantity: Int): CartData? = withContext(Dispatchers.IO) {
         try {
+            Log.d("CartRepo", "=== ADD TO CART ===")
+            Log.d("CartRepo", "Cart ID: $cartId, Variant: $variantId, Qty: $quantity")
+
             val query = """
             mutation CartLinesAdd {
                 cartLinesAdd(cartId: "$cartId", lines: [{ merchandiseId: "$variantId", quantity: $quantity }]) {
@@ -127,11 +286,8 @@ class CartRepository {
             """.trimIndent()
 
             val response = execute(query)
-            val cartJson = response.optJSONObject("data")
-                ?.optJSONObject("cartLinesAdd")
-                ?.optJSONObject("cart")
-
-            parseCart(cartJson)
+            val data = response.optJSONObject("data")?.optJSONObject("cartLinesAdd")
+            parseCart(data?.optJSONObject("cart"))
         } catch (e: Exception) {
             Log.e("CartRepo", "addToCart failed", e)
             null
@@ -140,6 +296,9 @@ class CartRepository {
 
     suspend fun updateQuantity(cartId: String, lineId: String, quantity: Int): CartData? = withContext(Dispatchers.IO) {
         try {
+            Log.d("CartRepo", "=== UPDATE QTY ===")
+            Log.d("CartRepo", "Cart: $cartId, Line: $lineId, Qty: $quantity")
+
             val query = """
             mutation CartLinesUpdate {
                 cartLinesUpdate(cartId: "$cartId", lines: [{ id: "$lineId", quantity: $quantity }]) {
@@ -161,11 +320,7 @@ class CartRepository {
             """.trimIndent()
 
             val response = execute(query)
-            val cartJson = response.optJSONObject("data")
-                ?.optJSONObject("cartLinesUpdate")
-                ?.optJSONObject("cart")
-
-            parseCart(cartJson)
+            parseCart(response.optJSONObject("data")?.optJSONObject("cartLinesUpdate")?.optJSONObject("cart"))
         } catch (e: Exception) {
             Log.e("CartRepo", "updateQuantity failed", e)
             null
@@ -196,11 +351,7 @@ class CartRepository {
             """.trimIndent()
 
             val response = execute(query)
-            val cartJson = response.optJSONObject("data")
-                ?.optJSONObject("cartLinesRemove")
-                ?.optJSONObject("cart")
-
-            parseCart(cartJson)
+            parseCart(response.optJSONObject("data")?.optJSONObject("cartLinesRemove")?.optJSONObject("cart"))
         } catch (e: Exception) {
             Log.e("CartRepo", "removeFromCart failed", e)
             null
@@ -215,14 +366,12 @@ class CartRepository {
             .header("Content-Type", "application/json")
             .post(body)
             .build()
-
         val response = client.newCall(request).execute()
         return JSONObject(response.body?.string() ?: "{}")
     }
 
     private fun parseCart(json: JSONObject?): CartData? {
         if (json == null) return null
-
         val cost = json.optJSONObject("cost")?.optJSONObject("totalAmount")
         val lines = json.optJSONObject("lines")?.optJSONArray("nodes") ?: return null
 
@@ -238,24 +387,21 @@ class CartRepository {
             if (options != null) {
                 for (j in 0 until options.length()) {
                     val opt = options.getJSONObject(j)
-                    if (opt.optString("name").equals("Size", true) ||
-                        opt.optString("name").equals("Title", true)) {
-                        size = opt.optString("value", null)
+                    if (opt.optString("name") != "Title") {
+                        size = "${opt.optString("name")}: ${opt.optString("value")}"
                     }
                 }
             }
 
-            items.add(
-                CartLineItem(
-                    lineId = line.optString("id"),
-                    variantId = merch.optString("id"),
-                    quantity = line.optInt("quantity", 1),
-                    title = merch.optString("title", ""),
-                    price = "${price?.optString("currencyCode", "INR")} ${price?.optString("amount", "0")}",
-                    imageUrl = image?.optString("url"),
-                    size = size
-                )
-            )
+            items.add(CartLineItem(
+                lineId = line.optString("id"),
+                variantId = merch.optString("id"),
+                quantity = line.optInt("quantity", 1),
+                title = merch.optString("title", ""),
+                price = "${price?.optString("currencyCode", "INR")} ${price?.optString("amount", "0")}",
+                imageUrl = image?.optString("url"),
+                size = size
+            ))
         }
 
         return CartData(
