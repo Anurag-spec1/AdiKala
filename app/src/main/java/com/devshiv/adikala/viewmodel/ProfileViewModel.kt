@@ -97,19 +97,25 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
                 val token = getValidToken() ?: return@launch
                 profileData = customerRepository.getProfile(token)
                 profileData?.let { profile ->
-                    authManager.saveProfile(
-                        profile.firstName ?: "",
-                        profile.lastName ?: "",
-                        profile.email ?: "",
-                        profile.phone ?: ""
-                    )
-                    _userName.value = authManager.getFullName()
-                    _userEmail.value = profile.email ?: "No email"
-                    _userInitial.value = authManager.getInitial()
-                    _userPhone.value = profile.defaultAddress?.phone ?: profile.phone ?: "No phone"
+                    val firstName = profile.firstName?.takeIf { it != "null" } ?: ""
+                    val lastName = profile.lastName?.takeIf { it != "null" } ?: ""
+                    val email = profile.email?.takeIf { it != "null" } ?: ""
+                    val phone = profile.phone?.takeIf { it != "null" } ?: ""
+
+                    authManager.saveProfile(firstName, lastName, email, phone)
+
+                    _userName.value = listOfNotNull(
+                        firstName.takeIf { it.isNotEmpty() },
+                        lastName.takeIf { it.isNotEmpty() }
+                    ).joinToString(" ").ifEmpty { "User" }
+
+                    _userEmail.value = email.ifEmpty { "No email" }
+                    _userInitial.value = firstName.firstOrNull()?.uppercase() ?: email.firstOrNull()?.uppercase() ?: "U"
+                    _userPhone.value = profile.defaultAddress?.phone?.takeIf { it != "null" } ?: phone.ifEmpty { "No phone" }
+
                     profile.defaultAddress?.let { addr ->
                         val parts = listOfNotNull(addr.address1, addr.address2, addr.city, addr.country, addr.zip)
-                            .filter { it.isNotEmpty() }
+                            .filter { it.isNotEmpty() && it != "null" }
                         _defaultAddress.value = if (parts.isNotEmpty()) parts.joinToString(", ") else "India (Default)"
                     } ?: run {
                         _defaultAddress.value = "India (Default)"
@@ -117,7 +123,6 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
                 }
             } catch (e: Exception) {
                 Log.e("ProfileVM", "Error fetching profile", e)
-                _errorMessage.value = "Failed to load profile"
             } finally {
                 _isLoading.value = false
             }

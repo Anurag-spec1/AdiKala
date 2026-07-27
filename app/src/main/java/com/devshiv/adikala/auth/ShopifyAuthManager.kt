@@ -65,9 +65,15 @@ class ShopifyAuthManager(context: Context) {
     fun getPhone(): String? = prefs.getString(KEY_PHONE, null)
 
     fun getFullName(): String {
-        val first = getFirstName().orEmpty()
-        val last = getLastName().orEmpty()
-        return listOf(first, last).filter { it.isNotEmpty() }.joinToString(" ").ifEmpty { "User" }
+        val first = getFirstName().orEmpty().trim()
+        val last = getLastName().orEmpty().trim()
+
+        return when {
+            first.isNotEmpty() && last.isNotEmpty() && last != "null" -> "$first $last"
+            first.isNotEmpty() -> first
+            last.isNotEmpty() && last != "null" -> last
+            else -> "User"
+        }
     }
 
     fun getInitial(): String {
