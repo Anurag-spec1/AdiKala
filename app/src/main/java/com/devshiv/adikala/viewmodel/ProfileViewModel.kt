@@ -9,6 +9,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.devshiv.adikala.auth.ShopifyAuthManager
 import com.devshiv.adikala.auth.ShopifyAuthService
+import com.devshiv.adikala.model.Address
+import com.devshiv.adikala.model.Profile
 import com.devshiv.adikala.repository.CustomerRepository
 import com.devshiv.adikala.view.activity.LoginActivity
 import kotlinx.coroutines.launch
@@ -37,8 +39,8 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     private val _defaultAddress = MutableLiveData<String>()
     val defaultAddress: LiveData<String> = _defaultAddress
 
-    private val _addresses = MutableLiveData<List<CustomerRepository.Address>>()
-    val addresses: LiveData<List<CustomerRepository.Address>> = _addresses
+    private val _addresses = MutableLiveData<List<Address>>()
+    val addresses: LiveData<List<Address>> = _addresses
 
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
@@ -49,7 +51,10 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     private val _successMessage = MutableLiveData<String>()
     val successMessage: LiveData<String> = _successMessage
 
-    private var profileData: CustomerRepository.Profile? = null
+    private val _sessionExpired = MutableLiveData<Boolean>()
+    val sessionExpired: LiveData<Boolean> = _sessionExpired
+
+    private var profileData: Profile? = null
 
     init {
         checkLoginStatus()
@@ -70,6 +75,14 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         getApplication<Application>().startActivity(intent)
     }
 
+    private suspend fun getValidToken(): String? {
+        val token = authService.getValidAccessToken()
+        if (token == null) {
+            _sessionExpired.value = true
+        }
+        return token
+    }
+
     private fun loadSavedProfile() {
         _userName.value = authManager.getFullName()
         _userEmail.value = authManager.getEmail() ?: "No email"
@@ -78,10 +91,10 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     }
 
     private fun fetchProfileFromServer() {
-        val token = authManager.getAccessToken() ?: return
         viewModelScope.launch {
             _isLoading.value = true
             try {
+                val token = getValidToken() ?: return@launch
                 profileData = customerRepository.getProfile(token)
                 profileData?.let { profile ->
                     authManager.saveProfile(
@@ -92,14 +105,14 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
                     )
                     _userName.value = authManager.getFullName()
                     _userEmail.value = profile.email ?: "No email"
-                    _userPhone.value = profile.phone ?: "No phone"
                     _userInitial.value = authManager.getInitial()
+                    _userPhone.value = profile.defaultAddress?.phone ?: profile.phone ?: "No phone"
                     profile.defaultAddress?.let { addr ->
-                        val parts = listOfNotNull(addr.address1, addr.city, addr.state, addr.country, addr.zip)
+                        val parts = listOfNotNull(addr.address1, addr.address2, addr.city, addr.country, addr.zip)
                             .filter { it.isNotEmpty() }
-                        _defaultAddress.value = if (parts.isNotEmpty()) parts.joinToString(", ") else "No address saved yet"
+                        _defaultAddress.value = if (parts.isNotEmpty()) parts.joinToString(", ") else "India (Default)"
                     } ?: run {
-                        _defaultAddress.value = "No address saved yet"
+                        _defaultAddress.value = "India (Default)"
                     }
                 }
             } catch (e: Exception) {
@@ -112,10 +125,10 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     }
 
     fun updateProfile(firstName: String, lastName: String) {
-        val token = authManager.getAccessToken() ?: return
         viewModelScope.launch {
             _isLoading.value = true
             try {
+                val token = getValidToken() ?: return@launch
                 val success = customerRepository.updateProfile(token, firstName, lastName)
                 if (success) {
                     authManager.saveProfile(firstName, lastName, authManager.getEmail() ?: "", authManager.getPhone() ?: "")
@@ -133,10 +146,10 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     }
 
     fun loadAddresses() {
-        val token = authManager.getAccessToken() ?: return
         viewModelScope.launch {
             _isLoading.value = true
             try {
+                val token = getValidToken() ?: return@launch
                 _addresses.value = customerRepository.getAddresses(token)
             } catch (e: Exception) {
                 _errorMessage.value = "Failed to load addresses"
@@ -146,23 +159,11 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
-    fun addAddress(address: CustomerRepository.Address) {
+    fun addAddress(address: Address) {
         viewModelScope.launch {
             _isLoading.value = true
             try {
-                val refreshed = authService.refreshAccessToken()
-                if (!refreshed) {
-                    _errorMessage.value = "Session expired. Please login again."
-                    _isLoading.value = false
-                    return@launch
-                }
-
-                val token = authManager.getAccessToken() ?: run {
-                    _errorMessage.value = "Session expired. Please login again."
-                    _isLoading.value = false
-                    return@launch
-                }
-
+                val token = getValidToken() ?: return@launch
                 val success = customerRepository.addAddress(token, address)
                 if (success) {
                     _successMessage.value = "Address added successfully"
@@ -179,11 +180,11 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
-    fun updateAddress(addressId: String, address: CustomerRepository.Address) {
-        val token = authManager.getAccessToken() ?: return
+    fun updateAddress(addressId: String, address: Address) {
         viewModelScope.launch {
             _isLoading.value = true
             try {
+                val token = getValidToken() ?: return@launch
                 val success = customerRepository.updateAddress(token, addressId, address)
                 if (success) {
                     _successMessage.value = "Address updated"
@@ -201,10 +202,10 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     }
 
     fun deleteAddress(addressId: String) {
-        val token = authManager.getAccessToken() ?: return
         viewModelScope.launch {
             _isLoading.value = true
             try {
+                val token = getValidToken() ?: return@launch
                 val success = customerRepository.deleteAddress(token, addressId)
                 if (success) {
                     _successMessage.value = "Address deleted"
@@ -221,7 +222,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
-    fun getProfileData(): CustomerRepository.Profile? = profileData
+    fun getProfileData(): Profile? = profileData
 
     fun logout() {
         viewModelScope.launch {
@@ -238,7 +239,6 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
                 profileData = null
             } catch (e: Exception) {
                 Log.e("ProfileVM", "Error during logout", e)
-                _errorMessage.value = "Sign out failed"
             } finally {
                 _isLoading.value = false
             }

@@ -23,20 +23,16 @@ class ShopifyAuthManager(context: Context) {
     }
 
     companion object {
-        // Token keys
         private const val KEY_ACCESS = "access_token"
         private const val KEY_REFRESH = "refresh_token"
         private const val KEY_ID_TOKEN = "id_token"
         private const val KEY_EXPIRES_AT = "expires_at"
-
-        // Profile keys
         private const val KEY_EMAIL = "customer_email"
         private const val KEY_FIRST_NAME = "customer_first_name"
         private const val KEY_LAST_NAME = "customer_last_name"
         private const val KEY_PHONE = "customer_phone"
     }
 
-    // ── Token methods ──
 
     fun saveTokens(access: String, refresh: String?, idToken: String?, expiresAt: Long) {
         prefs.edit().apply {
@@ -53,7 +49,6 @@ class ShopifyAuthManager(context: Context) {
     fun getExpiresAt(): Long = prefs.getLong(KEY_EXPIRES_AT, 0L)
     fun isLoggedIn(): Boolean = !getRefreshToken().isNullOrEmpty()
 
-    // ── Profile methods ──
 
     fun saveProfile(firstName: String?, lastName: String?, email: String?, phone: String?) {
         prefs.edit().apply {

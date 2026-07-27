@@ -468,14 +468,6 @@
                                 android:textSize="15sp"
                                 app:carbon_font="@font/space_grotesk_semibold" />
 
-                            <carbon.widget.TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="-2dp"
-                                android:text="Home"
-                                android:textColor="#0D3238"
-                                android:textSize="17sp"
-                                app:carbon_font="@font/space_grotesk_semibold" />
                         </LinearLayout>
 
                         <carbon.widget.TextView

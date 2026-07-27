@@ -144,4 +144,23 @@ class ShopifyAuthService(context: Context) {
             expiresAt = expiresAt
         )
     }
+
+    suspend fun getValidAccessToken(): String? {
+        if (isAccessTokenExpired()) {
+            Log.d(TAG, "Access token expired, refreshing...")
+            val refreshed = refreshAccessToken()
+            if (!refreshed) {
+                Log.e(TAG, "Token refresh failed, user needs to login again")
+                return null
+            }
+        }
+        return authManager.getAccessToken()
+    }
+
+    fun isAccessTokenExpired(): Boolean {
+        val expiresAt = authManager.getExpiresAt()
+        if (expiresAt == 0L) return true
+        val bufferMillis = 60_000L
+        return System.currentTimeMillis() >= (expiresAt - bufferMillis)
+    }
 }

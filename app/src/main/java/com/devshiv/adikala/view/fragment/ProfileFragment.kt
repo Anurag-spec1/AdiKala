@@ -12,10 +12,13 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.devshiv.adikala.R
 import com.devshiv.adikala.auth.ShopifyAuthService
 import com.devshiv.adikala.databinding.FragmentProfileBinding
+import com.devshiv.adikala.model.Address
 import com.devshiv.adikala.repository.CustomerRepository
+import com.devshiv.adikala.view.adapter.AddressAdapter
 import com.devshiv.adikala.viewmodel.ProfileViewModel
 import com.google.android.material.textfield.TextInputEditText
 import kotlinx.coroutines.launch
@@ -27,6 +30,7 @@ class ProfileFragment : Fragment() {
 
     private lateinit var viewModel: ProfileViewModel
     private lateinit var authService: ShopifyAuthService
+    private var addressListDialog: AlertDialog? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
@@ -53,11 +57,11 @@ class ProfileFragment : Fragment() {
         binding.btnEditProfile.setOnClickListener { showEditProfileDialog() }
         binding.btnTrackOrder.setOnClickListener { trackOrder() }
         binding.btnAddAddress.setOnClickListener { showAddAddressDialog(null) }
-        binding.btnManageAddress.setOnClickListener { viewModel.loadAddresses() }
-        binding.btnHelpCenter.setOnClickListener { showHelpCenter() }
-        binding.btnContactUs.setOnClickListener { showContactUs() }
-        binding.btnPrivacyPolicy.setOnClickListener { showPrivacyPolicy() }
-        binding.btnTerms.setOnClickListener { showTerms() }
+        binding.btnManageAddress.setOnClickListener { showAddressListDialog() }
+        binding.btnHelpCenter.setOnClickListener { }
+        binding.btnContactUs.setOnClickListener { }
+        binding.btnPrivacyPolicy.setOnClickListener { }
+        binding.btnTerms.setOnClickListener { }
     }
 
     private fun showSignOutDialog() {
@@ -93,9 +97,10 @@ class ProfileFragment : Fragment() {
             .setTitle("Edit Profile")
             .setView(view)
             .setPositiveButton("Save") { _, _ ->
-                val firstName = etFirstName.text.toString().trim()
-                val lastName = etLastName.text.toString().trim()
-                viewModel.updateProfile(firstName, lastName)
+                viewModel.updateProfile(
+                    etFirstName.text.toString().trim(),
+                    etLastName.text.toString().trim()
+                )
             }
             .setNeutralButton("Change Email") { _, _ ->
                 startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://account.adikala.in/profile")))
@@ -103,11 +108,9 @@ class ProfileFragment : Fragment() {
             .setNegativeButton("Cancel", null).show()
     }
 
-    private fun showAddAddressDialog(existingAddress: CustomerRepository.Address?) {
+    private fun showAddAddressDialog(existingAddress: Address?) {
         val view = layoutInflater.inflate(R.layout.dialog_add_address, null)
         val etCountry = view.findViewById<TextInputEditText>(R.id.etCountry)
-        val etFirstName = view.findViewById<TextInputEditText>(R.id.etFirstName)
-        val etLastName = view.findViewById<TextInputEditText>(R.id.etLastName)
         val etAddress = view.findViewById<TextInputEditText>(R.id.etAddress)
         val etApartment = view.findViewById<TextInputEditText>(R.id.etApartment)
         val etCity = view.findViewById<TextInputEditText>(R.id.etCity)
@@ -131,7 +134,7 @@ class ProfileFragment : Fragment() {
         val isEdit = existingAddress != null
         val title = if (isEdit) "Edit Address" else "Add Address"
 
-        val dialog = AlertDialog.Builder(requireContext())
+        AlertDialog.Builder(requireContext())
             .setTitle(title)
             .setView(view)
             .setPositiveButton("Save") { _, _ ->
@@ -150,7 +153,7 @@ class ProfileFragment : Fragment() {
                 val stateInput = etState.text.toString().trim()
                 val stateCode = if (stateInput.length <= 2) stateInput.uppercase() else getZoneCode(stateInput)
 
-                val address = CustomerRepository.Address(
+                val address = Address(
                     id = existingAddress?.id,
                     address1 = etAddress.text.toString().trim(),
                     address2 = etApartment.text.toString().trim(),
@@ -167,21 +170,68 @@ class ProfileFragment : Fragment() {
                     viewModel.addAddress(address)
                 }
             }
-            .setNegativeButton("Cancel", null)
+            .setNegativeButton("Cancel", null).show()
+    }
 
-        if (isEdit) {
-            dialog.setNeutralButton("Delete") { _, _ ->
-                AlertDialog.Builder(requireContext())
-                    .setTitle("Delete Address")
-                    .setMessage("Are you sure?")
-                    .setPositiveButton("Delete") { _, _ ->
-                        viewModel.deleteAddress(existingAddress!!.id!!)
-                    }
-                    .setNegativeButton("Cancel", null).show()
-            }
+    private fun showAddressListDialog() {
+        viewModel.loadAddresses()
+    }
+
+    private fun refreshAddressListDialog() {
+        addressListDialog?.dismiss()
+        val addresses = viewModel.addresses.value ?: emptyList()
+
+        if (addresses.isEmpty()) {
+            AlertDialog.Builder(requireContext())
+                .setTitle("My Addresses")
+                .setMessage("You haven't added any addresses yet.\n\nDefault location: India")
+                .setPositiveButton("Add Address") { _, _ ->
+                    showAddAddressDialog(null)
+                }
+                .setNegativeButton("Close", null)
+                .show()
+            return
         }
 
-        dialog.show()
+        val view = layoutInflater.inflate(R.layout.dialog_address_list, null)
+        val rvAddresses = view.findViewById<androidx.recyclerview.widget.RecyclerView>(R.id.rvAddresses)
+        rvAddresses.layoutManager = LinearLayoutManager(requireContext())
+
+        val adapter = AddressAdapter(
+            addresses,
+            onEdit = { address ->
+                addressListDialog?.dismiss()
+                showAddAddressDialog(address)
+            },
+            onDelete = { address ->
+                if (addresses.size <= 1) {
+                    Toast.makeText(requireContext(), "Cannot delete your only address. Add another address first.", Toast.LENGTH_LONG).show()
+                } else if (address.isDefault) {
+                    Toast.makeText(requireContext(), "Set another address as default first, then delete this one.", Toast.LENGTH_LONG).show()
+                } else {
+                    AlertDialog.Builder(requireContext())
+                        .setTitle("Delete Address")
+                        .setMessage("Are you sure you want to delete this address?")
+                        .setPositiveButton("Delete") { _, _ -> viewModel.deleteAddress(address.id!!) }
+                        .setNegativeButton("Cancel", null).show()
+                }
+            },
+            onSetDefault = { address ->
+                val updatedAddress = address.copy(isDefault = true)
+                viewModel.updateAddress(address.id!!, updatedAddress)
+            }
+        )
+        rvAddresses.adapter = adapter
+
+        addressListDialog = AlertDialog.Builder(requireContext())
+            .setTitle("My Addresses (${addresses.size})")
+            .setView(view)
+            .setPositiveButton("Add New") { _, _ ->
+                addressListDialog?.dismiss()
+                showAddAddressDialog(null)
+            }
+            .setNegativeButton("Close", null)
+            .show()
     }
 
     private fun getZoneCode(state: String): String {
@@ -215,23 +265,14 @@ class ProfileFragment : Fragment() {
         }
     }
 
-    private fun showHelpCenter() {
-        Toast.makeText(requireContext(), "Help center coming soon", Toast.LENGTH_SHORT).show()
-    }
-
-    private fun showContactUs() {
-        Toast.makeText(requireContext(), "Contact us coming soon", Toast.LENGTH_SHORT).show()
-    }
-
-    private fun showPrivacyPolicy() {
-        Toast.makeText(requireContext(), "Privacy policy coming soon", Toast.LENGTH_SHORT).show()
-    }
-
-    private fun showTerms() {
-        Toast.makeText(requireContext(), "Terms coming soon", Toast.LENGTH_SHORT).show()
-    }
-
     private fun observeViewModel() {
+        viewModel.sessionExpired.observe(viewLifecycleOwner) { expired ->
+            if (expired) {
+                Toast.makeText(requireContext(), "Session expired. Please login again.", Toast.LENGTH_LONG).show()
+                viewModel.logout()
+                viewModel.checkLoginStatus()
+            }
+        }
         viewModel.isLoggedIn.observe(viewLifecycleOwner) { isLoggedIn ->
             binding.layoutLoggedIn.visibility = if (isLoggedIn) View.VISIBLE else View.GONE
             binding.layoutLoggedOut.visibility = if (isLoggedIn) View.GONE else View.VISIBLE
@@ -240,14 +281,26 @@ class ProfileFragment : Fragment() {
         viewModel.userEmail.observe(viewLifecycleOwner) { binding.tvUserEmail.text = it ?: "No email" }
         viewModel.userPhone.observe(viewLifecycleOwner) { binding.tvUserPhone.text = it ?: "No phone" }
         viewModel.userInitial.observe(viewLifecycleOwner) { binding.tvAvatarInitial.text = it ?: "U" }
-        viewModel.defaultAddress.observe(viewLifecycleOwner) { binding.tvDefaultAddress.text = it ?: "No address saved yet" }
+        viewModel.defaultAddress.observe(viewLifecycleOwner) { address ->
+            binding.tvDefaultAddress.text = if (address.isNullOrEmpty() || address == "No address saved yet") {
+                "India (Default)"
+            } else {
+                address
+            }
+        }
         viewModel.isLoading.observe(viewLifecycleOwner) { binding.progressBar.visibility = if (it) View.VISIBLE else View.GONE }
         viewModel.errorMessage.observe(viewLifecycleOwner) { it?.let { Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show() } }
         viewModel.successMessage.observe(viewLifecycleOwner) { it?.let { Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show() } }
+        viewModel.addresses.observe(viewLifecycleOwner) { addresses ->
+            if (addresses != null) {
+                refreshAddressListDialog()
+            }
+        }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
+        addressListDialog?.dismiss()
         _binding = null
     }
 }
