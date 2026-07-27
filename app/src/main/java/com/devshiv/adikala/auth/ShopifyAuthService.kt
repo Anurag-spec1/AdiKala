@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.util.Log
+import androidx.browser.customtabs.CustomTabColorSchemeParams
+import androidx.browser.customtabs.CustomTabsIntent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
@@ -31,10 +33,6 @@ class ShopifyAuthService(context: Context) {
         private const val TAG = "ShopifyAuth"
     }
 
-    // ──────────────────────────────────────────────
-    // AUTH FLOW
-    // ──────────────────────────────────────────────
-
     fun buildAuthIntent(): Intent {
         val request = AuthorizationRequest.Builder(
             serviceConfig,
@@ -46,7 +44,19 @@ class ShopifyAuthService(context: Context) {
             .setPromptValues("login")
             .build()
 
-        return authService.getAuthorizationRequestIntent(request)
+        val params = CustomTabColorSchemeParams.Builder()
+            .setToolbarColor(android.graphics.Color.parseColor("#0D3238"))
+            .build()
+
+        val customTabsIntent = CustomTabsIntent.Builder()
+            .setDefaultColorSchemeParams(params)
+            .setShowTitle(true)
+            .setInstantAppsEnabled(false)
+            .setShareState(CustomTabsIntent.SHARE_STATE_OFF)
+            .setUrlBarHidingEnabled(true)
+            .build()
+
+        return authService.getAuthorizationRequestIntent(request, customTabsIntent)
     }
 
     suspend fun handleAuthResponse(data: Intent): Boolean {
@@ -77,12 +87,8 @@ class ShopifyAuthService(context: Context) {
         return true
     }
 
-    // ──────────────────────────────────────────────
-    // SESSION MANAGEMENT
-    // ──────────────────────────────────────────────
-
     suspend fun signOut(): Boolean = withContext(Dispatchers.IO) {
-        Log.d(TAG, "signOut() called — signing out from all devices")
+        Log.d(TAG, "signOut() called")
 
         val idToken = authManager.getIdToken()
         var serverLogoutSuccess = false
@@ -105,24 +111,15 @@ class ShopifyAuthService(context: Context) {
         }
 
         authManager.clear()
-        Log.d(TAG, "Local tokens cleared. Server logout: $serverLogoutSuccess")
-
         serverLogoutSuccess
     }
 
-    fun isLoggedIn(): Boolean {
-        return !authManager.getRefreshToken().isNullOrEmpty()
-    }
-
+    fun isLoggedIn(): Boolean = !authManager.getRefreshToken().isNullOrEmpty()
     fun getAccessToken(): String? = authManager.getAccessToken()
 
     fun dispose() {
         authService.dispose()
     }
-
-    // ──────────────────────────────────────────────
-    // PRIVATE HELPERS
-    // ──────────────────────────────────────────────
 
     private suspend fun performTokenRequest(request: TokenRequest): TokenResponse? =
         suspendCancellableCoroutine { cont ->
