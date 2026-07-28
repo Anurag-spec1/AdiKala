@@ -38,7 +38,7 @@ class SearchViewModel : ViewModel() {
         }
 
         searchJob = viewModelScope.launch {
-            delay(200) // debounce
+            delay(200)
             _isLoading.value = true
 
             val formattedQuery = query.trim().replace(Regex("\\s+"), " ")
@@ -60,15 +60,12 @@ class SearchViewModel : ViewModel() {
                         score
                     }
 
-                    // 1) Show results immediately so search feels instant.
                     _searchResults.value = sorted
                     _isEmpty.value = sorted.isEmpty()
                     _isLoading.value = false
 
-                    // 2) Backfill ratings, then re-emit the enriched list.
                     if (sorted.isNotEmpty()) {
                         val withRatings = loadRatings(sorted)
-                        // Guard against a newer search having replaced this one.
                         if (searchJob?.isActive == true) {
                             _searchResults.value = withRatings
                         }

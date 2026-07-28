@@ -78,7 +78,6 @@ class OrdersViewModel(application: Application) : AndroidViewModel(application) 
         val financialStatus = order.financialStatus
         val hasTracking = order.trackingInfo?.number != null || order.trackingInfo?.url != null
 
-        // Lifecycle status
         val uiLifecycleStatus = when (fulfillmentStatus) {
             "FULFILLED", "CANCELLED", "RESTOCKED" -> "PAST"
             else -> when (financialStatus) {
@@ -87,7 +86,6 @@ class OrdersViewModel(application: Application) : AndroidViewModel(application) 
             }
         }
 
-        // Display status text
         val uiDisplayStatus = when {
             order.cancelledAt != null -> "Cancelled"
             financialStatus == "REFUNDED" -> "Refunded"
@@ -104,7 +102,6 @@ class OrdersViewModel(application: Application) : AndroidViewModel(application) 
             else -> fulfillmentStatus ?: "Processing"
         }
 
-        // Progress tracker step (0=Placed, 1=Packed, 2=Shipped, 3=Out)
         val progressStep = when {
             hasTracking && fulfillmentStatus == "FULFILLED" -> 3
             hasTracking -> 2
@@ -112,22 +109,18 @@ class OrdersViewModel(application: Application) : AndroidViewModel(application) 
             else -> 0
         }
 
-        // Show tracker for non-terminal ongoing orders
         val showTracker = uiLifecycleStatus == "ONGOING" &&
                 fulfillmentStatus !in listOf("CANCELLED", "RESTOCKED") &&
                 financialStatus !in listOf("REFUNDED", "VOIDED")
 
-        // Show track button when tracking info exists
         val showTrackButton = hasTracking
 
-        // Payment badge
         val paymentStatus = when (financialStatus) {
             "PENDING", "AUTHORIZED" -> "Payment Pending"
             "PARTIALLY_REFUNDED" -> "Partially Refunded"
             else -> null
         }
 
-        // Paused state
         val isPaused = fulfillmentStatus in listOf("ON_HOLD", "SCHEDULED")
 
         return OrderDisplay(

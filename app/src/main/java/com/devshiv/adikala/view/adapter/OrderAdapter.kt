@@ -48,7 +48,6 @@ class OrderAdapter(
             binding.btnSecondary.setOnClickListener { onSecondaryClick?.invoke(item) }
         }
 
-        // Priority 1: Final financial/cancellation state
         private fun applyFinalState(item: Order) {
             binding.tvStatusBadge.text = item.status.label
 
@@ -66,7 +65,6 @@ class OrderAdapter(
             binding.tvStatusBadge.setTextColor(Color.parseColor(fg))
         }
 
-        // Priority 2: Fulfillment state tracker
         private fun applyTracker(item: Order) {
             if (!item.showTracker) {
                 binding.progressTracker.visibility = View.GONE
@@ -81,7 +79,6 @@ class OrderAdapter(
             val lines = listOf(binding.line1, binding.line2, binding.line3)
 
             if (item.isPaused) {
-                // Paused: muted tracker with amber paused dot
                 dots.forEachIndexed { i, dot ->
                     dot.setBackgroundColor(if (i <= step) pausedColor else pendingColor)
                 }
@@ -89,7 +86,6 @@ class OrderAdapter(
                     line.setBackgroundColor(if (i < step) pausedColor else pendingColor)
                 }
             } else {
-                // Normal: active color for completed steps
                 dots.forEachIndexed { i, dot ->
                     dot.setBackgroundColor(if (i <= step) activeColor else pendingColor)
                 }
@@ -99,7 +95,6 @@ class OrderAdapter(
             }
         }
 
-        // Priority 3: Tracking & ETA
         private fun applyDeliveryStrip(item: Order) {
             when {
                 item.status == OrderStatus.DELIVERED -> {
@@ -123,20 +118,16 @@ class OrderAdapter(
             }
         }
 
-        // Priority 4: Action buttons
         private fun applyActions(item: Order) {
             if (item.showTrackButton) {
-                // Has tracking → Track Order
                 binding.ivPrimaryIcon.setImageResource(R.drawable.ic_truck)
                 binding.tvPrimaryAction.text = "Track Order"
                 binding.tvSecondaryAction.text = "View Details"
             } else if (item.isOngoing) {
-                // Ongoing but no tracking
                 binding.ivPrimaryIcon.setImageResource(R.drawable.ic_help)
                 binding.tvPrimaryAction.text = "Contact Support"
                 binding.tvSecondaryAction.text = "View Details"
             } else {
-                // Past order
                 binding.ivPrimaryIcon.setImageResource(R.drawable.ic_repeat)
                 binding.tvPrimaryAction.text = "Buy Again"
                 binding.tvSecondaryAction.text = if (item.status == OrderStatus.DELIVERED) "Rate" else "View Details"

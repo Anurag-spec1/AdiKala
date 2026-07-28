@@ -8,15 +8,6 @@ import com.devshiv.adikala.model.Review
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-/**
- * Reads published reviews via the public Judge.me token and filters per product by handle.
- * Because /reviews returns store-wide data, we fetch all pages once and cache them, then
- * filter in memory — so the product page and the collection list share a handful of calls.
- *
- * Scaling note: for a very large store this store-wide fetch gets heavy. The clean fix is a
- * tiny backend proxy that holds the PRIVATE token and filters by internal product_id
- * server-side. This client-side version is correct and self-contained for small/medium stores.
- */
 class RatingRepository {
 
     private val api = JudgeMeClient.api
@@ -26,14 +17,13 @@ class RatingRepository {
     companion object {
         private const val TAG = "RatingRepo"
         private const val PER_PAGE = 100
-        private const val MAX_PAGES = 30                 // safety cap = up to 3000 reviews
-        private const val CACHE_TTL_MS = 5 * 60 * 1000L  // 5 minutes
+        private const val MAX_PAGES = 30
+        private const val CACHE_TTL_MS = 5 * 60 * 1000L
 
         @Volatile private var cache: List<JudgeMeReviewData> = emptyList()
         @Volatile private var cacheTime = 0L
     }
 
-    /** Returns (summary, reviews) for one product, matched by handle. Never throws. */
     suspend fun getProductReviews(
         productHandle: String,
         productId: String
@@ -54,7 +44,6 @@ class RatingRepository {
         }
     }
 
-    /** Submit a review via Judge.me's create endpoint (public, no token). */
     suspend fun submitReview(
         productId: String,
         rating: Int,
@@ -85,7 +74,7 @@ class RatingRepository {
 
             if (response.isSuccessful) {
                 Log.d(TAG, "✅ Review submitted (pending moderation): id=${response.body()?.id}")
-                invalidateCache() // so a refresh re-fetches once it's published
+                invalidateCache()
                 Result.success(true)
             } else {
                 val err = response.errorBody()?.string()
@@ -98,7 +87,6 @@ class RatingRepository {
         }
     }
 
-    // ---- internals ----
 
     private suspend fun ensureReviews(force: Boolean): List<JudgeMeReviewData> {
         val fresh = cache.isNotEmpty() && (System.currentTimeMillis() - cacheTime) < CACHE_TTL_MS
@@ -109,13 +97,12 @@ class RatingRepository {
         while (page <= MAX_PAGES) {
             val resp = api.getReviews(shopDomain, apiToken, page, PER_PAGE)
             if (!resp.isSuccessful) {
-                // If page 1 fails, the public token likely lacks read access → surface it.
                 if (page == 1) throw Exception("Reviews fetch failed: HTTP ${resp.code()}")
                 break
             }
             val batch = resp.body()?.reviews ?: emptyList()
             all += batch
-            if (batch.size < PER_PAGE) break   // last page reached
+            if (batch.size < PER_PAGE) break
             page++
         }
         cache = all

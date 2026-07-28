@@ -246,7 +246,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
                     authManager.saveProfile(firstName, lastName, authManager.getEmail() ?: "", authManager.getPhone() ?: "")
                     loadSavedProfile()
                     _successMessage.value = "Profile updated"
-                    fetchProfileFromServer() // Update local cache immediately
+                    fetchProfileFromServer()
                 } else {
                     _errorMessage.value = "Failed to update profile"
                 }
@@ -314,7 +314,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
                 val success = customerRepository.addAddress(token, address)
                 if (success) {
                     _successMessage.value = "Address added successfully"
-                    fetchProfileFromServer() // Refresh cache
+                    fetchProfileFromServer()
                     loadAddresses()
                 } else {
                     _errorMessage.value = "Failed to add address"
@@ -335,7 +335,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
                 val success = customerRepository.updateAddress(token, addressId, address)
                 if (success) {
                     _successMessage.value = "Address updated"
-                    fetchProfileFromServer() // Refresh cache
+                    fetchProfileFromServer()
                     loadAddresses()
                 } else {
                     _errorMessage.value = "Failed to update address"
@@ -356,7 +356,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
                 val success = customerRepository.deleteAddress(token, addressId)
                 if (success) {
                     _successMessage.value = "Address deleted"
-                    fetchProfileFromServer() // Refresh cache
+                    fetchProfileFromServer()
                     loadAddresses()
                 } else {
                     _errorMessage.value = "Failed to delete address"

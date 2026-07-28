@@ -12,26 +12,14 @@ import retrofit2.http.Url
 
 interface JudgeMeApi {
 
-    /**
-     * Read PUBLISHED reviews (store-wide, paginated) with the public token.
-     * The /reviews endpoint has NO product_handle filter — its only product filter is the
-     * internal Judge.me product_id (which needs the private token to resolve), so we fetch
-     * store-wide and filter by handle in the repository. Cached to keep this to a few calls.
-     */
     @GET("api/v1/reviews")
     suspend fun getReviews(
         @Query("shop_domain") shopDomain: String,
         @Query("api_token") apiToken: String,
         @Query("page") page: Int = 1,
-        @Query("per_page") perPage: Int = 100   // max allowed is 100
+        @Query("per_page") perPage: Int = 100
     ): Response<JudgeMeReviewsResponse>
 
-    /**
-     * Create a review. NOTE: different host (judge.me, not api.judge.me), form-encoded,
-     * and NO api_token. Required fields per Judge.me: shop_domain, platform, name, email,
-     * rating, body. `id` is the EXTERNAL (Shopify numeric) product id.
-     * Reviews created via the API are unverified and enter your moderation/publish queue.
-     */
     @FormUrlEncoded
     @POST
     suspend fun createReview(

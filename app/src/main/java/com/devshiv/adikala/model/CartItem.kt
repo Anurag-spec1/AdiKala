@@ -10,3 +10,13 @@ data class CartItem(
     var quantity: Int,
     val size: String = ""
 ) : Serializable
+
+data class CartItemDisplay(
+    val lineId: String,
+    val variantId: String,
+    val name: String,
+    val imageUrl: String,
+    val price: String,
+    val size: String?,
+    var quantity: Int
+)

@@ -67,7 +67,6 @@ class ProductDetailActivity : AppCompatActivity() {
 
         product = (intent.getSerializableExtra(EXTRA_PRODUCT) as? Product) ?: run { finish(); return }
 
-        // Set default variant
         selectedVariantId = product.variants.firstOrNull()?.id
 
         viewModel.loadProduct(product)
@@ -193,7 +192,6 @@ class ProductDetailActivity : AppCompatActivity() {
                 isChecked = variant.id == selectedVariantId
                 setOnClickListener {
                     selectedVariantId = variant.id
-                    // Update all chips
                     for (i in 0 until binding.variantContainer.childCount) {
                         (binding.variantContainer.getChildAt(i) as? com.google.android.material.chip.Chip)?.isChecked = false
                     }
@@ -295,10 +293,13 @@ class ProductDetailActivity : AppCompatActivity() {
     private fun updateStarSelection(rating: Int) {
         val stars = listOf(binding.reviewStar1, binding.reviewStar2, binding.reviewStar3, binding.reviewStar4, binding.reviewStar5)
         stars.forEachIndexed { index, star ->
-            star.isSelected = index < rating
+            if (index < rating) {
+                star.setColorFilter(android.graphics.Color.parseColor("#F5A623"))
+            } else {
+                star.setColorFilter(android.graphics.Color.parseColor("#E0E0E0"))
+            }
         }
     }
-
     private fun clearReviewForm() {
         userRating = 0
         binding.etReviewTitle.text?.clear()

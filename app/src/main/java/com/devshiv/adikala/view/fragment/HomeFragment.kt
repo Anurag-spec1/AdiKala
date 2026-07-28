@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.airbnb.lottie.LottieAnimationView
 import com.devshiv.adikala.R
+import com.devshiv.adikala.auth.ShopifyAuthManager
 import com.devshiv.adikala.view.activity.CartActivity
 import com.devshiv.adikala.view.activity.CategoriesActivity
 import com.devshiv.adikala.view.activity.ProductsActivity
@@ -32,6 +33,7 @@ import com.devshiv.adikala.databinding.FragmentHomeBinding
 import com.devshiv.adikala.model.Category
 import com.devshiv.adikala.model.PopularCollection
 import com.devshiv.adikala.viewmodel.HomeViewModel
+import java.util.Calendar
 
 class HomeFragment : Fragment() {
 
@@ -64,6 +66,31 @@ class HomeFragment : Fragment() {
         setupUI()
         observeViewModel()
         viewModel.loadHomeData()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        updateGreeting()
+    }
+
+    private fun updateGreeting() {
+        val authManager = ShopifyAuthManager(requireContext())
+        val firstName =
+            authManager.getFirstName() ?: authManager.getFullName()?.split(" ")?.firstOrNull() ?: ""
+
+        val greeting = getTimeBasedGreeting()
+        binding.gestureTag.text = greeting
+        binding.userName.text = if (firstName.isNotEmpty()) firstName else "User"
+        binding.userName.setTypeface(null, Typeface.BOLD)
+    }
+
+    private fun getTimeBasedGreeting(): String {
+        val hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
+        return when (hour) {
+            in 0..11 -> "Good Morning"
+            in 12..16 -> "Good Afternoon"
+            else -> "Good Evening"
+        }
     }
 
     private fun initSpeechRecognizer() {
@@ -123,8 +150,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupUI() {
-        binding.userName.setTypeface(null, Typeface.BOLD)
-        binding.userName.text = "Anurag".toDisplayName()
+        updateGreeting()
 
         binding.viewallCategories.setOnClickListener {
             startActivity(Intent(requireContext(), CategoriesActivity::class.java))
@@ -147,13 +173,6 @@ class HomeFragment : Fragment() {
             navigateToProducts(collection.name, collection.handle)
         }
         binding.rvPopular.adapter = adikalaStoreAdapter
-
-        binding.etSearchBar.setOnClickListener {
-            val query = binding.etSearchBar.text.toString().trim()
-            val intent = Intent(requireContext(), SearchActivity::class.java)
-            intent.putExtra("search_query", query)
-            startActivity(intent)
-        }
 
         binding.etSearchBar.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
@@ -272,7 +291,6 @@ class HomeFragment : Fragment() {
         }
     }
 
-    // HomeFragment.kt - observeViewModel (replace existing)
     private fun observeViewModel() {
         viewModel.categories.observe(viewLifecycleOwner) { categories ->
             if (categories.isNotEmpty()) {
@@ -292,7 +310,12 @@ class HomeFragment : Fragment() {
                 binding.shimmerPopular.visibility = View.GONE
                 binding.rvPopular.visibility = View.VISIBLE
                 val popularList = collections.map { cat ->
-                    PopularCollection(id = cat.id, name = cat.name, image = cat.image, handle = cat.handle)
+                    PopularCollection(
+                        id = cat.id,
+                        name = cat.name,
+                        image = cat.image,
+                        handle = cat.handle
+                    )
                 }
                 adikalaStoreAdapter = PopularCollectionAdapter(popularList) { collection ->
                     navigateToProducts(collection.name, collection.handle)
@@ -307,12 +330,6 @@ class HomeFragment : Fragment() {
         intent.putExtra(ProductsActivity.EXTRA_CATEGORY, name)
         intent.putExtra(ProductsActivity.EXTRA_COLLECTION_HANDLE, handle)
         startActivity(intent)
-    }
-
-    private fun String.toDisplayName(maxLength: Int = 12): String {
-        if (isBlank()) return ""
-        val firstName = trim().split("\\s+".toRegex()).first()
-        return if (firstName.length > maxLength) firstName.take(maxLength) + "..." else firstName
     }
 
     override fun onDestroyView() {

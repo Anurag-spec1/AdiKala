@@ -150,15 +150,11 @@ class CartRepository {
 
     suspend fun getCheckoutUrlWithAuth(cartId: String, accessToken: String): String? = withContext(Dispatchers.IO) {
         try {
-            Log.d("CartRepo", "=== GET CHECKOUT URL WITH AUTH ===")
 
-            // Step 1: Set buyer identity on cart
             val identitySet = setCartBuyerIdentity(cartId, accessToken)
             if (!identitySet) {
                 Log.e("CartRepo", "Failed to set buyer identity")
             }
-
-            // Step 2: Get updated checkout URL
             val query = """
         query {
             cart(id: "$cartId") {
@@ -170,7 +166,6 @@ class CartRepository {
             val response = execute(query)
             val baseUrl = response.optJSONObject("data")?.optJSONObject("cart")?.optString("checkoutUrl")
 
-            // Step 3: Append sso=silent for browser session SSO
             val finalUrl = if (baseUrl != null) {
                 if (baseUrl.contains("?")) {
                     "$baseUrl&sso=silent"
@@ -197,7 +192,6 @@ class CartRepository {
                 return@withContext getBestSellers()
             }
 
-            // First, get the Product ID from the Variant ID
             val variantId = variantIds.first()
             val productQuery = """
         query {
@@ -219,7 +213,6 @@ class CartRepository {
                 return@withContext getBestSellers()
             }
 
-            // Now get recommendations using Product ID
             val query = """
         query {
             productRecommendations(productId: "$productId") {

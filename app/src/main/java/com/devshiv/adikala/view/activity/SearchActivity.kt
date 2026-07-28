@@ -41,7 +41,6 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun setupRecycler() {
-        // Build the adapter ONCE; update its data via updateList() instead of recreating it.
         productAdapter = ProductAdapter(
             emptyList(),
             onClick = { product ->

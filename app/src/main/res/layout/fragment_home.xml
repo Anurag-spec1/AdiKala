@@ -130,7 +130,7 @@
         android:drawableTint="#0D3238"
         android:focusable="true"
         android:gravity="center_vertical"
-        android:hint="Search destination..."
+        android:hint="Search handcrafts..."
         android:imeOptions="actionSearch"
         android:inputType="text"
         android:maxLines="1"

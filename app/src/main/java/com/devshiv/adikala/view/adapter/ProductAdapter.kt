@@ -30,7 +30,6 @@ class ProductAdapter(
         fun bind(item: Product) {
             binding.tvDescription.text = item.description
 
-            // Formatted rating; show "New" when the product has no reviews yet.
             binding.tvRating.text =
                 if (item.rating > 0) String.format("%.1f", item.rating) else "New"
 

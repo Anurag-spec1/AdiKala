@@ -71,7 +71,6 @@ class ProductDetailViewModel : ViewModel() {
             ratingRepository.submitReview(productId, rating, title, body, name, email).fold(
                 onSuccess = {
                     _submitResult.value = "Review submitted successfully!"
-                    // Fix: pass both handle and id
                     val product = _product.value
                     loadReviews(product?.handle ?: "", product?.id ?: "")
                 },

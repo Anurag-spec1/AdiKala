@@ -7,6 +7,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.devshiv.adikala.auth.ShopifyAuthManager
+import com.devshiv.adikala.model.CartItemDisplay
 import com.devshiv.adikala.repository.CartRepository
 import com.devshiv.adikala.utils.CartManager
 import kotlinx.coroutines.launch
@@ -16,16 +17,6 @@ class CartViewModel(application: Application) : AndroidViewModel(application) {
     private val repository = CartRepository()
     private val app = application
     private val authManager = ShopifyAuthManager(application)
-
-    data class CartItemDisplay(
-        val lineId: String,
-        val variantId: String,
-        val name: String,
-        val imageUrl: String,
-        val price: String,
-        val size: String?,
-        var quantity: Int
-    )
 
     private val _cartItems = MutableLiveData<List<CartItemDisplay>>()
     val cartItems: LiveData<List<CartItemDisplay>> = _cartItems
@@ -81,7 +72,6 @@ class CartViewModel(application: Application) : AndroidViewModel(application) {
                 _checkoutUrl.value = cart.checkoutUrl
                 _isEmpty.value = false
 
-                // Load recommendations based on cart products
                 loadDynamicSuggestions(cart.items.map { it.variantId })
             } else {
                 CartManager.clear(app)
@@ -146,7 +136,6 @@ class CartViewModel(application: Application) : AndroidViewModel(application) {
             CartManager.removeProductName(app, variantId)
 
             if (result != null) {
-                // Update UI directly with the returned cart data
                 _cartItems.value = result.items.map { line ->
                     val productName = CartManager.getProductName(app, line.variantId)
                     CartItemDisplay(
@@ -163,7 +152,6 @@ class CartViewModel(application: Application) : AndroidViewModel(application) {
                 _checkoutUrl.value = result.checkoutUrl
                 _isEmpty.value = result.items.isEmpty()
             } else {
-                // If result is null, reload from API
                 loadCart()
             }
 

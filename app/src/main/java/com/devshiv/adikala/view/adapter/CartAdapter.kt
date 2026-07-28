@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.devshiv.adikala.databinding.ItemCartBinding
-import com.devshiv.adikala.viewmodel.CartViewModel.CartItemDisplay
+import com.devshiv.adikala.model.CartItemDisplay
 
 class CartAdapter(
     private val onQuantityChanged: (lineId: String, quantity: Int) -> Unit,
