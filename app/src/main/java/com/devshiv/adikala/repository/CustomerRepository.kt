@@ -3,7 +3,11 @@ package com.devshiv.adikala.repository
 import android.util.Log
 import com.devshiv.adikala.auth.ShopifyAuthConfig
 import com.devshiv.adikala.model.Address
+import com.devshiv.adikala.model.OrderLineItem
+import com.devshiv.adikala.model.OrderResponse
 import com.devshiv.adikala.model.Profile
+import com.devshiv.adikala.model.ShopifyOrder
+import com.devshiv.adikala.model.TrackingInfo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaType
@@ -320,5 +324,145 @@ class CustomerRepository {
         val response = client.newCall(request).execute()
         val json = JSONObject(response.body?.string() ?: "")
         return !json.has("errors")
+    }
+
+
+    suspend fun getOrders(accessToken: String, first: Int = 20, after: String? = null): OrderResponse = withContext(Dispatchers.IO) {
+        try {
+            val afterParam = if (after != null) "\"$after\"" else "null"
+
+            val query = """
+        query {
+            customer {
+                orders(first: $first, after: $afterParam, reverse: true) {
+                    edges {
+                        cursor
+                        node {
+                            id
+                            orderNumber: number
+                            name
+                            financialStatus
+                            fulfillmentStatus
+                            processedAt
+                            cancelledAt
+                            totalPrice { amount currencyCode }
+                            lineItems(first: 5) {
+                                nodes {
+                                    title
+                                    quantity
+                                    originalTotalPrice { amount currencyCode }
+                                    variant {
+                                        image { url }
+                                        product { handle }
+                                    }
+                                }
+                            }
+                            fulfillments(first: 1) {
+                                nodes {
+                                    status
+                                    estimatedDeliveryAt
+                                    trackingInformation {
+                                        number
+                                        url
+                                        company
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    pageInfo {
+                        hasNextPage
+                        endCursor
+                    }
+                }
+            }
+        }
+        """.trimIndent()
+
+            val body = JSONObject().apply { put("query", query) }.toString().toRequestBody(JSON)
+            val request = Request.Builder().url(graphqlUrl).header("Authorization", accessToken).post(body).build()
+            val response = client.newCall(request).execute()
+            val json = JSONObject(response.body?.string() ?: "{}")
+
+            val ordersData = json.optJSONObject("data")?.optJSONObject("customer")?.optJSONObject("orders")
+            val edges = ordersData?.optJSONArray("edges") ?: return@withContext OrderResponse(emptyList(), false, null)
+            val pageInfo = ordersData?.optJSONObject("pageInfo")
+
+            val orders = mutableListOf<ShopifyOrder>()
+            for (i in 0 until edges.length()) {
+                val edge = edges.getJSONObject(i)
+                val node = edge.getJSONObject("node")
+
+                val totalPrice = node.optJSONObject("totalPrice")
+                val lineItems = node.optJSONObject("lineItems")?.optJSONArray("nodes")
+                val items = mutableListOf<OrderLineItem>()
+
+                if (lineItems != null) {
+                    for (j in 0 until lineItems.length()) {
+                        val item = lineItems.getJSONObject(j)
+                        val price = item.optJSONObject("originalTotalPrice")
+                        val image = item.optJSONObject("variant")?.optJSONObject("image")
+                        items.add(
+                            OrderLineItem(
+                                title = item.optString("title", ""),
+                                quantity = item.optInt("quantity", 0),
+                                price = "${
+                                    price?.optString(
+                                        "currencyCode",
+                                        "INR"
+                                    )
+                                } ${price?.optString("amount", "0")}",
+                                imageUrl = image?.optString("url"),
+                                productHandle = item.optJSONObject("variant")
+                                    ?.optJSONObject("product")?.optString("handle")
+                            )
+                        )
+                    }
+                }
+
+                val fulfillments = node.optJSONObject("fulfillments")?.optJSONArray("nodes")
+                var trackingInfo: TrackingInfo? = null
+                if (fulfillments != null && fulfillments.length() > 0) {
+                    val fulfillment = fulfillments.getJSONObject(0)
+                    val tracking = fulfillment.optJSONObject("trackingInformation")
+                    trackingInfo = TrackingInfo(
+                        number = tracking?.optString("number"),
+                        url = tracking?.optString("url"),
+                        company = tracking?.optString("company"),
+                        estimatedDelivery = fulfillment.optString("estimatedDeliveryAt", null)
+                    )
+                }
+
+                orders.add(
+                    ShopifyOrder(
+                        id = node.optString("id"),
+                        orderNumber = node.optInt("orderNumber"),
+                        name = node.optString("name", ""),
+                        financialStatus = node.optString("financialStatus", null),
+                        fulfillmentStatus = node.optString("fulfillmentStatus", null),
+                        processedAt = node.optString("processedAt", null),
+                        cancelledAt = node.optString("cancelledAt", null),
+                        totalPrice = "${
+                            totalPrice?.optString(
+                                "currencyCode",
+                                "INR"
+                            )
+                        } ${totalPrice?.optString("amount", "0")}",
+                        currencyCode = totalPrice?.optString("currencyCode", "INR") ?: "INR",
+                        items = items,
+                        trackingInfo = trackingInfo
+                    )
+                )
+            }
+
+            OrderResponse(
+                orders = orders,
+                hasNextPage = pageInfo?.optBoolean("hasNextPage") ?: false,
+                endCursor = pageInfo?.optString("endCursor", null)
+            )
+        } catch (e: Exception) {
+            Log.e("CustomerRepo", "Error getting orders", e)
+            OrderResponse(emptyList(), false, null)
+        }
     }
 }

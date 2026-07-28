@@ -30,6 +30,9 @@ class MainActivity : AppCompatActivity() {
 
         enableFullScreen()
 
+        val token = ShopifyAuthManager(this).getAccessToken()
+        Log.d("ACCESS_TOKEN", token ?: "NO TOKEN FOUND")
+
         val navigateTo = intent.getStringExtra("navigate_to")
 
         if (savedInstanceState == null) {

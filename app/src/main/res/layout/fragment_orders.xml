@@ -8,6 +8,12 @@
     android:fitsSystemWindows="true"
     tools:context=".view.fragment.OrdersFragment">
 
+    <ProgressBar
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_centerInParent="true"
+        android:id="@+id/progressBar"/>
+
     <LinearLayout
         android:id="@+id/headerRow"
         android:layout_width="match_parent"

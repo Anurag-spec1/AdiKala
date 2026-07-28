@@ -29,7 +29,7 @@ class BottomNavBar @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : carbon.widget.RelativeLayout(context, attrs, defStyleAttr) {
 
-    enum class Tab { CART, HOME, PROFILE }
+    enum class Tab { ORDERS, HOME, PROFILE }
 
     private inner class TabData(
         val container: View,
@@ -80,14 +80,14 @@ class BottomNavBar @JvmOverloads constructor(
 
     private fun initTabs() {
         tabs = mapOf(
-            Tab.CART to TabData(binding.navCart, binding.navCartPill, binding.navCartIcon, binding.navCartText),
+            Tab.ORDERS to TabData(binding.navCart, binding.navCartPill, binding.navCartIcon, binding.navCartText),
             Tab.HOME to TabData(binding.navHome, binding.navHomePill, binding.navHomeIcon, binding.navHomeText),
             Tab.PROFILE to TabData(binding.navProfile, binding.navProfilePill, binding.navProfileIcon, binding.navProfileText)
         )
     }
 
     private fun setupClickListeners() {
-        setupTabTouch(binding.navCart, Tab.CART) { onCartClick?.invoke() }
+        setupTabTouch(binding.navCart, Tab.ORDERS) { onCartClick?.invoke() }
         setupTabTouch(binding.navHome, Tab.HOME) { onHomeClick?.invoke() }
         setupTabTouch(binding.navProfile, Tab.PROFILE) { onProfileClick?.invoke() }
     }
@@ -120,7 +120,7 @@ class BottomNavBar @JvmOverloads constructor(
     fun selectTab(tab: Tab) {
         setActive(tab, animate = true)
         when (tab) {
-            Tab.CART -> onCartClick?.invoke()
+            Tab.ORDERS -> onCartClick?.invoke()
             Tab.HOME -> onHomeClick?.invoke()
             Tab.PROFILE -> onProfileClick?.invoke()
         }

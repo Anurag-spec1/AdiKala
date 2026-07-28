@@ -30,7 +30,7 @@
                 android:id="@+id/nav_cart_icon"
                 android:layout_width="22dp"
                 android:layout_height="22dp"
-                android:src="@drawable/ic_cart"
+                android:src="@drawable/ic_orders"
                 app:tint="@color/nav_icon_inactive" />
 
             <TextView
@@ -38,7 +38,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="0dp"
-                android:text="Cart"
+                android:text="Orders"
                 android:textColor="@color/nav_icon_active"
                 android:textSize="13sp"
                 android:textStyle="bold"

@@ -19,17 +19,18 @@ class OrderAdapter(
     private val onSecondaryClick: ((Order) -> Unit)? = null
 ) : RecyclerView.Adapter<OrderAdapter.ViewHolder>() {
 
-    private val done = Color.parseColor("#0D3238")
-    private val pending = Color.parseColor("#E0D8D0")
+    private val activeColor = Color.parseColor("#0D3238")
+    private val pendingColor = Color.parseColor("#E0D8D0")
+    private val pausedColor = Color.parseColor("#D4A854")
+    private val partialColor = Color.parseColor("#8BA4B8")
 
     inner class ViewHolder(val binding: ItemOrderBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: Order) {
             binding.tvOrderId.text = "Order #${item.orderId}"
-            binding.tvProductName.text = item.productName
-            binding.tvItemCount.text =
-                if (item.itemCount == 1) "1 item" else "${item.itemCount} items"
-            binding.tvPrice.text = "₹${item.totalPrice}"
+            binding.tvProductName.text = item.name
+            binding.tvItemCount.text = if (item.quantity == 1) "1 item" else "${item.quantity} items"
+            binding.tvPrice.text = "₹${item.price}"
 
             Glide.with(binding.imgOrder)
                 .load(item.imageUrl)
@@ -37,8 +38,8 @@ class OrderAdapter(
                 .centerCrop()
                 .into(binding.imgOrder)
 
-            applyStatus(item)
-            applyProgress(item)
+            applyFinalState(item)
+            applyTracker(item)
             applyDeliveryStrip(item)
             applyActions(item)
 
@@ -47,7 +48,8 @@ class OrderAdapter(
             binding.btnSecondary.setOnClickListener { onSecondaryClick?.invoke(item) }
         }
 
-        private fun applyStatus(item: Order) {
+        // Priority 1: Final financial/cancellation state
+        private fun applyFinalState(item: Order) {
             binding.tvStatusBadge.text = item.status.label
 
             val (bg, fg) = when (item.status) {
@@ -55,6 +57,8 @@ class OrderAdapter(
                 OrderStatus.CANCELLED -> "#F5E1E1" to "#B04A4A"
                 OrderStatus.RETURNED -> "#F5E1E1" to "#B04A4A"
                 OrderStatus.OUT_FOR_DELIVERY -> "#FBEADB" to "#C97B4A"
+                OrderStatus.SHIPPED -> "#D4E6F1" to "#2E6B9E"
+                OrderStatus.PROCESSING -> "#E8E0F0" to "#6B4A8A"
                 else -> "#E4EDF2" to "#3F6076"
             }
             binding.statusBadge.setBackgroundColor(Color.parseColor(bg))
@@ -62,8 +66,9 @@ class OrderAdapter(
             binding.tvStatusBadge.setTextColor(Color.parseColor(fg))
         }
 
-        private fun applyProgress(item: Order) {
-            if (!item.isOngoing) {
+        // Priority 2: Fulfillment state tracker
+        private fun applyTracker(item: Order) {
+            if (!item.showTracker) {
                 binding.progressTracker.visibility = View.GONE
                 binding.progressLabels.visibility = View.GONE
                 return
@@ -71,67 +76,76 @@ class OrderAdapter(
             binding.progressTracker.visibility = View.VISIBLE
             binding.progressLabels.visibility = View.VISIBLE
 
-            val active = when (item.status) {
-                OrderStatus.PLACED -> 0
-                OrderStatus.PACKED -> 1
-                OrderStatus.SHIPPED -> 2
-                OrderStatus.OUT_FOR_DELIVERY -> 3
-                else -> 0
-            }
-
+            val step = item.progressStep.coerceIn(0, 3)
             val dots = listOf(binding.dot1, binding.dot2, binding.dot3, binding.dot4)
             val lines = listOf(binding.line1, binding.line2, binding.line3)
 
-            dots.forEachIndexed { i, dot ->
-                dot.setBackgroundColor(if (i <= active) done else pending)
-            }
-            lines.forEachIndexed { i, line ->
-                line.setBackgroundColor(if (i < active) done else pending)
+            if (item.isPaused) {
+                // Paused: muted tracker with amber paused dot
+                dots.forEachIndexed { i, dot ->
+                    dot.setBackgroundColor(if (i <= step) pausedColor else pendingColor)
+                }
+                lines.forEachIndexed { i, line ->
+                    line.setBackgroundColor(if (i < step) pausedColor else pendingColor)
+                }
+            } else {
+                // Normal: active color for completed steps
+                dots.forEachIndexed { i, dot ->
+                    dot.setBackgroundColor(if (i <= step) activeColor else pendingColor)
+                }
+                lines.forEachIndexed { i, line ->
+                    line.setBackgroundColor(if (i < step) activeColor else pendingColor)
+                }
             }
         }
 
+        // Priority 3: Tracking & ETA
         private fun applyDeliveryStrip(item: Order) {
-            when (item.status) {
-                OrderStatus.DELIVERED -> {
+            when {
+                item.status == OrderStatus.DELIVERED -> {
                     binding.deliveryStrip.visibility = View.VISIBLE
-                    binding.tvDeliveryInfo.text =
-                        if (item.deliveredOn.isNotBlank()) "Delivered on ${item.deliveredOn}"
-                        else "Delivered"
+                    binding.tvDeliveryInfo.text = if (item.deliveredOn.isNotBlank()) "Delivered on ${item.deliveredOn}" else "Delivered"
                 }
-                OrderStatus.CANCELLED -> binding.deliveryStrip.visibility = View.GONE
-                OrderStatus.RETURNED -> {
+                item.status == OrderStatus.CANCELLED || item.status == OrderStatus.RETURNED -> {
+                    binding.deliveryStrip.visibility = View.GONE
+                }
+                item.isOngoing && item.showTrackButton -> {
                     binding.deliveryStrip.visibility = View.VISIBLE
-                    binding.tvDeliveryInfo.text = "Return completed"
+                    binding.tvDeliveryInfo.text = if (item.estimatedDelivery.isNotBlank()) "Arriving by ${item.estimatedDelivery}" else "Tracking available"
+                }
+                item.isOngoing && !item.showTrackButton -> {
+                    binding.deliveryStrip.visibility = View.VISIBLE
+                    binding.tvDeliveryInfo.text = if (item.estimatedDelivery.isNotBlank()) "Estimated: ${item.estimatedDelivery}" else "Awaiting carrier update"
                 }
                 else -> {
-                    if (item.expectedDelivery.isNotBlank()) {
-                        binding.deliveryStrip.visibility = View.VISIBLE
-                        binding.tvDeliveryInfo.text = "Arriving by ${item.expectedDelivery}"
-                    } else {
-                        binding.deliveryStrip.visibility = View.GONE
-                    }
+                    binding.deliveryStrip.visibility = View.GONE
                 }
             }
         }
 
+        // Priority 4: Action buttons
         private fun applyActions(item: Order) {
-            if (item.isOngoing) {
+            if (item.showTrackButton) {
+                // Has tracking → Track Order
                 binding.ivPrimaryIcon.setImageResource(R.drawable.ic_truck)
                 binding.tvPrimaryAction.text = "Track Order"
                 binding.tvSecondaryAction.text = "View Details"
+            } else if (item.isOngoing) {
+                // Ongoing but no tracking
+                binding.ivPrimaryIcon.setImageResource(R.drawable.ic_help)
+                binding.tvPrimaryAction.text = "Contact Support"
+                binding.tvSecondaryAction.text = "View Details"
             } else {
+                // Past order
                 binding.ivPrimaryIcon.setImageResource(R.drawable.ic_repeat)
                 binding.tvPrimaryAction.text = "Buy Again"
-                binding.tvSecondaryAction.text =
-                    if (item.status == OrderStatus.DELIVERED) "Rate" else "View Details"
+                binding.tvSecondaryAction.text = if (item.status == OrderStatus.DELIVERED) "Rate" else "View Details"
             }
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding = ItemOrderBinding.inflate(
-            LayoutInflater.from(parent.context), parent, false
-        )
+        val binding = ItemOrderBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ViewHolder(binding)
     }
 

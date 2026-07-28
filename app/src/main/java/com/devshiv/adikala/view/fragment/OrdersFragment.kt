@@ -1,24 +1,28 @@
 package com.devshiv.adikala.view.fragment
 
+import android.content.Intent
 import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.devshiv.adikala.view.adapter.OrderAdapter
 import com.devshiv.adikala.databinding.FragmentOrdersBinding
 import com.devshiv.adikala.model.Order
 import com.devshiv.adikala.model.OrderStatus
+import com.devshiv.adikala.view.adapter.OrderAdapter
+import com.devshiv.adikala.viewmodel.OrdersViewModel
 
 class OrdersFragment : Fragment() {
 
     private var _binding: FragmentOrdersBinding? = null
     private val binding get() = _binding!!
+    private lateinit var viewModel: OrdersViewModel
 
-    private val allOrders = mutableListOf<Order>()
     private var showingOngoing = true
 
     override fun onCreateView(
@@ -32,11 +36,12 @@ class OrdersFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        viewModel = ViewModelProvider(this)[OrdersViewModel::class.java]
+
         binding.rvOrders.layoutManager = LinearLayoutManager(requireContext())
 
-        loadOrders()
         setupTabs()
-        render()
+        observeViewModel()
     }
 
     private fun setupTabs() {
@@ -55,16 +60,26 @@ class OrdersFragment : Fragment() {
             }
         }
         binding.btnHelp.setOnClickListener { }
-        binding.btnShopNow.setOnClickListener { }
-        refreshCounts()
-        updateTabStyles()
+        binding.btnShopNow.setOnClickListener {
+            // Navigate to home
+        }
     }
 
-    private fun refreshCounts() {
-        val ongoing = allOrders.count { it.isOngoing }
-        val past = allOrders.count { !it.isOngoing }
-        binding.tvCountOngoing.text = ongoing.toString()
-        binding.tvCountPast.text = past.toString()
+    private fun observeViewModel() {
+        viewModel.ongoingOrders.observe(viewLifecycleOwner) { orders ->
+            updateTabStyles()
+            render()
+        }
+        viewModel.pastOrders.observe(viewLifecycleOwner) { orders ->
+            updateTabStyles()
+            render()
+        }
+        viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+            binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+        }
+        viewModel.error.observe(viewLifecycleOwner) { error ->
+            error?.let { Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show() }
+        }
     }
 
     private fun updateTabStyles() {
@@ -74,6 +89,12 @@ class OrdersFragment : Fragment() {
         val muted = Color.parseColor("#8A8A8A")
         val badgeOnTeal = Color.parseColor("#33FFFFFF")
         val badgeOnLight = Color.parseColor("#14000000")
+
+        val ongoingCount = viewModel.ongoingOrders.value?.size ?: 0
+        val pastCount = viewModel.pastOrders.value?.size ?: 0
+
+        binding.tvCountOngoing.text = ongoingCount.toString()
+        binding.tvCountPast.text = pastCount.toString()
 
         if (showingOngoing) {
             binding.tabOngoing.setBackgroundColor(teal)
@@ -92,7 +113,7 @@ class OrdersFragment : Fragment() {
             binding.tvCountPast.setTextColor(white)
 
             binding.tabOngoing.setBackgroundColor(white)
-            binding.tabOngoing.elevation=0f
+            binding.tabOngoing.elevation = 0f
             binding.tvTabOngoing.setTextColor(muted)
             binding.tvCountOngoing.setBackgroundColor(badgeOnLight)
             binding.tvCountOngoing.setTextColor(muted)
@@ -100,18 +121,17 @@ class OrdersFragment : Fragment() {
     }
 
     private fun render() {
-        val filtered =
-            if (showingOngoing) allOrders.filter { it.isOngoing }
-            else allOrders.filter { !it.isOngoing }
+        val orders = if (showingOngoing) {
+            viewModel.ongoingOrders.value ?: emptyList()
+        } else {
+            viewModel.pastOrders.value ?: emptyList()
+        }
 
-        if (filtered.isEmpty()) {
+        if (orders.isEmpty()) {
             binding.rvOrders.visibility = View.GONE
             binding.emptyState.visibility = View.VISIBLE
-            binding.tvEmptyTitle.text =
-                if (showingOngoing) "No ongoing orders" else "No past orders"
-            binding.tvEmptySubtitle.text =
-                if (showingOngoing) "Your active orders will show up here"
-                else "Delivered and closed orders appear here"
+            binding.tvEmptyTitle.text = if (showingOngoing) "No ongoing orders" else "No past orders"
+            binding.tvEmptySubtitle.text = if (showingOngoing) "Your active orders will show up here" else "Delivered and closed orders appear here"
             return
         }
 
@@ -119,46 +139,46 @@ class OrdersFragment : Fragment() {
         binding.emptyState.visibility = View.GONE
 
         binding.rvOrders.adapter = OrderAdapter(
-            filtered,
+            orders.map { order ->
+                Order(
+                    orderId = "#${order.orderNumber}",
+                    name = order.name.ifEmpty { order.items.firstOrNull()?.title ?: "Order" },
+                    imageUrl = order.imageUrl ?: "",
+                    price = order.totalPrice.replace(Regex("[^0-9.]"), "").toDoubleOrNull()?.toInt() ?: 0,
+                    quantity = order.items.sumOf { it.quantity },
+                    date = order.date,
+                    status = when (order.uiDisplayStatus) {
+                        "Confirmed" -> OrderStatus.CONFIRMED
+                        "Processing" -> OrderStatus.PROCESSING
+                        "Shipped", "Partially Shipped" -> OrderStatus.SHIPPED
+                        "Out for Delivery" -> OrderStatus.OUT_FOR_DELIVERY
+                        "Delivered" -> OrderStatus.DELIVERED
+                        "Cancelled" -> OrderStatus.CANCELLED
+                        "Refunded", "Partially Refunded" -> OrderStatus.RETURNED
+                        "On Hold", "Scheduled", "Payment Pending" -> OrderStatus.CONFIRMED
+                        else -> OrderStatus.CONFIRMED
+                    },
+                    estimatedDelivery = order.estimatedDelivery ?: "",
+                    trackingNumber = order.trackingNumber,
+                    trackingUrl = order.trackingUrl,
+                    isOngoing = order.isOngoing,
+                    progressStep = order.progressStep,
+                    showTracker = order.showTracker,
+                    showTrackButton = order.showTrackButton,
+                    isPaused = order.isPaused
+                )
+            },
             onCardClick = { },
             onPrimaryClick = { order ->
-                val msg = if (order.isOngoing) "Tracking ${order.orderId}" else "Reordering ${order.orderId}"
-                Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
+                if (order.trackingUrl != null) {
+                    startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(order.trackingUrl)))
+                } else if (order.isOngoing) {
+                    Toast.makeText(requireContext(), "Tracking info coming soon", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(requireContext(), "Buy again: ${order.name}", Toast.LENGTH_SHORT).show()
+                }
             },
             onSecondaryClick = { }
-        )
-    }
-
-    private fun loadOrders() {
-        allOrders.clear()
-        allOrders.addAll(
-            listOf(
-                Order(
-                    "ADK10482",
-                    "Peacock printed MDF Cutout Pack of 4",
-                    "https://www.adikala.in/cdn/shop/collections/pichwai.jpg?v=1737890053&width=1080",
-                    2, 698, "12 Jul 2026", OrderStatus.SHIPPED, "18 Jul"
-                ),
-                Order(
-                    "ADK10461",
-                    "Decorative Wooden Beads Assorted",
-                    "https://www.adikala.in/cdn/shop/products/657_cdb4596c-0ceb-47dc-9652-09be375b15c0.jpg?v=1657903140&width=1080",
-                    1, 349, "10 Jul 2026", OrderStatus.OUT_FOR_DELIVERY, "14 Jul"
-                ),
-                Order(
-                    "ADK10399",
-                    "MDF Base Round Pack of 6",
-                    "https://www.adikala.in/cdn/shop/collections/for-DIY.jpg?v=1674845390&width=1080",
-                    3, 1247, "28 Jun 2026", OrderStatus.DELIVERED,
-                    deliveredOn = "3 Jul 2026"
-                ),
-                Order(
-                    "ADK10344",
-                    "Decorative Essentials Craft Kit",
-                    "https://www.adikala.in/cdn/shop/collections/decoration.jpg?v=1674844832&width=1080",
-                    1, 899, "15 Jun 2026", OrderStatus.CANCELLED
-                )
-            )
         )
     }
 
