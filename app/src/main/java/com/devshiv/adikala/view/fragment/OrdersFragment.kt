@@ -97,7 +97,13 @@ class OrdersFragment : Fragment() {
             binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
         }
         viewModel.error.observe(viewLifecycleOwner) { error ->
-            error?.let { Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show() }
+            error?.let {
+                Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+                binding.rvOrders.visibility = View.GONE
+                binding.emptyState.visibility = View.VISIBLE
+                binding.tvEmptyTitle.text = "No orders"
+                binding.tvEmptySubtitle.text = it
+            }
         }
     }
 

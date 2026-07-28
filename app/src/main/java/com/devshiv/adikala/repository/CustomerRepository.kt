@@ -124,6 +124,8 @@ class CustomerRepository {
                 addresses(first: ${'$'}addressesFirst, reverse: true) {
                     nodes {
                         id
+                        firstName
+                        lastName
                         address1
                         address2
                         city
@@ -160,6 +162,8 @@ class CustomerRepository {
                 val id = addr.optString("id", null)
                 addressList.add(Address(
                     id = id,
+                    firstName = addr.optString("firstName", null),
+                    lastName = addr.optString("lastName", null),
                     address1 = addr.optString("address1", null),
                     address2 = addr.optString("address2", null),
                     city = addr.optString("city", null),
@@ -183,8 +187,6 @@ class CustomerRepository {
 
     suspend fun addAddress(accessToken: String, address: Address): Boolean = withContext(Dispatchers.IO) {
         try {
-            Log.d("CustomerRepo", "Adding address: $address")
-
             val addressInput = JSONObject().apply {
                 put("address1", address.address1 ?: "")
                 address.address2?.let { if (it.isNotEmpty()) put("address2", it) }
@@ -193,6 +195,8 @@ class CustomerRepository {
                 address.state?.let { if (it.isNotEmpty()) put("zoneCode", it) }
                 put("zip", address.zip ?: "")
                 address.phone?.let { if (it.isNotEmpty()) put("phoneNumber", it) }
+                address.firstName?.let { if (it.isNotEmpty()) put("firstName", it) }
+                address.lastName?.let { if (it.isNotEmpty()) put("lastName", it) }
             }
 
             val variables = JSONObject().apply {

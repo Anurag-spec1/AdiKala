@@ -441,7 +441,7 @@
                         android:gravity="center_vertical"
                         android:orientation="horizontal"
                         android:paddingTop="16dp"
-                        android:paddingBottom="8dp">
+                        android:paddingBottom="4dp">
 
                         <carbon.widget.ImageView
                             android:layout_width="44dp"
@@ -461,16 +461,18 @@
                             android:orientation="vertical">
 
                             <carbon.widget.TextView
+                                android:id="@+id/tvDefaultAddressName"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Default address"
-                                android:textColor="@color/muted"
-                                android:textSize="15sp"
+                                android:text="Harry Kumar mahto"
+                                android:textColor="#0D3238"
+                                android:textSize="17sp"
                                 app:carbon_font="@font/space_grotesk_semibold" />
 
                         </LinearLayout>
 
                         <carbon.widget.TextView
+                            android:id="@+id/tvDefaultBadge"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:background="@drawable/badge_default"
@@ -479,7 +481,8 @@
                             android:text="DEFAULT"
                             android:textColor="@color/lake"
                             android:textSize="13sp"
-                            app:carbon_font="@font/space_grotesk_semibold" />
+                            app:carbon_font="@font/space_grotesk_semibold"
+                            android:visibility="gone" />
                     </LinearLayout>
 
                     <carbon.widget.TextView
@@ -490,11 +493,11 @@
                         android:lineSpacingExtra="3dp"
                         android:maxLines="3"
                         android:paddingStart="58dp"
-                        android:paddingTop="4dp"
+                        android:paddingTop="2dp"
                         android:paddingBottom="16dp"
                         android:text="No address saved yet"
                         android:textColor="#5C5C5C"
-                        android:textSize="17sp"
+                        android:textSize="15sp"
                         app:carbon_font="@font/space_grotesk_semibold" />
 
                     <View

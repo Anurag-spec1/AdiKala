@@ -43,6 +43,8 @@ class OrdersViewModel(application: Application) : AndroidViewModel(application) 
             _isLoading.value = true
             val token = authService.getValidAccessToken() ?: run {
                 _error.value = "Please login to view orders"
+                _ongoingOrders.value = emptyList()
+                _pastOrders.value = emptyList()
                 _isLoading.value = false
                 return@launch
             }

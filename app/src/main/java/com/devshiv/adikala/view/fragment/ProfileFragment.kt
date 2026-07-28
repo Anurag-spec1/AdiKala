@@ -80,7 +80,7 @@ class ProfileFragment : Fragment() {
     private fun performSignOut() {
         lifecycleScope.launch {
             try {
-                authService.signOut()
+                viewModel.logout()
                 Toast.makeText(requireContext(), "Signed out successfully", Toast.LENGTH_SHORT).show()
                 viewModel.checkLoginStatus()
             } catch (e: Exception) {
@@ -115,6 +115,8 @@ class ProfileFragment : Fragment() {
 
     private fun showAddAddressDialog(existingAddress: Address?) {
         val view = layoutInflater.inflate(R.layout.dialog_add_address, null)
+        val etFirstName = view.findViewById<TextInputEditText>(R.id.etFirstName)
+        val etLastName = view.findViewById<TextInputEditText>(R.id.etLastName)
         val etCountry = view.findViewById<TextInputEditText>(R.id.etCountry)
         val etAddress = view.findViewById<TextInputEditText>(R.id.etAddress)
         val etApartment = view.findViewById<TextInputEditText>(R.id.etApartment)
@@ -127,6 +129,8 @@ class ProfileFragment : Fragment() {
         etCountry.setText("India")
 
         existingAddress?.let {
+            etFirstName.setText(it.firstName)
+            etLastName.setText(it.lastName)
             etAddress.setText(it.address1)
             etApartment.setText(it.address2)
             etCity.setText(it.city)
@@ -160,6 +164,8 @@ class ProfileFragment : Fragment() {
 
                 val address = Address(
                     id = existingAddress?.id,
+                    firstName = etFirstName.text.toString().trim(),
+                    lastName = etLastName.text.toString().trim(),
                     address1 = etAddress.text.toString().trim(),
                     address2 = etApartment.text.toString().trim(),
                     city = etCity.text.toString().trim(),
@@ -297,6 +303,31 @@ class ProfileFragment : Fragment() {
         viewModel.userPhone.observe(viewLifecycleOwner) { binding.tvUserPhone.text = it ?: "No phone" }
         viewModel.userInitial.observe(viewLifecycleOwner) { binding.tvAvatarInitial.text = it ?: "U" }
 
+        viewModel.defaultAddressName.observe(viewLifecycleOwner) { name ->
+            when {
+                name.isNullOrEmpty() -> {
+                    binding.tvDefaultAddressName.text = "Default address"
+                    binding.tvDefaultBadge.visibility = View.GONE
+                }
+                name == "Default address" -> {
+                    binding.tvDefaultAddressName.text = "Default address"
+                    binding.tvDefaultBadge.visibility = View.GONE
+                }
+                else -> {
+                    binding.tvDefaultAddressName.text = name
+                    binding.tvDefaultBadge.visibility = View.VISIBLE
+                }
+            }
+        }
+
+        viewModel.defaultAddress.observe(viewLifecycleOwner) { address ->
+            binding.tvDefaultAddress.text = if (address.isNullOrEmpty() || address == "No address saved yet") {
+                "No address saved yet"
+            } else {
+                address
+            }
+        }
+
         viewModel.addresses.observe(viewLifecycleOwner) { addresses ->
             if (addresses != null && userRequestedAddresses) {
                 userRequestedAddresses = false
@@ -304,13 +335,6 @@ class ProfileFragment : Fragment() {
             }
         }
 
-        viewModel.defaultAddress.observe(viewLifecycleOwner) { address ->
-            binding.tvDefaultAddress.text = if (address.isNullOrEmpty() || address == "No address saved yet") {
-                "India (Default)"
-            } else {
-                address
-            }
-        }
         viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
             binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
         }

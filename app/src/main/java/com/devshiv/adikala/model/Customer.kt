@@ -10,6 +10,8 @@ data class Profile(
 
 data class Address(
     val id: String?,
+    val firstName: String? = null,
+    val lastName: String? = null,
     val address1: String?,
     val address2: String?,
     val city: String?,
