@@ -16,6 +16,8 @@ object GraphQLQueries {
                         edges {
                             node {
                                 id
+                                featuredImage { url }
+                                images(first: 1) { edges { node { url } } }
                             }
                         }
                     }

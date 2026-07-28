@@ -21,6 +21,22 @@ class ShopifyApiService {
     }
 
 
+    suspend fun getProductsByCollectionPaginated(
+        handle: String,
+        sortKey: String,
+        reverse: Boolean,
+        first: Int = 20,
+        after: String? = null
+    ): Pair<List<ShopifyProduct>, String?> = withContext(Dispatchers.IO) {
+        val query = GraphQLQueries.getCollectionByHandleSorted(handle, sortKey, reverse, first, after)
+        val response = executeGraphQL(query)
+        val productsData = response.collectionByHandle?.products
+        val list = productsData?.edges?.mapNotNull { it.node } ?: emptyList()
+        val cursor = productsData?.pageInfo?.endCursor
+        Pair(list, cursor)
+    }
+
+
     suspend fun getAllProductsByCollectionSorted(
         handle: String,
         sortKey: String,
@@ -46,9 +62,8 @@ class ShopifyApiService {
     suspend fun getCollections() =
         executeGraphQL(GraphQLQueries.GET_COLLECTIONS)
 
-    suspend fun getCollectionByHandle(handle: String, first: Int = 250, after: String? = null) =
-        executeGraphQL(GraphQLQueries.getCollectionByHandle(handle, first, after))
-
+    suspend fun getCollectionByHandle(handle: String, first: Int = 1) =
+        executeGraphQL(GraphQLQueries.getCollectionByHandle(handle, first))
     suspend fun getMainMenu() =
         executeGraphQL(GraphQLQueries.GET_MAIN_MENU)
 

@@ -7,6 +7,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.devshiv.adikala.view.adapter.ProductAdapter
 import com.devshiv.adikala.view.adapter.SortAdapter
@@ -69,6 +70,20 @@ class ProductsActivity : AppCompatActivity() {
         )
         binding.rvProducts.layoutManager = GridLayoutManager(this, 2)
         binding.rvProducts.adapter = productAdapter
+
+        // Scroll to load more
+        binding.rvProducts.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                if (dy <= 0) return
+                val layoutManager = recyclerView.layoutManager as GridLayoutManager
+                val lastVisible = layoutManager.findLastVisibleItemPosition()
+                val totalItems = (recyclerView.adapter?.itemCount ?: 0) - 1
+                if (lastVisible >= totalItems - 5) {
+                    viewModel.loadMoreProducts()
+                }
+            }
+        })
     }
 
     private fun setupObservers() {

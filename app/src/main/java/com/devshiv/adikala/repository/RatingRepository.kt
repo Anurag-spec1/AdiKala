@@ -6,6 +6,7 @@ import com.devshiv.adikala.model.JudgeMeReviewData
 import com.devshiv.adikala.model.RatingSummary
 import com.devshiv.adikala.model.Review
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 
 class RatingRepository {
@@ -22,7 +23,10 @@ class RatingRepository {
 
         @Volatile private var cache: List<JudgeMeReviewData> = emptyList()
         @Volatile private var cacheTime = 0L
+        @Volatile private var isCacheLoading = false
     }
+
+    // ── Public API ──
 
     suspend fun getProductReviews(
         productHandle: String,
@@ -31,16 +35,33 @@ class RatingRepository {
         try {
             val handle = productHandle.trim()
             if (handle.isEmpty()) {
-                Log.w(TAG, "Empty handle; cannot match reviews")
                 return@withContext Result.success(RatingSummary() to emptyList())
             }
             val all = ensureReviews(force = false)
             val matching = all.filter { it.product_handle == handle }
-            Log.d(TAG, "Handle '$handle' → ${matching.size} of ${all.size} reviews")
             Result.success(buildSummary(matching))
         } catch (e: Exception) {
             Log.e(TAG, "getProductReviews failed: ${e.message}", e)
             Result.success(RatingSummary() to emptyList())
+        }
+    }
+
+    suspend fun getProductRatingFast(productHandle: String): RatingSummary = withContext(Dispatchers.IO) {
+        try {
+            val all = ensureReviews(force = false)
+            val matching = all.filter { it.product_handle == productHandle }
+            val avg = if (matching.isNotEmpty()) matching.map { it.rating ?: 0 }.average() else 0.0
+            RatingSummary(averageRating = avg, totalReviews = matching.size, distribution = emptyMap())
+        } catch (e: Exception) {
+            RatingSummary()
+        }
+    }
+
+    suspend fun preloadReviewsIfNeeded() {
+        if (isCacheExpired() && !isCacheLoading) {
+            withContext(Dispatchers.IO) {
+                ensureReviews(force = true)
+            }
         }
     }
 
@@ -73,51 +94,65 @@ class RatingRepository {
             )
 
             if (response.isSuccessful) {
-                Log.d(TAG, "✅ Review submitted (pending moderation): id=${response.body()?.id}")
+                Log.d(TAG, "Review submitted (pending moderation): id=${response.body()?.id}")
                 invalidateCache()
                 Result.success(true)
             } else {
                 val err = response.errorBody()?.string()
-                Log.e(TAG, "❌ Submit failed ${response.code()}: $err")
+                Log.e(TAG, "Submit failed ${response.code()}: $err")
                 Result.failure(Exception(err ?: "Failed to submit review"))
             }
         } catch (e: Exception) {
-            Log.e(TAG, "❌ Submit exception: ${e.message}", e)
+            Log.e(TAG, "Submit exception: ${e.message}", e)
             Result.failure(e)
         }
     }
 
-
-    private suspend fun ensureReviews(force: Boolean): List<JudgeMeReviewData> {
-        val fresh = cache.isNotEmpty() && (System.currentTimeMillis() - cacheTime) < CACHE_TTL_MS
-        if (!force && fresh) return cache
-
-        val all = mutableListOf<JudgeMeReviewData>()
-        var page = 1
-        while (page <= MAX_PAGES) {
-            val resp = api.getReviews(shopDomain, apiToken, page, PER_PAGE)
-            if (!resp.isSuccessful) {
-                if (page == 1) throw Exception("Reviews fetch failed: HTTP ${resp.code()}")
-                break
-            }
-            val batch = resp.body()?.reviews ?: emptyList()
-            all += batch
-            if (batch.size < PER_PAGE) break
-            page++
-        }
-        cache = all
-        cacheTime = System.currentTimeMillis()
-        Log.d(TAG, "Cached ${all.size} store reviews across ${page} page(s)")
-        return all
-    }
-
-    private fun invalidateCache() {
+    fun invalidateCache() {
         cacheTime = 0L
     }
 
-    private fun buildSummary(
-        data: List<JudgeMeReviewData>
-    ): Pair<RatingSummary, List<Review>> {
+    // ── Private Helpers ──
+
+    private suspend fun ensureReviews(force: Boolean): List<JudgeMeReviewData> {
+        if (!force && !isCacheExpired()) {
+            return cache
+        }
+
+        if (isCacheLoading) {
+            delay(500)
+            if (!isCacheExpired()) return cache
+        }
+
+        isCacheLoading = true
+        try {
+            val all = mutableListOf<JudgeMeReviewData>()
+            var page = 1
+            while (page <= MAX_PAGES) {
+                val resp = api.getReviews(shopDomain, apiToken, page, PER_PAGE)
+                if (!resp.isSuccessful) {
+                    if (page == 1) throw Exception("Reviews fetch failed: HTTP ${resp.code()}")
+                    break
+                }
+                val batch = resp.body()?.reviews ?: emptyList()
+                all += batch
+                if (batch.size < PER_PAGE) break
+                page++
+            }
+            cache = all
+            cacheTime = System.currentTimeMillis()
+            Log.d(TAG, "Cached ${all.size} reviews across $page page(s)")
+        } finally {
+            isCacheLoading = false
+        }
+        return cache
+    }
+
+    private fun isCacheExpired(): Boolean {
+        return cache.isEmpty() || (System.currentTimeMillis() - cacheTime) > CACHE_TTL_MS
+    }
+
+    private fun buildSummary(data: List<JudgeMeReviewData>): Pair<RatingSummary, List<Review>> {
         val reviews = data.map { r ->
             Review(
                 id = r.id?.toLong() ?: 0L,
@@ -137,11 +172,9 @@ class RatingRepository {
 
         val avg = if (reviews.isNotEmpty()) reviews.map { it.rating }.average() else 0.0
 
-        val summary = RatingSummary(
-            averageRating = avg,
-            totalReviews = reviews.size,
-            distribution = distribution
+        return Pair(
+            RatingSummary(averageRating = avg, totalReviews = reviews.size, distribution = distribution),
+            reviews
         )
-        return summary to reviews
     }
 }

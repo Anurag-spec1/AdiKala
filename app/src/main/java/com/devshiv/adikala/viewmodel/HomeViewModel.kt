@@ -28,16 +28,21 @@ class HomeViewModel : ViewModel() {
         viewModelScope.launch {
             _isLoading.value = true
 
-            repository.getCategoriesForChips().fold(
-                onSuccess = { _categories.value = it },
-                onFailure = { _error.value = it.message }
-            )
+            val categoriesJob = launch {
+                repository.getCategoriesForChips().fold(
+                    onSuccess = { _categories.value = it },
+                    onFailure = { _error.value = it.message }
+                )
+            }
+            val collectionsJob = launch {
+                repository.getAdikalaStoreCollections().fold(
+                    onSuccess = { _adikalaStoreCollections.value = it },
+                    onFailure = { _error.value = it.message }
+                )
+            }
 
-            repository.getAdikalaStoreCollections().fold(
-                onSuccess = { _adikalaStoreCollections.value = it },
-                onFailure = { _error.value = it.message }
-            )
-
+            categoriesJob.join()
+            collectionsJob.join()
             _isLoading.value = false
         }
     }

@@ -19,13 +19,15 @@ class CategoriesViewModel : ViewModel() {
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
 
+    private var allCategories = listOf<Category>()
+
     fun loadCategories() {
         viewModelScope.launch {
             _isLoading.value = true
             repository.getCategoriesForChips().fold(
                 onSuccess = { categories ->
                     _categories.value = categories
-                    loadMissingImages(categories)
+                    // Images already loaded from cache!
                 },
                 onFailure = { Log.e("CategoriesVM", "Failed", it) }
             )
@@ -33,23 +35,19 @@ class CategoriesViewModel : ViewModel() {
         }
     }
 
-    private suspend fun loadMissingImages(categories: List<Category>) {
-        val updatedCategories = categories.map { category ->
-            if (category.image.isBlank() && category.handle.isNotEmpty()) {
-                val imageUrl = repository.getFirstProductImage(category.handle)
-                category.copy(image = imageUrl)
-            } else category
-        }.map { category ->
-            if (category.subCategories.isNotEmpty()) {
-                val updatedSubs = category.subCategories.map { sub ->
-                    if (sub.image.isBlank() && sub.handle.isNotEmpty()) {
-                        val imageUrl = repository.getFirstProductImage(sub.handle)
-                        sub.copy(image = imageUrl)
-                    } else sub
-                }
-                category.copy(subCategories = updatedSubs)
-            } else category
+    fun loadImageForCategory(position: Int) {
+        if (position >= allCategories.size) return
+        val category = allCategories[position]
+        if (category.image.isNotBlank()) return // Already has image
+
+        viewModelScope.launch {
+            val imageUrl = repository.getFirstProductImage(category.handle)
+            if (imageUrl.isNotEmpty()) {
+                val updated = allCategories.toMutableList()
+                updated[position] = category.copy(image = imageUrl)
+                allCategories = updated
+                _categories.value = allCategories
+            }
         }
-        _categories.value = updatedCategories
     }
 }

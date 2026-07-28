@@ -21,63 +21,119 @@ class ProductsViewModel : ViewModel() {
     private val _filteredProducts = MutableLiveData<List<Product>>()
     val filteredProducts: LiveData<List<Product>> = _filteredProducts
 
-    private val _isLoading = MutableLiveData<Boolean>()
+    private val _isLoading = MutableLiveData(false)
     val isLoading: LiveData<Boolean> = _isLoading
+
+    private val _isLoadingMore = MutableLiveData(false)
+    val isLoadingMore: LiveData<Boolean> = _isLoadingMore
 
     private val _error = MutableLiveData<String>()
     val error: LiveData<String> = _error
 
+    private var allProducts = mutableListOf<Product>()
+    private var endCursor: String? = null
+    private var hasNextPage = true
     private var currentSort = SortOption.FEATURED
     private var currentHandle = ""
 
     fun loadProductsByCollection(handle: String) {
         currentHandle = handle
-        applySort(SortOption.FEATURED)
+        allProducts.clear()
+        endCursor = null
+        hasNextPage = true
+        loadFirstPage()
     }
 
     fun applySort(sort: SortOption) {
         currentSort = sort
+        allProducts.clear()
+        endCursor = null
+        hasNextPage = true
+        loadFirstPage()
+    }
+
+    private fun loadFirstPage() {
         viewModelScope.launch {
             _isLoading.value = true
+            val (sortKey, reverse) = getSortParams(currentSort)
 
-            val (sortKey, reverse) = when (sort) {
-                SortOption.FEATURED -> "MANUAL" to false
-                SortOption.MOST_RELEVANT -> "RELEVANCE" to false
-                SortOption.BEST_SELLING -> "BEST_SELLING" to false
-                SortOption.NAME_ASC -> "TITLE" to false
-                SortOption.NAME_DESC -> "TITLE" to true
-                SortOption.PRICE_LOW_HIGH -> "PRICE" to false
-                SortOption.PRICE_HIGH_LOW -> "PRICE" to true
-                SortOption.DATE_NEW_OLD -> "CREATED" to true
-                SortOption.DATE_OLD_NEW -> "CREATED" to false
-            }
+            repository.getProductsByCollectionPaginated(
+                currentHandle, sortKey, reverse, first = 20
+            ).fold(
+                onSuccess = { (products, cursor) ->
+                    allProducts = products.toMutableList()
+                    endCursor = cursor
+                    hasNextPage = cursor != null
 
-            repository.getProductsByCollectionSorted(currentHandle, sortKey, reverse).fold(
-                onSuccess = { products ->
-                    _products.value = products
-                    _filteredProducts.value = products
-                    loadRatingsForProducts(products)
+                    // SHOW PRODUCTS IMMEDIATELY
+                    _products.value = allProducts
+                    _filteredProducts.value = allProducts
+                    _isLoading.value = false
+
+                    // Load ratings in background
+                    loadRatingsInBackground()
                 },
-                onFailure = { _error.value = it.message }
+                onFailure = {
+                    _error.value = it.message
+                    _isLoading.value = false
+                }
             )
-
-            _isLoading.value = false
         }
     }
 
-    private suspend fun loadRatingsForProducts(products: List<Product>) {
-        val updatedProducts = products.map { product ->
-            ratingRepository.getProductReviews(product.handle, product.id).fold(
-                onSuccess = { (summary, _) ->
-                    product.copy(
-                        rating = summary.averageRating,
-                        salesCount = summary.totalReviews
-                    )
+    fun loadMoreProducts() {
+        if (!hasNextPage || _isLoadingMore.value == true) return
+
+        viewModelScope.launch {
+            _isLoadingMore.value = true
+            val (sortKey, reverse) = getSortParams(currentSort)
+
+            repository.getProductsByCollectionPaginated(
+                currentHandle, sortKey, reverse, first = 20, after = endCursor
+            ).fold(
+                onSuccess = { (products, cursor) ->
+                    allProducts.addAll(products)
+                    endCursor = cursor
+                    hasNextPage = cursor != null
+                    _products.value = allProducts
+                    _filteredProducts.value = allProducts
+                    _isLoadingMore.value = false
+                    loadRatingsInBackground()
                 },
-                onFailure = { product }
+                onFailure = {
+                    _error.value = it.message
+                    _isLoadingMore.value = false
+                }
             )
         }
-        _products.value = updatedProducts
-        _filteredProducts.value = updatedProducts
+    }
+
+    private suspend fun loadRatingsInBackground() {
+        // Preload cache if needed (runs once)
+        ratingRepository.preloadReviewsIfNeeded()
+
+        // Update ratings from cache (fast)
+        val updated = allProducts.map { product ->
+            val rating = ratingRepository.getProductRatingFast(product.handle)
+            product.copy(
+                rating = rating.averageRating,
+                salesCount = rating.totalReviews
+            )
+        }
+        allProducts = updated.toMutableList()
+        _products.postValue(allProducts)
+        _filteredProducts.postValue(allProducts)
+    }
+
+    private fun getSortParams(sort: SortOption): Pair<String, Boolean> = when (sort) {
+        SortOption.FEATURED -> "MANUAL" to false
+        SortOption.BEST_SELLING -> "BEST_SELLING" to false
+        SortOption.NAME_ASC -> "TITLE" to false
+        SortOption.NAME_DESC -> "TITLE" to true
+        SortOption.PRICE_LOW_HIGH -> "PRICE" to false
+        SortOption.PRICE_HIGH_LOW -> "PRICE" to true
+        SortOption.DATE_NEW_OLD -> "CREATED" to true
+        SortOption.DATE_OLD_NEW -> "CREATED" to false
+        SortOption.MOST_RELEVANT -> "RELEVANCE" to false
     }
 }
