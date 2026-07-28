@@ -1,5 +1,6 @@
 package com.devshiv.adikala.view.activity
 
+import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -11,12 +12,13 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.fragment.app.Fragment
-import com.devshiv.adikala.view.fragment.HomeFragment
 import com.devshiv.adikala.R
 import com.devshiv.adikala.auth.ShopifyAuthManager
 import com.devshiv.adikala.databinding.ActivityMainBinding
+import com.devshiv.adikala.view.fragment.HomeFragment
 import com.devshiv.adikala.view.fragment.OrdersFragment
 import com.devshiv.adikala.view.fragment.ProfileFragment
+import com.devshiv.adikala.widget.BottomNavBar
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -28,8 +30,14 @@ class MainActivity : AppCompatActivity() {
 
         enableFullScreen()
 
+        val navigateTo = intent.getStringExtra("navigate_to")
+
         if (savedInstanceState == null) {
-            loadFragment(HomeFragment())
+            if (navigateTo == "profile") {
+                binding.bottomNavBar.selectTab(BottomNavBar.Tab.PROFILE)
+            } else {
+                loadFragment(HomeFragment())
+            }
         }
 
         binding.bottomNavBar.setOnHomeClickListener {
@@ -41,12 +49,15 @@ class MainActivity : AppCompatActivity() {
         binding.bottomNavBar.setOnProfileClickListener {
             loadFragment(ProfileFragment())
         }
+    }
 
-        val idToken = ShopifyAuthManager(this).getIdToken()
-        Log.d("ID_TOKEN", "ID Token: $idToken")
-
-        val accesstoken = ShopifyAuthManager(this).getAccessToken()
-        Log.d("Access_token","Access_token: $accesstoken")
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        intent.getStringExtra("navigate_to")?.let { tab ->
+            if (tab == "profile") {
+                binding.bottomNavBar.selectTab(BottomNavBar.Tab.PROFILE)
+            }
+        }
     }
 
     private fun loadFragment(fragment: Fragment) {
@@ -57,7 +68,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun enableFullScreen() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
-
         window.statusBarColor = Color.TRANSPARENT
         window.navigationBarColor = Color.TRANSPARENT
 

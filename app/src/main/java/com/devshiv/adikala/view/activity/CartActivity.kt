@@ -4,14 +4,15 @@ import android.content.Intent
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.devshiv.adikala.R
+import com.devshiv.adikala.auth.ShopifyAuthManager
 import com.devshiv.adikala.databinding.ActivityCartBinding
 import com.devshiv.adikala.model.Product
 import com.devshiv.adikala.view.adapter.CartAdapter
@@ -23,6 +24,7 @@ class CartActivity : AppCompatActivity() {
     private lateinit var binding: ActivityCartBinding
     private lateinit var viewModel: CartViewModel
     private lateinit var cartAdapter: CartAdapter
+    private lateinit var authManager: ShopifyAuthManager
 
     private var isCartEmpty: Boolean = true
     private var isCurrentlyLoading: Boolean = false
@@ -34,6 +36,7 @@ class CartActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         viewModel = ViewModelProvider(this)[CartViewModel::class.java]
+        authManager = ShopifyAuthManager(this)
 
         setupCart()
         setupListeners()
@@ -56,8 +59,40 @@ class CartActivity : AppCompatActivity() {
 
     private fun setupListeners() {
         binding.btnBack.setOnClickListener { finish() }
-        binding.btnCheckout.setOnClickListener { openCheckout() }
+        binding.btnCheckout.setOnClickListener { handleCheckout() }
         binding.btnShopEmpty.setOnClickListener { finish() }
+    }
+
+    private fun handleCheckout() {
+        if (!authManager.isLoggedIn()) {
+            showLoginRequiredDialog()
+            return
+        }
+        openCheckout()
+    }
+
+    private fun showLoginRequiredDialog() {
+        val dialogView = layoutInflater.inflate(R.layout.dialog_login_required, null)
+
+        val dialog = AlertDialog.Builder(this, R.style.CustomAlertDialog)
+            .setView(dialogView)
+            .setCancelable(true)
+            .create()
+
+        dialogView.findViewById<View>(R.id.btnSignIn).setOnClickListener {
+            dialog.dismiss()
+            val intent = Intent(this, com.devshiv.adikala.view.activity.MainActivity::class.java)
+            intent.putExtra("navigate_to", "profile")
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+            startActivity(intent)
+            finish()
+        }
+
+        dialogView.findViewById<View>(R.id.btnCancel).setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.show()
     }
 
     private fun openCheckout() {

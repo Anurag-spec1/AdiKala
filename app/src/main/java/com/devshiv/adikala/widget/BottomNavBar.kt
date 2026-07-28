@@ -117,6 +117,15 @@ class BottomNavBar @JvmOverloads constructor(
         }
     }
 
+    fun selectTab(tab: Tab) {
+        setActive(tab, animate = true)
+        when (tab) {
+            Tab.CART -> onCartClick?.invoke()
+            Tab.HOME -> onHomeClick?.invoke()
+            Tab.PROFILE -> onProfileClick?.invoke()
+        }
+    }
+
     private fun animateTouchDown(view: View) {
         view.animate().cancel()
         view.animate()

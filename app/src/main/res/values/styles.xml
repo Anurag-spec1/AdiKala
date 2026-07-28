@@ -12,6 +12,11 @@
         <item name="android:textStyle">bold</item>
     </style>
 
+    <style name="CustomAlertDialog" parent="Theme.MaterialComponents.Light.Dialog.Alert">
+        <item name="android:background">@drawable/dialog_background</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+
     <!-- White floating card -->
     <style name="Card">
         <item name="android:layout_width">match_parent</item>

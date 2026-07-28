@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:gravity="center">
+
+    <ImageView
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:src="@drawable/ic_cart"
+        android:alpha="0.6"
+        android:tint="#0D3238" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Sign in to Checkout"
+        android:textColor="#0D3238"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:fontFamily="@font/space_grotesk_semibold" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="You need to be signed in to complete your purchase. Sign in to access your saved addresses and track your orders."
+        android:textColor="#5C5C5C"
+        android:textSize="14sp"
+        android:gravity="center"
+        android:lineSpacingExtra="3dp"
+        android:fontFamily="@font/space_grotesk_semibold" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginTop="24dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:id="@+id/btnSignIn"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="@drawable/bg_solid">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sign In"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            android:fontFamily="@font/space_grotesk_semibold" />
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="Cancel"
+        android:textColor="#8C8C8C"
+        android:textSize="14sp"
+        android:id="@+id/btnCancel"
+        android:padding="8dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:fontFamily="@font/space_grotesk_semibold" />
+
+</LinearLayout>
