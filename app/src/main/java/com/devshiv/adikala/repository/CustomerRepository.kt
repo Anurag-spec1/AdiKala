@@ -37,9 +37,8 @@ class CustomerRepository {
                     address1
                     address2
                     city
-                    country: territoryCode
+                    country
                     zip
-                    phone: phoneNumber
                 }
             }
         }
@@ -47,11 +46,22 @@ class CustomerRepository {
 
             val body = JSONObject().apply { put("query", query) }.toString().toRequestBody(JSON)
             val request = Request.Builder().url(graphqlUrl).header("Authorization", accessToken).post(body).build()
+
             val response = client.newCall(request).execute()
             val responseBody = response.body?.string() ?: ""
             Log.d("CustomerRepo", "getProfile response: $responseBody")
 
             val json = JSONObject(responseBody)
+
+            if (json.has("errors")) {
+                val errors = json.getJSONArray("errors")
+                val errorMsg = errors.getJSONObject(0).optString("message", "")
+                if (errorMsg.contains("invalid") || errorMsg.contains("revoked")) {
+                    Log.e("CustomerRepo", "Token invalid or revoked")
+                    return@withContext null
+                }
+            }
+
             val customer = json.optJSONObject("data")?.optJSONObject("customer") ?: return@withContext null
 
             val addrJson = customer.optJSONObject("defaultAddress")
@@ -64,7 +74,7 @@ class CustomerRepository {
                     country = addrJson.optString("country", null),
                     state = null,
                     zip = addrJson.optString("zip", null),
-                    phone = addrJson.optString("phone", null),
+                    phone = null,
                     isDefault = true
                 )
             } else null

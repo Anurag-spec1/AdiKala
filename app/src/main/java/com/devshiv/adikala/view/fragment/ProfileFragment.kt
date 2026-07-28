@@ -32,6 +32,8 @@ class ProfileFragment : Fragment() {
     private lateinit var authService: ShopifyAuthService
     private var addressListDialog: AlertDialog? = null
 
+    private var userRequestedAddresses = false
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
         return binding.root
@@ -57,7 +59,10 @@ class ProfileFragment : Fragment() {
         binding.btnEditProfile.setOnClickListener { showEditProfileDialog() }
         binding.btnTrackOrder.setOnClickListener { trackOrder() }
         binding.btnAddAddress.setOnClickListener { showAddAddressDialog(null) }
-        binding.btnManageAddress.setOnClickListener { showAddressListDialog() }
+        binding.btnManageAddress.setOnClickListener {
+            userRequestedAddresses = true
+            showAddressListDialog()
+        }
         binding.btnHelpCenter.setOnClickListener { }
         binding.btnContactUs.setOnClickListener { }
         binding.btnPrivacyPolicy.setOnClickListener { }
@@ -266,21 +271,39 @@ class ProfileFragment : Fragment() {
     }
 
     private fun observeViewModel() {
-        viewModel.sessionExpired.observe(viewLifecycleOwner) { expired ->
-            if (expired) {
-                Toast.makeText(requireContext(), "Session expired. Please login again.", Toast.LENGTH_LONG).show()
-                viewModel.logout()
-                viewModel.checkLoginStatus()
+        viewModel.authState.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                ProfileViewModel.AuthState.LOADING -> {
+                    binding.progressBar.visibility = View.VISIBLE
+                }
+                ProfileViewModel.AuthState.AUTHENTICATED -> {
+                    binding.layoutLoggedIn.visibility = View.VISIBLE
+                    binding.layoutLoggedOut.visibility = View.GONE
+                }
+                ProfileViewModel.AuthState.EXPIRED -> {
+                    binding.layoutLoggedIn.visibility = View.GONE
+                    binding.layoutLoggedOut.visibility = View.VISIBLE
+                    Toast.makeText(requireContext(), "Session expired. Please login again.", Toast.LENGTH_LONG).show()
+                }
+                ProfileViewModel.AuthState.LOGGED_OUT -> {
+                    binding.layoutLoggedIn.visibility = View.GONE
+                    binding.layoutLoggedOut.visibility = View.VISIBLE
+                }
             }
         }
-        viewModel.isLoggedIn.observe(viewLifecycleOwner) { isLoggedIn ->
-            binding.layoutLoggedIn.visibility = if (isLoggedIn) View.VISIBLE else View.GONE
-            binding.layoutLoggedOut.visibility = if (isLoggedIn) View.GONE else View.VISIBLE
-        }
+
         viewModel.userName.observe(viewLifecycleOwner) { binding.tvUserName.text = it ?: "User" }
         viewModel.userEmail.observe(viewLifecycleOwner) { binding.tvUserEmail.text = it ?: "No email" }
         viewModel.userPhone.observe(viewLifecycleOwner) { binding.tvUserPhone.text = it ?: "No phone" }
         viewModel.userInitial.observe(viewLifecycleOwner) { binding.tvAvatarInitial.text = it ?: "U" }
+
+        viewModel.addresses.observe(viewLifecycleOwner) { addresses ->
+            if (addresses != null && userRequestedAddresses) {
+                userRequestedAddresses = false
+                refreshAddressListDialog()
+            }
+        }
+
         viewModel.defaultAddress.observe(viewLifecycleOwner) { address ->
             binding.tvDefaultAddress.text = if (address.isNullOrEmpty() || address == "No address saved yet") {
                 "India (Default)"
@@ -288,14 +311,16 @@ class ProfileFragment : Fragment() {
                 address
             }
         }
-        viewModel.isLoading.observe(viewLifecycleOwner) { binding.progressBar.visibility = if (it) View.VISIBLE else View.GONE }
-        viewModel.errorMessage.observe(viewLifecycleOwner) { it?.let { Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show() } }
-        viewModel.successMessage.observe(viewLifecycleOwner) { it?.let { Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show() } }
-        viewModel.addresses.observe(viewLifecycleOwner) { addresses ->
-            if (addresses != null) {
-                refreshAddressListDialog()
+        viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+            binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+        }
+        viewModel.isOffline.observe(viewLifecycleOwner) { offline ->
+            if (offline) {
+                Toast.makeText(requireContext(), "You're offline. Showing cached data.", Toast.LENGTH_SHORT).show()
             }
         }
+        viewModel.errorMessage.observe(viewLifecycleOwner) { it?.let { Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show() } }
+        viewModel.successMessage.observe(viewLifecycleOwner) { it?.let { Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show() } }
     }
 
     override fun onDestroyView() {

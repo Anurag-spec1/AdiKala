@@ -60,6 +60,10 @@ class MainActivity : AppCompatActivity() {
             if (tab == "profile") {
                 binding.bottomNavBar.selectTab(BottomNavBar.Tab.PROFILE)
             }
+
+            if (tab == "home") {
+                binding.bottomNavBar.selectTab(BottomNavBar.Tab.HOME)
+            }
         }
     }
 

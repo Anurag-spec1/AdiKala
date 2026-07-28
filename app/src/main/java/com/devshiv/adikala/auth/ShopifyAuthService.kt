@@ -9,9 +9,17 @@ import androidx.browser.customtabs.CustomTabsIntent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
-import net.openid.appauth.*
+import net.openid.appauth.AuthorizationException
+import net.openid.appauth.AuthorizationRequest
+import net.openid.appauth.AuthorizationResponse
+import net.openid.appauth.AuthorizationService
+import net.openid.appauth.AuthorizationServiceConfiguration
+import net.openid.appauth.ResponseTypeValues
+import net.openid.appauth.TokenRequest
+import net.openid.appauth.TokenResponse
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import java.net.URLEncoder
 import kotlin.coroutines.resume
 
 class ShopifyAuthService(context: Context) {
@@ -31,6 +39,7 @@ class ShopifyAuthService(context: Context) {
 
     companion object {
         private const val TAG = "ShopifyAuth"
+        private const val REFRESH_BUFFER_MS = 5 * 60 * 1000L
     }
 
     fun buildAuthIntent(): Intent {
@@ -70,21 +79,26 @@ class ShopifyAuthService(context: Context) {
 
         val tokenRequest = authResponse.createTokenExchangeRequest()
         val tokenResponse = performTokenRequest(tokenRequest) ?: return false
-
         saveTokens(tokenResponse)
         return true
     }
 
     suspend fun refreshAccessToken(): Boolean {
         val refreshToken = authManager.getRefreshToken() ?: return false
-        val tokenRequest = TokenRequest.Builder(serviceConfig, ShopifyAuthConfig.CLIENT_ID)
-            .setGrantType("refresh_token")
-            .setRefreshToken(refreshToken)
-            .build()
 
-        val tokenResponse = performTokenRequest(tokenRequest) ?: return false
-        saveTokens(tokenResponse)
-        return true
+        return try {
+            val tokenRequest = TokenRequest.Builder(serviceConfig, ShopifyAuthConfig.CLIENT_ID)
+                .setGrantType("refresh_token")
+                .setRefreshToken(refreshToken)
+                .build()
+
+            val tokenResponse = performTokenRequest(tokenRequest) ?: return false
+            saveTokens(tokenResponse)
+            true
+        } catch (e: Exception) {
+            Log.e(TAG, "Token refresh failed", e)
+            false
+        }
     }
 
     suspend fun signOut(): Boolean = withContext(Dispatchers.IO) {
@@ -95,16 +109,16 @@ class ShopifyAuthService(context: Context) {
 
         if (!idToken.isNullOrEmpty()) {
             try {
+                val encodedIdToken = URLEncoder.encode(idToken, "UTF-8")
                 val url = "${ShopifyAuthConfig.LOGOUT_ENDPOINT}?" +
-                        "id_token_hint=$idToken&" +
+                        "id_token_hint=$encodedIdToken&" +
                         "client_id=${ShopifyAuthConfig.CLIENT_ID}"
 
                 val request = Request.Builder().url(url).get().build()
-                val response = httpClient.newCall(request).execute()
-
-                serverLogoutSuccess = response.isSuccessful
-                Log.d(TAG, "Server logout response: ${response.code}")
-                response.close()
+                httpClient.newCall(request).execute().use { response ->
+                    serverLogoutSuccess = response.isSuccessful
+                    Log.d(TAG, "Server logout response: ${response.code}")
+                }
             } catch (e: Exception) {
                 Log.e(TAG, "Server logout failed", e)
             }
@@ -124,11 +138,8 @@ class ShopifyAuthService(context: Context) {
     private suspend fun performTokenRequest(request: TokenRequest): TokenResponse? =
         suspendCancellableCoroutine { cont ->
             authService.performTokenRequest(request) { response, exception ->
-                if (exception != null || response == null) {
-                    cont.resume(null)
-                } else {
-                    cont.resume(response)
-                }
+                if (!cont.isActive) return@performTokenRequest
+                cont.resume(if (exception != null || response == null) null else response)
             }
         }
 
@@ -139,28 +150,27 @@ class ShopifyAuthService(context: Context) {
 
         authManager.saveTokens(
             access = accessToken,
-            refresh = tokenResponse.refreshToken,
-            idToken = tokenResponse.idToken,
+            refresh = tokenResponse.refreshToken ?: authManager.getRefreshToken(),
+            idToken = tokenResponse.idToken ?: authManager.getIdToken(),
             expiresAt = expiresAt
         )
     }
 
     suspend fun getValidAccessToken(): String? {
-        if (isAccessTokenExpired()) {
-            Log.d(TAG, "Access token expired, refreshing...")
+        if (shouldRefreshAccessToken()) {
+            Log.d(TAG, "Access token near expiry, refreshing...")
             val refreshed = refreshAccessToken()
             if (!refreshed) {
-                Log.e(TAG, "Token refresh failed, user needs to login again")
+                Log.e(TAG, "Token refresh failed")
                 return null
             }
         }
         return authManager.getAccessToken()
     }
 
-    fun isAccessTokenExpired(): Boolean {
+    fun shouldRefreshAccessToken(): Boolean {
         val expiresAt = authManager.getExpiresAt()
         if (expiresAt == 0L) return true
-        val bufferMillis = 60_000L
-        return System.currentTimeMillis() >= (expiresAt - bufferMillis)
+        return System.currentTimeMillis() >= (expiresAt - REFRESH_BUFFER_MS)
     }
 }

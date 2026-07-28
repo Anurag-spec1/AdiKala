@@ -187,7 +187,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/segmentBar"
-        android:layout_marginTop="70dp"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="120dp"
         android:gravity="center"
         android:orientation="vertical"
         android:visibility="gone">
@@ -256,5 +257,283 @@
                 app:carbon_font="@font/space_grotesk_semibold" />
         </carbon.widget.LinearLayout>
     </LinearLayout>
+
+
+    <carbon.widget.RelativeLayout
+        android:id="@+id/helpCard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/segmentBar"
+        android:layout_marginHorizontal="16dp"
+        android:background="@color/white"
+        android:padding="20dp"
+        android:layout_marginTop="70dp"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        app:carbon_cornerRadius="24dp"
+        app:carbon_elevation="6dp"
+        app:carbon_elevationShadowColor="@color/carbon_grey_500"
+        app:carbon_stroke="#14000000"
+        app:carbon_strokeWidth="1dp">
+
+        <carbon.widget.ImageView
+            android:id="@+id/btnCloseHelp"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
+            android:background="@color/white"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="6dp"
+            android:src="@drawable/ic_close"
+            app:carbon_cornerRadius="16dp"
+            app:carbon_elevation="2dp"
+            app:carbon_tint="#0D3238" />
+
+        <carbon.widget.TextView
+            android:id="@+id/tvHelpTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+            android:layout_toStartOf="@id/btnCloseHelp"
+            android:text="How Orders Work"
+            android:textColor="#0D3238"
+            android:textSize="20sp"
+            app:carbon_font="@font/space_grotesk_semibold" />
+
+        <carbon.widget.TextView
+            android:id="@+id/tvHelpSubtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tvHelpTitle"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="4dp"
+            android:text="Track your order from placement to delivery"
+            android:textColor="#8A8A8A"
+            android:textSize="13sp"
+            app:carbon_font="@font/space_grotesk_semibold" />
+
+        <LinearLayout
+            android:id="@+id/statusList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tvHelpSubtitle"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingVertical="8dp">
+
+                <View
+                    android:layout_width="4dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/bg_status_line"
+                    android:backgroundTint="#3F6076" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <carbon.widget.TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Confirmed"
+                        android:textColor="#0D3238"
+                        android:textSize="15sp"
+                        app:carbon_font="@font/space_grotesk_semibold" />
+
+                    <carbon.widget.TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Order placed successfully"
+                        android:textColor="#8A8A8A"
+                        android:textSize="12sp"
+                        app:carbon_font="@font/space_grotesk_semibold" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingVertical="8dp">
+
+                <View
+                    android:layout_width="4dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/bg_status_line"
+                    android:backgroundTint="#6B4A8A" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <carbon.widget.TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Processing"
+                        android:textColor="#0D3238"
+                        android:textSize="15sp"
+                        app:carbon_font="@font/space_grotesk_semibold" />
+
+                    <carbon.widget.TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Being packed and prepared"
+                        android:textColor="#8A8A8A"
+                        android:textSize="12sp"
+                        app:carbon_font="@font/space_grotesk_semibold" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingVertical="8dp">
+
+                <View
+                    android:layout_width="4dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/bg_status_line"
+                    android:backgroundTint="#2E6B9E" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <carbon.widget.TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Shipped"
+                        android:textColor="#0D3238"
+                        android:textSize="15sp"
+                        app:carbon_font="@font/space_grotesk_semibold" />
+
+                    <carbon.widget.TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Handed to courier partner"
+                        android:textColor="#8A8A8A"
+                        android:textSize="12sp"
+                        app:carbon_font="@font/space_grotesk_semibold" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingVertical="8dp">
+
+                <View
+                    android:layout_width="4dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/bg_status_line"
+                    android:backgroundTint="#C97B4A" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <carbon.widget.TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Out for Delivery"
+                        android:textColor="#0D3238"
+                        android:textSize="15sp"
+                        app:carbon_font="@font/space_grotesk_semibold" />
+
+                    <carbon.widget.TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Arriving at your address"
+                        android:textColor="#8A8A8A"
+                        android:textSize="12sp"
+                        app:carbon_font="@font/space_grotesk_semibold" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingVertical="8dp">
+
+                <View
+                    android:layout_width="4dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/bg_status_line"
+                    android:backgroundTint="#4A6B5A" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <carbon.widget.TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Delivered"
+                        android:textColor="#0D3238"
+                        android:textSize="15sp"
+                        app:carbon_font="@font/space_grotesk_semibold" />
+
+                    <carbon.widget.TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Successfully delivered"
+                        android:textColor="#8A8A8A"
+                        android:textSize="12sp"
+                        app:carbon_font="@font/space_grotesk_semibold" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@id/statusList"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="12dp"
+            android:background="#F2F2F2" />
+
+        <carbon.widget.TextView
+            android:id="@+id/tvTrackerInfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/divider"
+            android:text="Placed → Packed → Shipped → Delivered"
+            android:textColor="#8A8A8A"
+            android:textSize="11sp"
+            android:gravity="center"
+            app:carbon_font="@font/space_grotesk_semibold" />
+
+    </carbon.widget.RelativeLayout>
 
 </carbon.widget.RelativeLayout>

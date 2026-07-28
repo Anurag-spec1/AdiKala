@@ -1,7 +1,9 @@
 package com.devshiv.adikala.view.fragment
 
+import android.app.AlertDialog
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,6 +13,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.devshiv.adikala.R
 import com.devshiv.adikala.databinding.FragmentOrdersBinding
 import com.devshiv.adikala.model.Order
 import com.devshiv.adikala.model.OrderStatus
@@ -44,6 +47,14 @@ class OrdersFragment : Fragment() {
         observeViewModel()
     }
 
+    private fun showOrderHelpCard() {
+        binding.rvOrders.visibility = View.GONE
+        binding.emptyState.visibility = View.GONE
+        binding.progressBar.visibility = View.GONE
+
+        binding.helpCard.visibility = View.VISIBLE
+    }
+
     private fun setupTabs() {
         binding.tabOngoing.setOnClickListener {
             if (!showingOngoing) {
@@ -59,9 +70,17 @@ class OrdersFragment : Fragment() {
                 render()
             }
         }
-        binding.btnHelp.setOnClickListener { }
+        binding.btnHelp.setOnClickListener { showOrderHelpCard() }
         binding.btnShopNow.setOnClickListener {
-            // Navigate to home
+            val intent = Intent(requireContext(), com.devshiv.adikala.view.activity.MainActivity::class.java)
+            intent.putExtra("navigate_to", "home")
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+            startActivity(intent)
+        }
+
+        binding.btnCloseHelp.setOnClickListener {
+            binding.helpCard.visibility = View.GONE
+            render()
         }
     }
 

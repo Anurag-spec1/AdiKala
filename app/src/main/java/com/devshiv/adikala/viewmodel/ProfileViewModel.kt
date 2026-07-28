@@ -13,6 +13,7 @@ import com.devshiv.adikala.model.Address
 import com.devshiv.adikala.model.Profile
 import com.devshiv.adikala.repository.CustomerRepository
 import com.devshiv.adikala.view.activity.LoginActivity
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 class ProfileViewModel(application: Application) : AndroidViewModel(application) {
@@ -21,8 +22,10 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     private val authService = ShopifyAuthService(application)
     private val customerRepository = CustomerRepository()
 
-    private val _isLoggedIn = MutableLiveData<Boolean>()
-    val isLoggedIn: LiveData<Boolean> = _isLoggedIn
+    enum class AuthState { LOADING, AUTHENTICATED, EXPIRED, LOGGED_OUT }
+
+    private val _authState = MutableLiveData(AuthState.LOADING)
+    val authState: LiveData<AuthState> = _authState
 
     private val _userName = MutableLiveData<String>()
     val userName: LiveData<String> = _userName
@@ -42,7 +45,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     private val _addresses = MutableLiveData<List<Address>>()
     val addresses: LiveData<List<Address>> = _addresses
 
-    private val _isLoading = MutableLiveData<Boolean>()
+    private val _isLoading = MutableLiveData(false)
     val isLoading: LiveData<Boolean> = _isLoading
 
     private val _errorMessage = MutableLiveData<String>()
@@ -51,22 +54,128 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     private val _successMessage = MutableLiveData<String>()
     val successMessage: LiveData<String> = _successMessage
 
-    private val _sessionExpired = MutableLiveData<Boolean>()
-    val sessionExpired: LiveData<Boolean> = _sessionExpired
+    private val _isOffline = MutableLiveData(false)
+    val isOffline: LiveData<Boolean> = _isOffline
 
     private var profileData: Profile? = null
+    private var fetchJob: Job? = null
+    private var skipValidationUntil = 0L
+    private var fetchRequestId = 0
 
     init {
         checkLoginStatus()
     }
 
     fun checkLoginStatus() {
-        val loggedIn = authManager.isLoggedIn()
-        _isLoggedIn.value = loggedIn
-        if (loggedIn) {
-            loadSavedProfile()
-            fetchProfileFromServer()
+        val hasToken = authManager.isLoggedIn()
+        if (!hasToken) {
+            _authState.value = AuthState.LOGGED_OUT
+            clearProfileData()
+            _isOffline.value = false
+            return
         }
+
+        loadSavedProfile()
+        _authState.value = AuthState.AUTHENTICATED
+
+        if (fetchJob?.isActive == true) return
+        fetchProfileFromServer()
+    }
+
+    fun onLoginSuccess() {
+        fetchJob?.cancel()
+        fetchRequestId++
+        skipValidationUntil = System.currentTimeMillis() + 15_000L
+        _authState.value = AuthState.AUTHENTICATED
+        _isOffline.value = false
+        loadSavedProfile()
+        fetchProfileFromServer()
+    }
+
+    private fun fetchProfileFromServer() {
+        fetchJob?.cancel()
+        val thisRequestId = ++fetchRequestId
+
+        fetchJob = viewModelScope.launch {
+            _isLoading.value = true
+            try {
+                val token = authService.getValidAccessToken()
+                if (token == null) {
+                    if (System.currentTimeMillis() >= skipValidationUntil) {
+                        handleAuthExpired("Token unavailable")
+                    }
+                    return@launch
+                }
+
+                val profile = customerRepository.getProfile(token)
+                if (thisRequestId != fetchRequestId) return@launch
+
+                if (profile != null) {
+                    profileData = profile
+                    populateProfileData(profile)
+                    _isOffline.value = false
+                    _authState.value = AuthState.AUTHENTICATED
+
+                    // Load addresses to get phone from default address
+                    loadAddresses()
+                } else {
+                    if (System.currentTimeMillis() >= skipValidationUntil) {
+                        handleAuthExpired("Profile fetch returned null")
+                    }
+                }
+            } catch (e: Exception) {
+                if (thisRequestId == fetchRequestId) {
+                    Log.e("ProfileVM", "Network/offline failure", e)
+                    _isOffline.value = true
+                }
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+
+    private fun populateProfileData(profile: Profile) {
+        val firstName = profile.firstName?.takeIf { it != "null" } ?: ""
+        val lastName = profile.lastName?.takeIf { it != "null" } ?: ""
+        val email = profile.email?.takeIf { it != "null" } ?: ""
+        val phone = profile.phone?.takeIf { it != "null" && it.isNotEmpty() } ?: ""
+
+        Log.d("ProfileVM", "=== populateProfileData ===")
+        Log.d("ProfileVM", "firstName: '$firstName'")
+        Log.d("ProfileVM", "lastName: '$lastName'")
+        Log.d("ProfileVM", "email: '$email'")
+        Log.d("ProfileVM", "phone from profile: '$phone'")
+        Log.d("ProfileVM", "defaultAddress phone: '${profile.defaultAddress?.phone}'")
+
+        authManager.saveProfile(firstName, lastName, email, phone)
+
+        _userName.value = listOfNotNull(
+            firstName.takeIf { it.isNotEmpty() },
+            lastName.takeIf { it.isNotEmpty() }
+        ).joinToString(" ").ifEmpty { "User" }
+
+        _userEmail.value = email.ifEmpty { "No email" }
+        _userInitial.value = firstName.firstOrNull()?.uppercase() ?: email.firstOrNull()?.uppercase() ?: "U"
+        _userPhone.value = phone.ifEmpty { "No phone" }
+
+        Log.d("ProfileVM", "_userPhone set to: '${_userPhone.value}'")
+
+        profile.defaultAddress?.let { addr ->
+            val parts = listOfNotNull(addr.address1, addr.address2, addr.city, addr.country, addr.zip)
+                .filter { it.isNotEmpty() && it != "null" }
+            _defaultAddress.value = if (parts.isNotEmpty()) parts.joinToString(", ") else "India (Default)"
+        } ?: run {
+            _defaultAddress.value = "India (Default)"
+        }
+    }
+
+    private fun handleAuthExpired(reason: String) {
+        Log.d("ProfileVM", "Auth expired: $reason")
+        _authState.value = AuthState.EXPIRED
+        authManager.clear()
+        skipValidationUntil = 0L
+        _isOffline.value = false
+        clearProfileData()
     }
 
     fun launchLogin() {
@@ -75,13 +184,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         getApplication<Application>().startActivity(intent)
     }
 
-    private suspend fun getValidToken(): String? {
-        val token = authService.getValidAccessToken()
-        if (token == null) {
-            _sessionExpired.value = true
-        }
-        return token
-    }
+    private suspend fun getValidToken(): String? = authService.getValidAccessToken()
 
     private fun loadSavedProfile() {
         _userName.value = authManager.getFullName()
@@ -90,50 +193,15 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         _userInitial.value = authManager.getInitial()
     }
 
-    private fun fetchProfileFromServer() {
-        viewModelScope.launch {
-            _isLoading.value = true
-            try {
-                val token = getValidToken() ?: return@launch
-                profileData = customerRepository.getProfile(token)
-                profileData?.let { profile ->
-                    val firstName = profile.firstName?.takeIf { it != "null" } ?: ""
-                    val lastName = profile.lastName?.takeIf { it != "null" } ?: ""
-                    val email = profile.email?.takeIf { it != "null" } ?: ""
-                    val phone = profile.phone?.takeIf { it != "null" } ?: ""
-
-                    authManager.saveProfile(firstName, lastName, email, phone)
-
-                    _userName.value = listOfNotNull(
-                        firstName.takeIf { it.isNotEmpty() },
-                        lastName.takeIf { it.isNotEmpty() }
-                    ).joinToString(" ").ifEmpty { "User" }
-
-                    _userEmail.value = email.ifEmpty { "No email" }
-                    _userInitial.value = firstName.firstOrNull()?.uppercase() ?: email.firstOrNull()?.uppercase() ?: "U"
-                    _userPhone.value = profile.defaultAddress?.phone?.takeIf { it != "null" } ?: phone.ifEmpty { "No phone" }
-
-                    profile.defaultAddress?.let { addr ->
-                        val parts = listOfNotNull(addr.address1, addr.address2, addr.city, addr.country, addr.zip)
-                            .filter { it.isNotEmpty() && it != "null" }
-                        _defaultAddress.value = if (parts.isNotEmpty()) parts.joinToString(", ") else "India (Default)"
-                    } ?: run {
-                        _defaultAddress.value = "India (Default)"
-                    }
-                }
-            } catch (e: Exception) {
-                Log.e("ProfileVM", "Error fetching profile", e)
-            } finally {
-                _isLoading.value = false
-            }
-        }
-    }
-
     fun updateProfile(firstName: String, lastName: String) {
         viewModelScope.launch {
             _isLoading.value = true
             try {
-                val token = getValidToken() ?: return@launch
+                val token = getValidToken()
+                if (token == null) {
+                    _errorMessage.value = "Session expired or unavailable"
+                    return@launch
+                }
                 val success = customerRepository.updateProfile(token, firstName, lastName)
                 if (success) {
                     authManager.saveProfile(firstName, lastName, authManager.getEmail() ?: "", authManager.getPhone() ?: "")
@@ -155,7 +223,22 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
             _isLoading.value = true
             try {
                 val token = getValidToken() ?: return@launch
-                _addresses.value = customerRepository.getAddresses(token)
+                val addresses = customerRepository.getAddresses(token)
+                _addresses.value = addresses
+
+                Log.d("ProfileVM", "=== loadAddresses ===")
+                Log.d("ProfileVM", "Total addresses: ${addresses.size}")
+
+                val defaultAddr = addresses.find { it.isDefault }
+                Log.d("ProfileVM", "Default address: ${defaultAddr?.address1}")
+                Log.d("ProfileVM", "Default address phone: '${defaultAddr?.phone}'")
+
+                if (defaultAddr?.phone != null && defaultAddr.phone.isNotEmpty()) {
+                    _userPhone.value = defaultAddr.phone
+                    Log.d("ProfileVM", "_userPhone updated to: '${_userPhone.value}'")
+                } else {
+                    Log.d("ProfileVM", "No phone in default address")
+                }
             } catch (e: Exception) {
                 _errorMessage.value = "Failed to load addresses"
             } finally {
@@ -168,7 +251,11 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         viewModelScope.launch {
             _isLoading.value = true
             try {
-                val token = getValidToken() ?: return@launch
+                val token = getValidToken()
+                if (token == null) {
+                    _errorMessage.value = "Session expired or unavailable"
+                    return@launch
+                }
                 val success = customerRepository.addAddress(token, address)
                 if (success) {
                     _successMessage.value = "Address added successfully"
@@ -189,7 +276,11 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         viewModelScope.launch {
             _isLoading.value = true
             try {
-                val token = getValidToken() ?: return@launch
+                val token = getValidToken()
+                if (token == null) {
+                    _errorMessage.value = "Session expired or unavailable"
+                    return@launch
+                }
                 val success = customerRepository.updateAddress(token, addressId, address)
                 if (success) {
                     _successMessage.value = "Address updated"
@@ -210,7 +301,11 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         viewModelScope.launch {
             _isLoading.value = true
             try {
-                val token = getValidToken() ?: return@launch
+                val token = getValidToken()
+                if (token == null) {
+                    _errorMessage.value = "Session expired or unavailable"
+                    return@launch
+                }
                 val success = customerRepository.deleteAddress(token, addressId)
                 if (success) {
                     _successMessage.value = "Address deleted"
@@ -230,23 +325,30 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     fun getProfileData(): Profile? = profileData
 
     fun logout() {
+        fetchJob?.cancel()
         viewModelScope.launch {
             try {
                 _isLoading.value = true
                 authService.signOut()
-                _isLoggedIn.value = false
-                _userName.value = ""
-                _userEmail.value = ""
-                _userPhone.value = ""
-                _userInitial.value = ""
-                _defaultAddress.value = ""
-                _addresses.value = emptyList()
-                profileData = null
+                _authState.value = AuthState.LOGGED_OUT
+                _isOffline.value = false
+                skipValidationUntil = 0L
+                clearProfileData()
             } catch (e: Exception) {
                 Log.e("ProfileVM", "Error during logout", e)
             } finally {
                 _isLoading.value = false
             }
         }
+    }
+
+    private fun clearProfileData() {
+        _userName.value = ""
+        _userEmail.value = ""
+        _userPhone.value = ""
+        _userInitial.value = ""
+        _defaultAddress.value = "India (Default)"
+        _addresses.value = emptyList()
+        profileData = null
     }
 }
