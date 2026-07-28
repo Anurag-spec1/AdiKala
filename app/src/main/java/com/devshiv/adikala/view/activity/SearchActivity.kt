@@ -8,8 +8,8 @@ import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
-import com.devshiv.adikala.view.adapter.ProductAdapter
 import com.devshiv.adikala.databinding.ActivitySearchBinding
+import com.devshiv.adikala.view.adapter.ProductAdapter
 import com.devshiv.adikala.viewmodel.SearchViewModel
 
 class SearchActivity : AppCompatActivity() {
@@ -41,7 +41,9 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun setupRecycler() {
-        productAdapter = ProductAdapter(emptyList(),
+        // Build the adapter ONCE; update its data via updateList() instead of recreating it.
+        productAdapter = ProductAdapter(
+            emptyList(),
             onClick = { product ->
                 val intent = Intent(this, ProductDetailActivity::class.java)
                 intent.putExtra(ProductDetailActivity.EXTRA_PRODUCT, product)
@@ -65,32 +67,8 @@ class SearchActivity : AppCompatActivity() {
 
     private fun setupObservers() {
         viewModel.searchResults.observe(this) { products ->
-            if (products.isEmpty()) {
-                binding.rvSearchResults.visibility = View.GONE
-                binding.emptyState.visibility = View.GONE
-            } else {
-                binding.rvSearchResults.visibility = View.VISIBLE
-                binding.emptyState.visibility = View.GONE
-                productAdapter = ProductAdapter(products,
-                    onClick = { product ->
-                        val intent = Intent(this, ProductDetailActivity::class.java)
-                        intent.putExtra(ProductDetailActivity.EXTRA_PRODUCT, product)
-                        startActivity(intent)
-                    },
-                    onAddToCart = { product ->
-                        val variantId = product.variants.firstOrNull()?.id ?: return@ProductAdapter
-                        val intent = Intent(this, CartActivity::class.java)
-                        intent.putExtra("variant_id", variantId)
-                        intent.putExtra("quantity", 1)
-                        startActivity(intent)
-                    },
-                    onWishlistToggle = { product ->
-                        product.isWishlisted = !product.isWishlisted
-                        productAdapter.notifyDataSetChanged()
-                    }
-                )
-                binding.rvSearchResults.adapter = productAdapter
-            }
+            binding.rvSearchResults.visibility = if (products.isEmpty()) View.GONE else View.VISIBLE
+            productAdapter.updateList(products)
         }
 
         viewModel.isEmpty.observe(this) { isEmpty ->

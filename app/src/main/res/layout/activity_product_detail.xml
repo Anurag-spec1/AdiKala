@@ -53,14 +53,6 @@
                     android:overScrollMode="never"
                     android:scrollbars="none" />
 
-                <com.google.android.material.chip.ChipGroup
-                    android:id="@+id/variantContainer"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    android:visibility="gone"
-                    app:singleSelection="true"
-                    app:chipSpacing="8dp" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -107,6 +99,15 @@
                     android:textColor="#0D3238"
                     android:textSize="22sp"
                     app:carbon_font="@font/space_grotesk_semibold" />
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/variantContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:visibility="gone"
+                    app:singleSelection="true"
+                    app:chipSpacing="8dp" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -647,8 +648,7 @@
                     android:id="@+id/contentReviews"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:paddingBottom="6dp">
+                    android:orientation="vertical">
 
                     <LinearLayout
                         android:layout_width="match_parent"

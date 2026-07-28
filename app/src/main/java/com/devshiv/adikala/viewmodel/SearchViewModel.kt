@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.devshiv.adikala.model.Product
 import com.devshiv.adikala.repository.HomeRepository
+import com.devshiv.adikala.repository.RatingRepository
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -14,6 +15,7 @@ import kotlinx.coroutines.launch
 class SearchViewModel : ViewModel() {
 
     private val repository = HomeRepository()
+    private val ratingRepository = RatingRepository()
 
     private val _searchResults = MutableLiveData<List<Product>>()
     val searchResults: LiveData<List<Product>> = _searchResults
@@ -36,7 +38,7 @@ class SearchViewModel : ViewModel() {
         }
 
         searchJob = viewModelScope.launch {
-            delay(200)
+            delay(200) // debounce
             _isLoading.value = true
 
             val formattedQuery = query.trim().replace(Regex("\\s+"), " ")
@@ -57,16 +59,41 @@ class SearchViewModel : ViewModel() {
 
                         score
                     }
+
+                    // 1) Show results immediately so search feels instant.
                     _searchResults.value = sorted
                     _isEmpty.value = sorted.isEmpty()
+                    _isLoading.value = false
+
+                    // 2) Backfill ratings, then re-emit the enriched list.
+                    if (sorted.isNotEmpty()) {
+                        val withRatings = loadRatings(sorted)
+                        // Guard against a newer search having replaced this one.
+                        if (searchJob?.isActive == true) {
+                            _searchResults.value = withRatings
+                        }
+                    }
                 },
-                onFailure = {
+                onFailure = { error ->
+                    Log.e("SearchVM", "Search failed: ${error.message}")
                     _searchResults.value = emptyList()
                     _isEmpty.value = true
+                    _isLoading.value = false
                 }
             )
-
-            _isLoading.value = false
         }
     }
+
+    private suspend fun loadRatings(products: List<Product>): List<Product> =
+        products.map { product ->
+            ratingRepository.getProductReviews(product.handle, product.id).fold(
+                onSuccess = { (summary, _) ->
+                    product.copy(
+                        rating = summary.averageRating,
+                        salesCount = summary.totalReviews
+                    )
+                },
+                onFailure = { product }
+            )
+        }
 }
