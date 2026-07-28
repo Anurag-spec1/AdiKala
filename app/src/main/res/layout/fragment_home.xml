@@ -23,28 +23,32 @@
 
     <LinearLayout
         android:id="@+id/userInfoLayout"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignTop="@id/userImg"
         android:layout_alignBottom="@id/userImg"
         android:layout_marginStart="11dp"
+        android:layout_toStartOf="@id/notification"
         android:layout_toEndOf="@id/userImg"
         android:gravity="center_vertical"
         android:orientation="vertical">
 
         <carbon.widget.TextView
             android:id="@+id/gestureTag"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Good Morning !"
+            android:maxLines="1"
+            android:ellipsize="end"
             android:textColor="@color/carbon_grey_700"
             android:textSize="16sp"
             app:carbon_font="@font/space_grotesk_semibold" />
 
         <carbon.widget.TextView
             android:id="@+id/userName"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:ellipsize="end"
             android:layout_marginTop="-4dp"
             android:maxLines="1"
             android:text="Anurag"

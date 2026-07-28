@@ -43,6 +43,7 @@ class HomeFragment : Fragment() {
     private val RECORD_AUDIO_PERMISSION = 100
 
     private lateinit var viewModel: HomeViewModel
+
     private lateinit var categoryAdapter: CategoryAdapter
     private lateinit var adikalaStoreAdapter: PopularCollectionAdapter
 
@@ -61,7 +62,9 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         viewModel = ViewModelProvider(this)[HomeViewModel::class.java]
+
         initSpeechRecognizer()
         setupUI()
         observeViewModel()

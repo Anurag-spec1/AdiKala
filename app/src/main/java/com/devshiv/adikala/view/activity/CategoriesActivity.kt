@@ -20,7 +20,7 @@ class CategoriesActivity : AppCompatActivity() {
         binding = ActivityCategoriesBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        viewModel = ViewModelProvider(this)[CategoriesViewModel::class.java]
+       viewModel = ViewModelProvider(this)[CategoriesViewModel::class.java]
         binding.rvCategories.layoutManager = LinearLayoutManager(this)
 
         viewModel.categories.observe(this) { categories ->

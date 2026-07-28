@@ -1,9 +1,10 @@
 package com.devshiv.adikala.viewmodel
 
+import android.app.Application
 import android.util.Log
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.devshiv.adikala.model.Product
 import com.devshiv.adikala.repository.HomeRepository
@@ -12,9 +13,9 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class SearchViewModel : ViewModel() {
+class SearchViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val repository = HomeRepository()
+    private val repository = HomeRepository(application)
     private val ratingRepository = RatingRepository()
 
     private val _searchResults = MutableLiveData<List<Product>>()
@@ -93,4 +94,10 @@ class SearchViewModel : ViewModel() {
                 onFailure = { product }
             )
         }
+
+    override fun onCleared() {
+        super.onCleared()
+        searchJob?.cancel()
+        repository.cleanup()
+    }
 }

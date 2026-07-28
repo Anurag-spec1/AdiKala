@@ -46,6 +46,7 @@ data class ShopifyProduct(
     @SerializedName("description") val description: String? = null,
     @SerializedName("productType") val productType: String? = null,
     @SerializedName("tags") val tags: List<String>? = null,
+    @SerializedName("createdAt") val createdAt: String? = null,
     @SerializedName("featuredImage") val featuredImage: ShopifyImage? = null,
     @SerializedName("images") val images: ShopifyImages? = null,
     @SerializedName("priceRange") val priceRange: ShopifyPriceRange? = null,

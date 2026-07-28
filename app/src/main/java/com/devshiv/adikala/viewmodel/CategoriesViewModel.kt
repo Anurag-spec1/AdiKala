@@ -1,17 +1,21 @@
 package com.devshiv.adikala.viewmodel
 
+import android.app.Application
 import android.util.Log
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.devshiv.adikala.model.Category
 import com.devshiv.adikala.repository.HomeRepository
+import com.devshiv.adikala.sync.BackgroundSyncManager
+import com.devshiv.adikala.sync.DataChangeEvent
 import kotlinx.coroutines.launch
 
-class CategoriesViewModel : ViewModel() {
+class CategoriesViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val repository = HomeRepository()
+    private val repository = HomeRepository(application)
+    private val syncManager = BackgroundSyncManager.getInstance(application)
 
     private val _categories = MutableLiveData<List<Category>>()
     val categories: LiveData<List<Category>> = _categories
@@ -19,35 +23,65 @@ class CategoriesViewModel : ViewModel() {
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
 
-    private var allCategories = listOf<Category>()
+    private val _error = MutableLiveData<String?>()
+    val error: LiveData<String?> = _error
+
+    init {
+        viewModelScope.launch {
+            syncManager.dataChanged.collect { event ->
+                when (event) {
+                    is DataChangeEvent.CategoriesChanged,
+                    is DataChangeEvent.CollectionsChanged -> {
+                        Log.d("CategoriesVM", "Background data changed, reloading silently...")
+                        loadCategoriesSilently()
+                    }
+                    else -> {
+
+                    }
+                }
+            }
+        }
+    }
 
     fun loadCategories() {
         viewModelScope.launch {
             _isLoading.value = true
+            _error.value = null
+
             repository.getCategoriesForChips().fold(
                 onSuccess = { categories ->
                     _categories.value = categories
-                    // Images already loaded from cache!
                 },
-                onFailure = { Log.e("CategoriesVM", "Failed", it) }
+                onFailure = { error ->
+                    _error.value = error.message
+                }
             )
+
             _isLoading.value = false
         }
     }
 
-    fun loadImageForCategory(position: Int) {
-        if (position >= allCategories.size) return
-        val category = allCategories[position]
-        if (category.image.isNotBlank()) return // Already has image
+    fun refreshCategories() {
+        loadCategories()
+    }
 
+    private fun loadCategoriesSilently() {
         viewModelScope.launch {
-            val imageUrl = repository.getFirstProductImage(category.handle)
-            if (imageUrl.isNotEmpty()) {
-                val updated = allCategories.toMutableList()
-                updated[position] = category.copy(image = imageUrl)
-                allCategories = updated
-                _categories.value = allCategories
-            }
+            repository.getCategoriesForChips().fold(
+                onSuccess = { categories ->
+                    _categories.postValue(categories)
+                },
+                onFailure = { /* Silent fail - keep showing existing data */ }
+            )
         }
+    }
+
+    fun clearError() {
+        _error.value = null
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        repository.cleanup()
     }
 }

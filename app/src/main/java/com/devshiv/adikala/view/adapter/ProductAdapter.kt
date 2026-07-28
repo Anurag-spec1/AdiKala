@@ -28,7 +28,7 @@ class ProductAdapter(
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: Product) {
-            binding.tvDescription.text = item.description
+            binding.tvDescription.text = item.name
 
             binding.tvRating.text =
                 if (item.rating > 0) String.format("%.1f", item.rating) else "New"

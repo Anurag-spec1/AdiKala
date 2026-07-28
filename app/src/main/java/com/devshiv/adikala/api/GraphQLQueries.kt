@@ -38,6 +38,7 @@ object GraphQLQueries {
                     description
                     productType
                     tags
+                    createdAt
                     featuredImage { url altText }
                     images(first: 5) { edges { node { url altText } } }
                     priceRange { minVariantPrice { amount currencyCode } }
@@ -76,6 +77,7 @@ object GraphQLQueries {
                         title
                         handle
                         description
+                        createdAt
                         featuredImage { url altText }
                         images(first: 5) { edges { node { url altText } } }
                         priceRange { minVariantPrice { amount currencyCode } }
@@ -123,6 +125,7 @@ object GraphQLQueries {
                             description
                             productType
                             tags
+                            createdAt
                             featuredImage { url altText }
                             images(first: 5) { edges { node { url altText } } }
                             priceRange { 
