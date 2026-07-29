@@ -63,9 +63,7 @@
         android:id="@+id/progressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/etSearch"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="40dp"
+        android:layout_centerInParent="true"
         android:visibility="gone" />
 
     <androidx.recyclerview.widget.RecyclerView
@@ -83,29 +81,28 @@
 
     <LinearLayout
         android:id="@+id/emptyState"
-        android:layout_width="wrap_content"
+        android:layout_width="280dp"
         android:layout_height="wrap_content"
-        android:layout_below="@id/etSearch"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="80dp"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
         android:gravity="center"
-        android:orientation="vertical"
-        android:visibility="gone">
+        android:orientation="vertical">
 
         <carbon.widget.ImageView
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:alpha="0.5"
+            android:layout_width="85dp"
+            android:layout_height="85dp"
             android:src="@drawable/ic_search"
-            app:carbon_tint="@color/carbon_grey_500" />
+            app:carbon_tint="@color/carbon_black_38" />
 
         <carbon.widget.TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="14dp"
+            android:gravity="center"
+            android:maxLines="1"
             android:text="No products found"
             android:textColor="#0D3238"
-            android:textSize="18sp"
+            android:textSize="22sp"
             app:carbon_font="@font/space_grotesk_semibold" />
     </LinearLayout>
 

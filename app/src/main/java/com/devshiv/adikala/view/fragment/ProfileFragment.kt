@@ -79,9 +79,9 @@ class ProfileFragment : Fragment() {
         binding.btnPrivacyPolicy.setOnClickListener { }
         binding.btnTerms.setOnClickListener { }
     }
-
     private val shimmerView: ShimmerFrameLayout
         get() = binding.shimmerProfile.root
+
 
     private fun showShimmer() {
         shimmerView.visibility = View.VISIBLE
@@ -95,11 +95,22 @@ class ProfileFragment : Fragment() {
 
 
     private fun showSignOutDialog() {
-        AlertDialog.Builder(requireContext())
-            .setTitle("Sign Out")
-            .setMessage("Are you sure you want to sign out?")
-            .setPositiveButton("Sign Out") { _, _ -> performSignOut() }
-            .setNegativeButton("Cancel", null).show()
+        val view = layoutInflater.inflate(R.layout.dialog_signout, null)
+        val btnCancel = view.findViewById<View>(R.id.btnCancelSignOut)
+        val btnConfirm = view.findViewById<View>(R.id.btnConfirmSignOut)
+
+        val dialog = AlertDialog.Builder(requireContext())
+            .setView(view)
+            .create()
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        btnCancel.setOnClickListener { dialog.dismiss() }
+        btnConfirm.setOnClickListener {
+            dialog.dismiss()
+            performSignOut()
+        }
+
+        dialog.show()
     }
 
     private fun performSignOut() {
