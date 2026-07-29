@@ -6,10 +6,11 @@ import com.devshiv.adikala.api.ShopifyApiService
 import com.devshiv.adikala.database.AppDatabase
 import com.devshiv.adikala.database.entity.CategoryEntity
 import com.devshiv.adikala.database.entity.SyncMetadata
-import com.devshiv.adikala.database.mapper.ModelMappers.toEntities
-import com.devshiv.adikala.database.mapper.ModelMappers.toEntity
+import com.devshiv.adikala.database.mapper.ModelMappers
+import com.devshiv.adikala.database.mapper.ModelMappers.toProductEntity
 import com.devshiv.adikala.model.Category
 import com.devshiv.adikala.model.ModelMapper
+import com.devshiv.adikala.model.SubCategory
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -54,7 +55,6 @@ class BackgroundSyncManager(context: Context) {
     fun startMonitoring() {
         scope.launch {
             delay(15_000)
-
             Log.d(TAG, "Background sync started")
             while (isActive) {
                 try {
@@ -69,12 +69,13 @@ class BackgroundSyncManager(context: Context) {
 
     private suspend fun checkForChanges() {
         Log.d(TAG, "Checking for data changes...")
-
         checkCategoriesChanged()
         checkCollectionsChanged()
-
         checkAllProductsChanged()
     }
+
+
+    // In BackgroundSyncManager.kt - Replace checkCategoriesChanged()
 
     private suspend fun checkCategoriesChanged() {
         try {
@@ -86,41 +87,61 @@ class BackgroundSyncManager(context: Context) {
                     val title = item.title?.lowercase()?.trim() ?: ""
                     title.isNotEmpty() && title !in excludedTitles && item.type == "COLLECTION"
                 }
-                .take(15)
                 .mapNotNull { item ->
                     val handle = extractHandle(item)
+
+                    // ✅ Preserve subcategories from existing cache
+                    val existingChip = categoryDao.getCategoryByHandle(handle)
+                    val existingSubs = if (existingChip != null && existingChip.subCategoriesJson != "[]") {
+                        ModelMappers.fromJsonList<SubCategory>(existingChip.subCategoriesJson)
+                    } else {
+                        // Parse from menu item if no cache
+                        item.items?.mapNotNull { subItem ->
+                            if (subItem.type == "COLLECTION") {
+                                SubCategory(
+                                    id = subItem.id.hashCode(),
+                                    name = subItem.title ?: "",
+                                    handle = extractHandle(subItem),
+                                    image = "",
+                                    itemCount = 0
+                                )
+                            } else null
+                        } ?: emptyList()
+                    }
+
                     Category(
                         id = item.id.hashCode(),
                         name = item.title ?: "",
                         handle = handle,
                         image = "",
-                        subCategories = emptyList()
+                        subCategories = existingSubs  // ✅ Use preserved subs
                     )
                 }
 
-            val cachedCategories = categoryDao.getAllCategories()
+            val cachedChips = categoryDao.getChipCategories()
 
-            if (networkCategories.size != cachedCategories.size) {
-                Log.d(TAG, "Categories count changed (${cachedCategories.size} → ${networkCategories.size})")
-                updateCategoriesInCache(networkCategories)
+            if (networkCategories.size != cachedChips.size) {
+                Log.d(TAG, "Chips count changed (${cachedChips.size} → ${networkCategories.size})")
+                updateChipsInCache(networkCategories)
                 return
             }
 
             val networkFirst = networkCategories.firstOrNull()
-            val cachedFirst = cachedCategories.firstOrNull()
+            val cachedFirst = cachedChips.firstOrNull()
 
             if (networkFirst?.name != cachedFirst?.name ||
                 networkFirst?.handle != cachedFirst?.handle) {
-                Log.d(TAG, "Categories changed, updating...")
-                updateCategoriesInCache(networkCategories)
+                Log.d(TAG, "Chips changed, updating...")
+                updateChipsInCache(networkCategories)
             } else {
-                Log.d(TAG, "Categories unchanged")
+                Log.d(TAG, "Chips unchanged")
             }
 
         } catch (e: Exception) {
-            Log.e(TAG, "Failed to check categories", e)
+            Log.e(TAG, "Failed to check chips", e)
         }
     }
+
 
     private suspend fun checkCollectionsChanged() {
         try {
@@ -144,8 +165,7 @@ class BackgroundSyncManager(context: Context) {
                     )
                 }
 
-            val cachedCollections = categoryDao.getAllCategories()
-                .filter { it.itemCount > 0 && it.image.isNotBlank() }
+            val cachedCollections = categoryDao.getStoreCollections()
 
             if (networkCollections.size != cachedCollections.size) {
                 Log.d(TAG, "Collections count changed, updating...")
@@ -168,9 +188,10 @@ class BackgroundSyncManager(context: Context) {
         }
     }
 
+
     private suspend fun checkAllProductsChanged() {
         try {
-            val cachedCollections = categoryDao.getAllCategories()
+            val cachedCollections = categoryDao.getStoreCollections()
 
             for (collection in cachedCollections) {
                 if (collection.handle.isEmpty()) continue
@@ -213,22 +234,39 @@ class BackgroundSyncManager(context: Context) {
         }
     }
 
-    private suspend fun updateCategoriesInCache(networkCategories: List<Category>) {
+
+// In BackgroundSyncManager.kt - Replace this function
+
+    private suspend fun updateChipsInCache(networkCategories: List<Category>) {
         try {
             val categoriesWithImages = coroutineScope {
                 networkCategories.map { category ->
                     async {
+                        var updatedCategory = category
+
+                        // Load image
                         if (category.handle.isNotEmpty()) {
                             try {
                                 val data = apiService.getCollectionByHandle(category.handle, first = 1)
                                 val imageUrl = data.collectionByHandle?.products?.edges
                                     ?.firstOrNull()?.node?.images?.edges
                                     ?.firstOrNull()?.node?.url ?: ""
-                                category.copy(image = imageUrl)
+                                updatedCategory = updatedCategory.copy(image = imageUrl)
                             } catch (e: Exception) {
-                                category
+                                // Keep existing
                             }
-                        } else category
+                        }
+
+                        // Preserve subcategories from existing cache
+                        val existingChip = categoryDao.getCategoryByHandle(category.handle)
+                        if (existingChip != null && existingChip.subCategoriesJson != "[]") {
+                            val existingSubs = ModelMappers.fromJsonList<SubCategory>(existingChip.subCategoriesJson)
+                            if (existingSubs.isNotEmpty()) {
+                                updatedCategory = updatedCategory.copy(subCategories = existingSubs)
+                            }
+                        }
+
+                        updatedCategory
                     }
                 }.awaitAll()
             }
@@ -240,24 +278,26 @@ class BackgroundSyncManager(context: Context) {
                     handle = category.handle,
                     image = category.image,
                     itemCount = category.itemCount,
+                    type = "chip",
+                    subCategoriesJson = ModelMappers.toJsonString(category.subCategories),
                     lastUpdated = System.currentTimeMillis()
                 )
             }
-            categoryDao.replaceAllCategories(entities)
+            categoryDao.replaceChips(entities)
 
             syncMetadataDao.insertSyncMetadata(
                 SyncMetadata(
-                    syncKey = "categories_sync",
+                    syncKey = "categories_chips_sync",
                     value = "synced",
                     lastSynced = System.currentTimeMillis()
                 )
             )
 
             _dataChanged.emit(DataChangeEvent.CategoriesChanged)
-            Log.d(TAG, "Categories updated in cache (${entities.size} items)")
+            Log.d(TAG, "Chips updated in cache (${entities.size} items)")
 
         } catch (e: Exception) {
-            Log.e(TAG, "Failed to update categories in cache", e)
+            Log.e(TAG, "Failed to update chips in cache", e)
         }
     }
 
@@ -270,15 +310,16 @@ class BackgroundSyncManager(context: Context) {
                     handle = category.handle,
                     image = category.image,
                     itemCount = category.itemCount,
+                    type = "collection",
                     lastUpdated = System.currentTimeMillis()
                 )
             }
 
-            categoryDao.replaceAllCategories(entities)
+            categoryDao.replaceCollections(entities)
 
             syncMetadataDao.insertSyncMetadata(
                 SyncMetadata(
-                    syncKey = "categories_sync",
+                    syncKey = "collections_store_sync",
                     value = "synced",
                     lastSynced = System.currentTimeMillis()
                 )
@@ -300,7 +341,7 @@ class BackgroundSyncManager(context: Context) {
 
             val products = networkProducts.map { ModelMapper.mapToProduct(it) }
             val entities = products.map { product ->
-                product.toEntity(collectionHandle)
+                product.toProductEntity(collectionHandle)
             }
 
             productDao.replaceProductsForCollection(collectionHandle, entities)

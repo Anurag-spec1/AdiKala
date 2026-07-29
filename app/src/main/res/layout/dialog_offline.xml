@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="24dp"
+    android:background="@drawable/bg_dialog_offline"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="32dp">
+
+
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginBottom="20dp"
+        android:src="@drawable/ic_no_wifi"
+        android:contentDescription="No Internet"
+        app:tint="#0D3238" />
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="No Internet Connection"
+        android:textColor="#0D3238"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_marginBottom="8dp" />
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Please connect to the internet\nto continue using AdiKala"
+        android:textColor="#666666"
+        android:textSize="14sp"
+        android:gravity="center"
+        android:layout_marginBottom="28dp"
+        android:lineSpacingExtra="4dp" />
+
+    <carbon.widget.Button
+        android:id="@+id/btnOpenSettings"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="Open Wifi Settings"
+        android:textColor="@android:color/white"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="12dp"
+        android:background="#0D3238"
+        app:carbon_cornerRadius="12dp"
+        app:carbon_elevation="4dp"/>
+
+    <carbon.widget.Button
+        android:id="@+id/btnTryAgain"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="Try Again"
+        android:textColor="#0D3238"
+        android:background="@color/white"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:carbon_cornerRadius="12dp"
+        app:carbon_strokeWidth="2dp"
+        app:carbon_stroke="#0D3238"
+        app:carbon_elevation="4dp" />
+
+</LinearLayout>

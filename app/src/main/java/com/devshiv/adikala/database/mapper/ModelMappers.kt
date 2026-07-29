@@ -1,3 +1,4 @@
+// com/devshiv/adikala/database/mapper/ModelMappers.kt
 package com.devshiv.adikala.database.mapper
 
 import com.devshiv.adikala.database.entity.CategoryEntity
@@ -5,12 +6,17 @@ import com.devshiv.adikala.database.entity.ProductEntity
 import com.devshiv.adikala.model.Category
 import com.devshiv.adikala.model.Product
 import com.devshiv.adikala.model.ProductVariant
+import com.devshiv.adikala.model.SubCategory
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
 object ModelMappers {
 
-    private val gson = Gson()
+    val gson = Gson()
+
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    // CATEGORY MAPPINGS
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
     fun CategoryEntity.toCategory(): Category {
         return Category(
@@ -19,17 +25,19 @@ object ModelMappers {
             handle = handle,
             image = image,
             itemCount = itemCount,
-            subCategories = emptyList()
+            subCategories = fromJsonList<SubCategory>(subCategoriesJson)
         )
     }
 
-    fun Category.toEntity(): CategoryEntity {
+    fun Category.toCategoryEntity(type: String = "collection"): CategoryEntity {
         return CategoryEntity(
             id = id,
             name = name,
             handle = handle,
             image = image,
             itemCount = itemCount,
+            type = type,
+            subCategoriesJson = toJsonString(subCategories),
             lastUpdated = System.currentTimeMillis()
         )
     }
@@ -38,9 +46,13 @@ object ModelMappers {
         return map { it.toCategory() }
     }
 
-    fun List<Category>.toEntities(): List<CategoryEntity> {
-        return map { it.toEntity() }
+    fun List<Category>.toCategoryEntities(type: String = "collection"): List<CategoryEntity> {
+        return map { it.toCategoryEntity(type) }
     }
+
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    // PRODUCT MAPPINGS
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
     fun ProductEntity.toProduct(): Product {
         return Product(
@@ -59,12 +71,12 @@ object ModelMappers {
             images = fromJsonList(imagesJson),
             fullDescription = fullDescription,
             features = fromJsonList(featuresJson),
-            variants = fromJsonVariants(variantsJson),
+            variants = fromJsonList(variantsJson),
             collections = fromJsonList(collectionsJson)
         )
     }
 
-    fun Product.toEntity(collectionHandle: String): ProductEntity {
+    fun Product.toProductEntity(collectionHandle: String): ProductEntity {
         return ProductEntity(
             id = id,
             name = name,
@@ -92,11 +104,15 @@ object ModelMappers {
         return map { it.toProduct() }
     }
 
-    fun List<Product>.toEntities(collectionHandle: String): List<ProductEntity> {
-        return map { it.toEntity(collectionHandle) }
+    fun List<Product>.toProductEntities(collectionHandle: String): List<ProductEntity> {
+        return map { it.toProductEntity(collectionHandle) }
     }
 
-    private inline fun <reified T> fromJsonList(json: String): List<T> {
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    // JSON HELPERS (PUBLIC)
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+    inline fun <reified T> fromJsonList(json: String): List<T> {
         return try {
             gson.fromJson(json, object : TypeToken<List<T>>() {}.type) ?: emptyList()
         } catch (e: Exception) {
@@ -104,15 +120,7 @@ object ModelMappers {
         }
     }
 
-    private fun <T> toJsonString(list: List<T>): String {
+    fun <T> toJsonString(list: List<T>): String {
         return gson.toJson(list)
-    }
-
-    private fun fromJsonVariants(json: String): List<ProductVariant> {
-        return try {
-            gson.fromJson(json, object : TypeToken<List<ProductVariant>>() {}.type) ?: emptyList()
-        } catch (e: Exception) {
-            emptyList()
-        }
     }
 }

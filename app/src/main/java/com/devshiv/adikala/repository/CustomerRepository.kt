@@ -205,13 +205,13 @@ class CustomerRepository {
             }
 
             val query = """
-            mutation AddressCreate(${'$'}addressInput: CustomerAddressInput!, ${'$'}defaultAddress: Boolean) {
-                customerAddressCreate(address: ${'$'}addressInput, defaultAddress: ${'$'}defaultAddress) {
-                    customerAddress { id }
-                    userErrors { field message }
-                }
+        mutation AddressCreate(${'$'}addressInput: CustomerAddressInput!, ${'$'}defaultAddress: Boolean) {
+            customerAddressCreate(address: ${'$'}addressInput, defaultAddress: ${'$'}defaultAddress) {
+                customerAddress { id }
+                userErrors { field message }
             }
-            """.trimIndent()
+        }
+        """.trimIndent()
 
             val body = JSONObject().apply {
                 put("operationName", "AddressCreate")
@@ -227,7 +227,36 @@ class CustomerRepository {
             Log.d("CustomerRepo", "Response: $responseBody")
 
             val json = JSONObject(responseBody)
-            !json.has("errors")
+
+            if (json.has("errors")) {
+                Log.e("CustomerRepo", "GraphQL errors: ${json.getJSONArray("errors")}")
+                return@withContext false
+            }
+
+            val data = json.optJSONObject("data")
+            val customerAddressCreate = data?.optJSONObject("customerAddressCreate")
+            val userErrors = customerAddressCreate?.optJSONArray("userErrors")
+
+            if (userErrors != null && userErrors.length() > 0) {
+                val errorMessages = mutableListOf<String>()
+                for (i in 0 until userErrors.length()) {
+                    val error = userErrors.getJSONObject(i)
+                    val field = error.optJSONArray("field")?.let { arr ->
+                        (0 until arr.length()).map { arr.getString(it) }
+                    } ?: emptyList()
+                    val message = error.optString("message", "Unknown error")
+                    errorMessages.add("${field.joinToString(", ")}: $message")
+                }
+                Log.e("CustomerRepo", "User errors: $errorMessages")
+                return@withContext false
+            }
+
+            val customerAddress = customerAddressCreate?.optJSONObject("customerAddress")
+            val success = customerAddress != null && customerAddress.has("id")
+
+            Log.d("CustomerRepo", "Address add success: $success")
+            return@withContext success
+
         } catch (e: Exception) {
             Log.e("CustomerRepo", "Error adding address", e)
             false

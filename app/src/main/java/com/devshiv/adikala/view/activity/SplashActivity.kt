@@ -1,13 +1,23 @@
+// com/devshiv/adikala/view/activity/SplashActivity.kt
 package com.devshiv.adikala.view.activity
 
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
+import android.app.Dialog
+import android.content.Context
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.os.Bundle
+import android.provider.Settings
 import android.view.Choreographer
+import android.view.Window
 import android.view.WindowManager
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.DecelerateInterpolator
+import android.widget.Button
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -42,6 +52,7 @@ class SplashActivity : AppCompatActivity() {
     private var running = false
 
     private val visibleDuration = 5000L
+    private var offlineDialog: Dialog? = null
 
     private class ColumnScroller(
         val rv: RecyclerView,
@@ -76,7 +87,66 @@ class SplashActivity : AppCompatActivity() {
             WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
         )
 
+        if (!isNetworkAvailable()) {
+            showOfflineDialog()
+            return
+        }
+
         binding.root.post { setupWall() }
+    }
+
+    private fun isNetworkAvailable(): Boolean {
+        val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val network = connectivityManager.activeNetwork ?: return false
+        val capabilities = connectivityManager.getNetworkCapabilities(network) ?: return false
+        return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+    }
+
+    private fun showOfflineDialog() {
+        offlineDialog = Dialog(this)
+        offlineDialog?.apply {
+            requestWindowFeature(Window.FEATURE_NO_TITLE)
+            setContentView(R.layout.dialog_offline)
+            setCancelable(false)
+
+            window?.apply {
+                setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                setLayout(
+                    WindowManager.LayoutParams.MATCH_PARENT,
+                    WindowManager.LayoutParams.WRAP_CONTENT
+                )
+            }
+
+            val btnOpenSettings = findViewById<Button>(R.id.btnOpenSettings)
+            val btnTryAgain = findViewById<Button>(R.id.btnTryAgain)
+
+            btnOpenSettings.setOnClickListener {
+                startActivity(Intent(Settings.ACTION_WIFI_SETTINGS))
+            }
+
+            btnTryAgain.setOnClickListener {
+                if (isNetworkAvailable()) {
+                    dismiss()
+                    binding.root.post { setupWall() }
+                } else {
+                    btnTryAgain.text = "Still no connection... Retry?"
+                }
+            }
+
+            show()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        if (offlineDialog?.isShowing == true && isNetworkAvailable()) {
+            offlineDialog?.dismiss()
+            offlineDialog = null
+            binding.root.post { setupWall() }
+        }
+
+        if (columns.isNotEmpty() && !running) startTicker()
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -245,15 +315,12 @@ class SplashActivity : AppCompatActivity() {
         lastFrameNanos = 0L
     }
 
-    override fun onResume() {
-        super.onResume()
-        if (columns.isNotEmpty() && !running) startTicker()
-    }
-
     override fun onDestroy() {
         running = false
         frameCallback?.let { choreographer?.removeFrameCallback(it) }
         sweepAnimator?.cancel()
+        offlineDialog?.dismiss()
+        offlineDialog = null
         super.onDestroy()
     }
 }

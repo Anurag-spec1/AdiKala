@@ -1,4 +1,3 @@
-// com/devshiv/adikala/repository/HomeRepository.kt
 package com.devshiv.adikala.repository
 
 import android.content.Context
@@ -6,13 +5,11 @@ import android.util.Log
 import com.devshiv.adikala.api.ShopifyApiService
 import com.devshiv.adikala.database.AppDatabase
 import com.devshiv.adikala.database.entity.CategoryEntity
-import com.devshiv.adikala.database.entity.ProductEntity
 import com.devshiv.adikala.database.entity.SyncMetadata
-import com.devshiv.adikala.database.mapper.ModelMappers
 import com.devshiv.adikala.database.mapper.ModelMappers.toCategories
-import com.devshiv.adikala.database.mapper.ModelMappers.toEntities
-import com.devshiv.adikala.database.mapper.ModelMappers.toEntity
+import com.devshiv.adikala.database.mapper.ModelMappers.toCategoryEntity
 import com.devshiv.adikala.database.mapper.ModelMappers.toProduct
+import com.devshiv.adikala.database.mapper.ModelMappers.toProductEntity
 import com.devshiv.adikala.database.mapper.ModelMappers.toProducts
 import com.devshiv.adikala.model.*
 import kotlinx.coroutines.*
@@ -28,8 +25,10 @@ class HomeRepository(context: Context) {
 
     companion object {
         private const val TAG = "HomeRepository"
-        private const val CACHE_DURATION_MS = 15 * 60 * 1000L // 15 minutes
-        private const val SYNC_KEY_CATEGORIES = "categories_sync"
+        private const val CACHE_DURATION_MS = 15 * 60 * 1000L
+
+        private const val SYNC_KEY_CATEGORIES_CHIPS = "categories_chips_sync"
+        private const val SYNC_KEY_COLLECTIONS_STORE = "collections_store_sync"
         private const val SYNC_KEY_COLLECTION_PREFIX = "collection_sync_"
 
         private val excludedHandles = listOf(
@@ -43,48 +42,32 @@ class HomeRepository(context: Context) {
         )
     }
 
-    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-    // CATEGORIES (Cache-First Strategy)
-    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
     suspend fun getCategoriesForChips(): Result<List<Category>> = withContext(Dispatchers.IO) {
         try {
-            // STEP 1: Load from cache immediately
-            val cachedCategories = categoryDao.getAllCategories()
+            val cachedChips = categoryDao.getChipCategories()
 
-            // STEP 2: Trigger background refresh if needed
-            if (shouldRefresh(SYNC_KEY_CATEGORIES)) {
+            if (shouldRefresh(SYNC_KEY_CATEGORIES_CHIPS)) {
                 scope.launch {
                     try {
-                        refreshCategoriesInBackground()
+                        refreshCategoriesChipsInBackground()
                     } catch (e: Exception) {
-                        Log.e(TAG, "Background category refresh failed", e)
+                        Log.e(TAG, "Background chips refresh failed", e)
                     }
                 }
             }
 
-            // STEP 3: Return cached data (or empty if no cache)
-            if (cachedCategories.isNotEmpty()) {
-                Log.d(TAG, "Returning ${cachedCategories.size} categories from cache")
-                Result.success(cachedCategories.toCategories())
-            } else {
-                // No cache exists, fetch from network synchronously
-                Log.d(TAG, "No cache, fetching categories from network")
-                val networkCategories = fetchCategoriesFromNetwork()
-                if (networkCategories.isSuccess) {
-                    val categories = networkCategories.getOrDefault(emptyList())
-                    // Save to cache
-                    categoryDao.replaceAllCategories(categories.toEntities())
-                    updateSyncTimestamp(SYNC_KEY_CATEGORIES)
-                    Result.success(categories)
-                } else {
-                    Result.failure(networkCategories.exceptionOrNull() ?: Exception("Failed to load categories"))
-                }
+            if (cachedChips.isNotEmpty()) {
+                Log.d(TAG, "Returning ${cachedChips.size} chips from cache (instant)")
+                return@withContext Result.success(cachedChips.toCategories())
             }
+
+            Log.d(TAG, "No cache, fetching chips from network")
+            fetchCategoriesChipsFromNetwork()
+
         } catch (e: Exception) {
             Log.e(TAG, "Error in getCategoriesForChips", e)
-            // Ultimate fallback - try cache one more time
-            val fallbackCache = categoryDao.getAllCategories()
+            val fallbackCache = categoryDao.getChipCategories()
             if (fallbackCache.isNotEmpty()) {
                 Result.success(fallbackCache.toCategories())
             } else {
@@ -93,7 +76,7 @@ class HomeRepository(context: Context) {
         }
     }
 
-    private suspend fun fetchCategoriesFromNetwork(): Result<List<Category>> {
+    private suspend fun fetchCategoriesChipsFromNetwork(): Result<List<Category>> {
         return try {
             val menuDeferred = coroutineScope { async { apiService.getMainMenu() } }
             val menuResponse = menuDeferred.await()
@@ -103,259 +86,118 @@ class HomeRepository(context: Context) {
                     val title = item.title?.lowercase()?.trim() ?: ""
                     title.isNotEmpty() && title !in excludedTitles && item.type == "COLLECTION"
                 }
-                ?.take(15)
                 ?.mapNotNull { item ->
                     val handle = extractHandle(item)
+
+                    val subCategories = item.items?.mapNotNull { subItem ->
+                        if (subItem.type == "COLLECTION") {
+                            SubCategory(
+                                id = subItem.id.hashCode(),
+                                name = subItem.title ?: "",
+                                handle = extractHandle(subItem),
+                                image = "",
+                                itemCount = 0
+                            )
+                        } else null
+                    } ?: emptyList()
+
                     Category(
                         id = item.id.hashCode(),
                         name = item.title ?: "",
                         handle = handle,
                         image = "",
-                        subCategories = emptyList()
+                        subCategories = subCategories
                     )
                 } ?: emptyList()
 
-            // Load images in parallel
-            val categoriesWithImages = coroutineScope {
-                categories.map { category ->
-                    async {
-                        if (category.handle.isNotEmpty()) {
-                            try {
-                                val data = apiService.getCollectionByHandle(category.handle, first = 1)
-                                val imageUrl = data.collectionByHandle?.products?.edges
-                                    ?.firstOrNull()?.node?.images?.edges
-                                    ?.firstOrNull()?.node?.url ?: ""
-                                category.copy(image = imageUrl)
-                            } catch (e: Exception) {
-                                category
-                            }
-                        } else category
-                    }
-                }.awaitAll()
+            // Save chips immediately without images (FAST)
+            if (categories.isNotEmpty()) {
+                val entities = categories.map { it.toCategoryEntity("chip") }
+                categoryDao.replaceChips(entities)
+                updateSyncTimestamp(SYNC_KEY_CATEGORIES_CHIPS)
+                Log.d(TAG, "Saved ${categories.size} chips without images (fast)")
             }
 
-            Log.d(TAG, "Fetched ${categoriesWithImages.size} categories from network")
-            Result.success(categoriesWithImages)
+            // Load images in background
+            scope.launch {
+                try {
+                    loadChipImagesInBackground(categories)
+                } catch (e: Exception) {
+                    Log.e(TAG, "Background image load failed", e)
+                }
+            }
+
+            // Return chips immediately
+            Log.d(TAG, "Fetched ${categories.size} chips from menu (fast)")
+            Result.success(categories)
+
         } catch (e: Exception) {
-            Log.e(TAG, "Failed to fetch categories from network", e)
+            Log.e(TAG, "Failed to fetch chips", e)
             Result.failure(e)
         }
     }
 
-    private suspend fun refreshCategoriesInBackground() {
-        val networkCategories = fetchCategoriesFromNetwork()
-        if (networkCategories.isSuccess) {
-            val categories = networkCategories.getOrDefault(emptyList())
-            categoryDao.replaceAllCategories(categories.toEntities())
-            updateSyncTimestamp(SYNC_KEY_CATEGORIES)
-            Log.d(TAG, "Background refresh: Updated ${categories.size} categories")
-        }
-    }
-
-    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-    // PRODUCTS (Cache-First Strategy)
-    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-    suspend fun getProductsByCollectionPaginated(
-        collectionHandle: String,
-        sortKey: String = "MANUAL",
-        reverse: Boolean = false,
-        first: Int = 20,
-        after: String? = null
-    ): Result<Pair<List<Product>, String?>> = withContext(Dispatchers.IO) {
-        try {
-            // STEP 1: For initial load (no cursor), try cache first
-            if (after == null) {
-                val cachedProducts = productDao.getProductsByCollection(collectionHandle)
-
-                // Trigger background refresh if needed
-                if (shouldRefresh(SYNC_KEY_COLLECTION_PREFIX + collectionHandle)) {
-                    scope.launch {
+    private suspend fun loadChipImagesInBackground(categories: List<Category>) {
+        val categoriesWithImages = coroutineScope {
+            categories.map { category ->
+                async {
+                    if (category.handle.isNotEmpty()) {
                         try {
-                            refreshProductsInBackground(collectionHandle, sortKey, reverse)
+                            val data = apiService.getCollectionByHandle(category.handle, first = 1)
+                            val imageUrl = data.collectionByHandle?.products?.edges
+                                ?.firstOrNull()?.node?.images?.edges
+                                ?.firstOrNull()?.node?.url ?: ""
+                            category.copy(image = imageUrl)
                         } catch (e: Exception) {
-                            Log.e(TAG, "Background product refresh failed", e)
+                            category
                         }
-                    }
+                    } else category
                 }
+            }.awaitAll()
+        }
 
-                // Return cached data if available
-                if (cachedProducts.isNotEmpty()) {
-                    val products = cachedProducts.map { it.toProduct() }
-                    val hasMorePages = cachedProducts.size >= first
-                    val cursor = if (hasMorePages) "cached_cursor" else null
-
-                    Log.d(TAG, "Returning ${products.size} products from cache for $collectionHandle")
-                    return@withContext Result.success(Pair(products, cursor))
-                }
-            }
-
-            // STEP 2: No cache or pagination - fetch from network
-            val result = fetchProductsFromNetwork(collectionHandle, sortKey, reverse, first, after)
-
-            // STEP 3: Save first page to cache
-            if (after == null && result.isSuccess) {
-                val (products, _) = result.getOrDefault(Pair(emptyList(), null))
-                if (products.isNotEmpty()) {
-                    // FIXED: Convert Product list to ProductEntity list using extension
-                    val entities = products.map { product ->
-                        product.toEntity(collectionHandle)
-                    }
-                    productDao.replaceProductsForCollection(collectionHandle, entities)
-                    updateSyncTimestamp(SYNC_KEY_COLLECTION_PREFIX + collectionHandle)
-                }
-            }
-
-            result
-        } catch (e: Exception) {
-            Log.e(TAG, "Error getting products for collection: $collectionHandle", e)
-            // Fallback to cache
-            if (after == null) {
-                val cachedProducts = productDao.getProductsByCollection(collectionHandle)
-                if (cachedProducts.isNotEmpty()) {
-                    val products = cachedProducts.map { it.toProduct() }
-                    Result.success(Pair(products, null))
-                } else {
-                    Result.failure(e)
-                }
-            } else {
-                Result.failure(e)
-            }
+        // Update cache with images
+        if (categoriesWithImages.isNotEmpty()) {
+            val entities = categoriesWithImages.map { it.toCategoryEntity("chip") }
+            categoryDao.replaceChips(entities)
+            updateSyncTimestamp(SYNC_KEY_CATEGORIES_CHIPS)
+            Log.d(TAG, "Background: Updated ${categoriesWithImages.size} chips with images")
         }
     }
 
-    private suspend fun fetchProductsFromNetwork(
-        collectionHandle: String,
-        sortKey: String,
-        reverse: Boolean,
-        first: Int,
-        after: String?
-    ): Result<Pair<List<Product>, String?>> {
-        return try {
-            // Skip cursor if it's our cached placeholder
-            val actualAfter = if (after == "cached_cursor") null else after
-
-            val (shopifyProducts, cursor) = apiService.getProductsByCollectionPaginated(
-                collectionHandle, sortKey, reverse, first, actualAfter
-            )
-            // FIXED: Use your existing ModelMapper (from api package, not database mapper)
-            val products = shopifyProducts.map { ModelMapper.mapToProduct(it) }
-
-            Log.d(TAG, "Fetched ${products.size} products from network for $collectionHandle")
-            Result.success(Pair(products, cursor))
-        } catch (e: Exception) {
-            Log.e(TAG, "Network fetch failed for collection: $collectionHandle", e)
-            Result.failure(e)
-        }
-    }
-
-    private suspend fun refreshProductsInBackground(
-        collectionHandle: String,
-        sortKey: String,
-        reverse: Boolean
-    ) {
-        val result = fetchProductsFromNetwork(collectionHandle, sortKey, reverse, 50, null)
+    private suspend fun refreshCategoriesChipsInBackground() {
+        val result = fetchCategoriesChipsFromNetwork()
         if (result.isSuccess) {
-            val (products, _) = result.getOrDefault(Pair(emptyList(), null))
-            if (products.isNotEmpty()) {
-                // FIXED: Convert Product list to ProductEntity list
-                val entities = products.map { product ->
-                    product.toEntity(collectionHandle)
-                }
-                productDao.replaceProductsForCollection(collectionHandle, entities)
-                updateSyncTimestamp(SYNC_KEY_COLLECTION_PREFIX + collectionHandle)
-                Log.d(TAG, "Background refresh: Updated ${products.size} products for $collectionHandle")
-            }
+            Log.d(TAG, "Chips refreshed in background")
         }
     }
 
-    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-    // SEARCH (Network-first with Cache Fallback)
-    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-    suspend fun searchProducts(query: String): Result<List<Product>> = withContext(Dispatchers.IO) {
-        try {
-            // Try network first for search (need fresh results)
-            val networkResult = fetchSearchFromNetwork(query)
-            if (networkResult.isSuccess) {
-                val products = networkResult.getOrDefault(emptyList())
-                // Cache search results
-                if (products.isNotEmpty()) {
-                    // FIXED: Convert to entities
-                    val entities = products.map { it.toEntity("search") }
-                    productDao.insertProducts(entities)
-                }
-                return@withContext Result.success(products)
-            }
-
-            // Network failed, try local search
-            val localResults = productDao.searchProducts(query)
-            if (localResults.isNotEmpty()) {
-                Result.success(localResults.toProducts())
-            } else {
-                networkResult // Return the error
-            }
-        } catch (e: Exception) {
-            Log.e(TAG, "Search failed for: $query", e)
-            // Final fallback
-            val localResults = productDao.searchProducts(query)
-            if (localResults.isNotEmpty()) {
-                Result.success(localResults.toProducts())
-            } else {
-                Result.failure(e)
-            }
-        }
-    }
-
-    private suspend fun fetchSearchFromNetwork(query: String): Result<List<Product>> {
-        return try {
-            val response = apiService.searchProducts(query)
-            // FIXED: Use your existing ModelMapper
-            val products = response.products?.edges?.mapNotNull { edge ->
-                edge.node?.let { ModelMapper.mapToProduct(it) }
-            } ?: emptyList()
-            Result.success(products.take(50))
-        } catch (e: Exception) {
-            Log.e(TAG, "Network search failed for: $query", e)
-            Result.failure(e)
-        }
-    }
-
-    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-    // COLLECTIONS (Cache-First Strategy)
-    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
     suspend fun getAdikalaStoreCollections(): Result<List<Category>> = withContext(Dispatchers.IO) {
         try {
-            // Try cache first
-            val cachedCollections = categoryDao.getAllCategories()
-                .filter { it.itemCount > 0 && it.image.isNotBlank() }
+            val cachedCollections = categoryDao.getStoreCollections()
 
-            if (cachedCollections.isNotEmpty() && !shouldRefresh(SYNC_KEY_CATEGORIES)) {
-                Log.d(TAG, "Returning ${cachedCollections.size} collections from cache")
+            if (shouldRefresh(SYNC_KEY_COLLECTIONS_STORE)) {
+                scope.launch {
+                    try {
+                        refreshCollectionsStoreInBackground()
+                    } catch (e: Exception) {
+                        Log.e(TAG, "Background collections refresh failed", e)
+                    }
+                }
+            }
+
+            if (cachedCollections.isNotEmpty()) {
+                Log.d(TAG, "Returning ${cachedCollections.size} store collections from cache")
                 return@withContext Result.success(cachedCollections.toCategories())
             }
 
-            // Refresh from network
-            val result = fetchCollectionsFromNetwork()
-            if (result.isSuccess) {
-                val collections = result.getOrDefault(emptyList())
-                if (collections.isNotEmpty()) {
-                    categoryDao.replaceAllCategories(collections.toEntities())
-                    updateSyncTimestamp(SYNC_KEY_CATEGORIES)
-                }
-                Result.success(collections)
-            } else {
-                // Fallback to cache
-                if (cachedCollections.isNotEmpty()) {
-                    Result.success(cachedCollections.toCategories())
-                } else {
-                    result
-                }
-            }
+            Log.d(TAG, "No cache, fetching collections from network")
+            fetchCollectionsStoreFromNetwork()
+
         } catch (e: Exception) {
             Log.e(TAG, "Error getting store collections", e)
-            val fallbackCache = categoryDao.getAllCategories()
+            val fallbackCache = categoryDao.getStoreCollections()
             if (fallbackCache.isNotEmpty()) {
                 Result.success(fallbackCache.toCategories())
             } else {
@@ -364,7 +206,7 @@ class HomeRepository(context: Context) {
         }
     }
 
-    private suspend fun fetchCollectionsFromNetwork(): Result<List<Category>> {
+    private suspend fun fetchCollectionsStoreFromNetwork(): Result<List<Category>> {
         return try {
             val response = apiService.getCollections()
             val collectionNodes = response.collections?.edges?.mapNotNull { it.node } ?: emptyList()
@@ -387,50 +229,189 @@ class HomeRepository(context: Context) {
                 }
                 .sortedByDescending { it.itemCount }
 
-            Log.d(TAG, "Fetched ${categories.size} collections from network")
+            if (categories.isNotEmpty()) {
+                val entities = categories.map { it.toCategoryEntity("collection") }
+                categoryDao.replaceCollections(entities)
+                updateSyncTimestamp(SYNC_KEY_COLLECTIONS_STORE)
+            }
+
+            Log.d(TAG, "Fetched ${categories.size} store collections from API")
             Result.success(categories)
         } catch (e: Exception) {
-            Log.e(TAG, "Failed to fetch collections from network", e)
+            Log.e(TAG, "Failed to fetch collections", e)
             Result.failure(e)
         }
     }
 
-    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-    // RATING UPDATES
-    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    private suspend fun refreshCollectionsStoreInBackground() {
+        val result = fetchCollectionsStoreFromNetwork()
+        if (result.isSuccess) {
+            Log.d(TAG, "Store collections refreshed")
+        }
+    }
+
+
+    suspend fun getProductsByCollectionPaginated(
+        collectionHandle: String,
+        sortKey: String = "MANUAL",
+        reverse: Boolean = false,
+        first: Int = 20,
+        after: String? = null
+    ): Result<Pair<List<Product>, String?>> = withContext(Dispatchers.IO) {
+        try {
+            if (after == null) {
+                val cachedProducts = productDao.getProductsByCollection(collectionHandle)
+
+                if (shouldRefresh(SYNC_KEY_COLLECTION_PREFIX + collectionHandle)) {
+                    scope.launch {
+                        try {
+                            refreshProductsInBackground(collectionHandle, sortKey, reverse)
+                        } catch (e: Exception) {
+                            Log.e(TAG, "Background product refresh failed", e)
+                        }
+                    }
+                }
+
+                if (cachedProducts.isNotEmpty()) {
+                    val products = cachedProducts.map { it.toProduct() }
+                    val hasMorePages = cachedProducts.size >= first
+                    val cursor = if (hasMorePages) "cached_cursor" else null
+                    Log.d(TAG, "Returning ${products.size} products from cache for $collectionHandle")
+                    return@withContext Result.success(Pair(products, cursor))
+                }
+            }
+
+            val result = fetchProductsFromNetwork(collectionHandle, sortKey, reverse, first, after)
+
+            if (after == null && result.isSuccess) {
+                val (products, _) = result.getOrDefault(Pair(emptyList(), null))
+                if (products.isNotEmpty()) {
+                    val entities = products.map { it.toProductEntity(collectionHandle) }
+                    productDao.replaceProductsForCollection(collectionHandle, entities)
+                    updateSyncTimestamp(SYNC_KEY_COLLECTION_PREFIX + collectionHandle)
+                }
+            }
+
+            result
+        } catch (e: Exception) {
+            Log.e(TAG, "Error getting products for collection: $collectionHandle", e)
+            if (after == null) {
+                val cachedProducts = productDao.getProductsByCollection(collectionHandle)
+                if (cachedProducts.isNotEmpty()) {
+                    val products = cachedProducts.map { it.toProduct() }
+                    Result.success(Pair(products, null))
+                } else {
+                    Result.failure(e)
+                }
+            } else {
+                Result.failure(e)
+            }
+        }
+    }
+
+    private suspend fun fetchProductsFromNetwork(
+        collectionHandle: String,
+        sortKey: String,
+        reverse: Boolean,
+        first: Int,
+        after: String?
+    ): Result<Pair<List<Product>, String?>> {
+        return try {
+            val actualAfter = if (after == "cached_cursor") null else after
+            val (shopifyProducts, cursor) = apiService.getProductsByCollectionPaginated(
+                collectionHandle, sortKey, reverse, first, actualAfter
+            )
+            val products = shopifyProducts.map { ModelMapper.mapToProduct(it) }
+            Log.d(TAG, "Fetched ${products.size} products from network for $collectionHandle")
+            Result.success(Pair(products, cursor))
+        } catch (e: Exception) {
+            Log.e(TAG, "Network fetch failed for collection: $collectionHandle", e)
+            Result.failure(e)
+        }
+    }
+
+    private suspend fun refreshProductsInBackground(
+        collectionHandle: String,
+        sortKey: String,
+        reverse: Boolean
+    ) {
+        val result = fetchProductsFromNetwork(collectionHandle, sortKey, reverse, 50, null)
+        if (result.isSuccess) {
+            val (products, _) = result.getOrDefault(Pair(emptyList(), null))
+            if (products.isNotEmpty()) {
+                val entities = products.map { it.toProductEntity(collectionHandle) }
+                productDao.replaceProductsForCollection(collectionHandle, entities)
+                updateSyncTimestamp(SYNC_KEY_COLLECTION_PREFIX + collectionHandle)
+                Log.d(TAG, "Background refresh: Updated ${products.size} products for $collectionHandle")
+            }
+        }
+    }
+
+
+
+    suspend fun searchProducts(query: String): Result<List<Product>> = withContext(Dispatchers.IO) {
+        try {
+            val networkResult = fetchSearchFromNetwork(query)
+            if (networkResult.isSuccess) {
+                val products = networkResult.getOrDefault(emptyList())
+                if (products.isNotEmpty()) {
+                    val entities = products.map { it.toProductEntity("search") }
+                    productDao.insertProducts(entities)
+                }
+                return@withContext Result.success(products)
+            }
+            val localResults = productDao.searchProducts(query)
+            if (localResults.isNotEmpty()) {
+                Result.success(localResults.toProducts())
+            } else {
+                networkResult
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Search failed for: $query", e)
+            val localResults = productDao.searchProducts(query)
+            if (localResults.isNotEmpty()) {
+                Result.success(localResults.toProducts())
+            } else {
+                Result.failure(e)
+            }
+        }
+    }
+
+    private suspend fun fetchSearchFromNetwork(query: String): Result<List<Product>> {
+        return try {
+            val response = apiService.searchProducts(query)
+            val products = response.products?.edges?.mapNotNull { edge ->
+                edge.node?.let { ModelMapper.mapToProduct(it) }
+            } ?: emptyList()
+            Result.success(products.take(50))
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+
 
     suspend fun updateProductRating(productId: String, rating: Double, reviewCount: Int) {
         withContext(Dispatchers.IO) {
             try {
-                productDao.updateProductRating(
-                    productId = productId,
-                    rating = rating,
-                    reviewCount = reviewCount
-                )
+                productDao.updateProductRating(productId, rating, reviewCount)
             } catch (e: Exception) {
                 Log.e(TAG, "Failed to update product rating", e)
             }
         }
     }
 
-    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-    // UTILITY METHODS
-    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 
     private suspend fun shouldRefresh(syncKey: String): Boolean {
         val metadata = syncMetadataDao.getSyncMetadata(syncKey)
-        if (metadata == null) return true // Never synced
-
+        if (metadata == null) return true
         return System.currentTimeMillis() - metadata.lastSynced > CACHE_DURATION_MS
     }
 
     private suspend fun updateSyncTimestamp(syncKey: String) {
         syncMetadataDao.insertSyncMetadata(
-            SyncMetadata(
-                syncKey = syncKey,  // Changed from key to syncKey
-                value = "synced",
-                lastSynced = System.currentTimeMillis()
-            )
+            SyncMetadata(syncKey = syncKey, value = "synced", lastSynced = System.currentTimeMillis())
         )
     }
 
@@ -448,7 +429,6 @@ class HomeRepository(context: Context) {
         }
         return item.title?.lowercase()?.trim()?.replace(" ", "-")?.replace("&", "and") ?: ""
     }
-
 
     fun cleanup() {
         scope.cancel()

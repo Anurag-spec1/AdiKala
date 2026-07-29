@@ -183,13 +183,6 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         val email = profile.email?.takeIf { it != "null" } ?: ""
         val phone = profile.phone?.takeIf { it != "null" && it.isNotEmpty() } ?: ""
 
-        Log.d("ProfileVM", "=== populateProfileData ===")
-        Log.d("ProfileVM", "firstName: '$firstName'")
-        Log.d("ProfileVM", "lastName: '$lastName'")
-        Log.d("ProfileVM", "email: '$email'")
-        Log.d("ProfileVM", "phone from profile: '$phone'")
-        Log.d("ProfileVM", "defaultAddress phone: '${profile.defaultAddress?.phone}'")
-
         authManager.saveProfile(firstName, lastName, email, phone)
 
         _userName.value = listOfNotNull(
@@ -201,14 +194,19 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         _userInitial.value = firstName.firstOrNull()?.uppercase() ?: email.firstOrNull()?.uppercase() ?: "U"
         _userPhone.value = phone.ifEmpty { "No phone" }
 
-        Log.d("ProfileVM", "_userPhone set to: '${_userPhone.value}'")
-
         profile.defaultAddress?.let { addr ->
             val parts = listOfNotNull(addr.address1, addr.address2, addr.city, addr.country, addr.zip)
                 .filter { it.isNotEmpty() && it != "null" }
             _defaultAddress.value = if (parts.isNotEmpty()) parts.joinToString(", ") else "India (Default)"
+
+            val addressName = listOfNotNull(
+                addr.firstName?.takeIf { it.isNotEmpty() && it != "null" },
+                addr.lastName?.takeIf { it.isNotEmpty() && it != "null" }
+            ).joinToString(" ")
+            _defaultAddressName.value = addressName.ifEmpty { "Default address" }
         } ?: run {
             _defaultAddress.value = "India (Default)"
+            _defaultAddressName.value = "Default address"
         }
     }
 
