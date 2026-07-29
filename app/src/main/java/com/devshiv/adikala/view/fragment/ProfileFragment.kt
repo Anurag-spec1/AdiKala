@@ -19,6 +19,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.facebook.shimmer.ShimmerFrameLayout
 import com.devshiv.adikala.R
 import com.devshiv.adikala.auth.ShopifyAuthService
 import com.devshiv.adikala.databinding.FragmentProfileBinding
@@ -79,6 +80,20 @@ class ProfileFragment : Fragment() {
         binding.btnTerms.setOnClickListener { }
     }
 
+    private val shimmerView: ShimmerFrameLayout
+        get() = binding.shimmerProfile.root
+
+    private fun showShimmer() {
+        shimmerView.visibility = View.VISIBLE
+        shimmerView.startShimmer()
+    }
+
+    private fun hideShimmer() {
+        shimmerView.stopShimmer()
+        shimmerView.visibility = View.GONE
+    }
+
+
     private fun showSignOutDialog() {
         AlertDialog.Builder(requireContext())
             .setTitle("Sign Out")
@@ -136,7 +151,7 @@ class ProfileFragment : Fragment() {
         dialog.show()
     }
 
-   private fun showAddAddressDialog(existingAddress: Address?) {
+    private fun showAddAddressDialog(existingAddress: Address?) {
         val view = layoutInflater.inflate(R.layout.dialog_add_address, null)
         val tvTitle = view.findViewById<TextView>(R.id.tvDialogTitle)
         val etFirstName = view.findViewById<EditText>(R.id.etFirstName)
@@ -371,15 +386,20 @@ class ProfileFragment : Fragment() {
         viewModel.authState.observe(viewLifecycleOwner) { state ->
             when (state) {
                 ProfileViewModel.AuthState.LOADING -> {
-                    binding.progressBar.visibility = View.VISIBLE
+
+                    binding.layoutLoggedIn.visibility = View.GONE
+                    binding.layoutLoggedOut.visibility = View.GONE
+                    showShimmer()
                 }
 
                 ProfileViewModel.AuthState.AUTHENTICATED -> {
+                    hideShimmer()
                     binding.layoutLoggedIn.visibility = View.VISIBLE
                     binding.layoutLoggedOut.visibility = View.GONE
                 }
 
                 ProfileViewModel.AuthState.EXPIRED -> {
+                    hideShimmer()
                     binding.layoutLoggedIn.visibility = View.GONE
                     binding.layoutLoggedOut.visibility = View.VISIBLE
                     Toast.makeText(
@@ -390,6 +410,7 @@ class ProfileFragment : Fragment() {
                 }
 
                 ProfileViewModel.AuthState.LOGGED_OUT -> {
+                    hideShimmer()
                     binding.layoutLoggedIn.visibility = View.GONE
                     binding.layoutLoggedOut.visibility = View.VISIBLE
                 }
@@ -443,7 +464,13 @@ class ProfileFragment : Fragment() {
         }
 
         viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
-            binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+            val contentAlreadyVisible = binding.layoutLoggedIn.visibility == View.VISIBLE ||
+                    binding.layoutLoggedOut.visibility == View.VISIBLE
+            if (isLoading && !contentAlreadyVisible) {
+                showShimmer()
+            } else if (!isLoading && viewModel.authState.value != ProfileViewModel.AuthState.LOADING) {
+                hideShimmer()
+            }
         }
         viewModel.isOffline.observe(viewLifecycleOwner) { offline ->
             if (offline) {
@@ -476,6 +503,7 @@ class ProfileFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        shimmerView.stopShimmer()
         addressListDialog?.dismiss()
         _binding = null
     }

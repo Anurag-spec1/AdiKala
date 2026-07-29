@@ -8,12 +8,9 @@
     android:fitsSystemWindows="true"
     tools:context=".view.fragment.ProfileFragment">
 
-    <ProgressBar
-        android:id="@+id/progressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:visibility="gone" />
+    <include
+        android:id="@+id/shimmerProfile"
+        layout="@layout/shimmer_profile" />
 
     <LinearLayout
         android:id="@+id/layoutLoggedOut"
