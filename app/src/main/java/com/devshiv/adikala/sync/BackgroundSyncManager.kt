@@ -74,9 +74,6 @@ class BackgroundSyncManager(context: Context) {
         checkAllProductsChanged()
     }
 
-
-    // In BackgroundSyncManager.kt - Replace checkCategoriesChanged()
-
     private suspend fun checkCategoriesChanged() {
         try {
             val menuResponse = apiService.getMainMenu()
@@ -90,12 +87,10 @@ class BackgroundSyncManager(context: Context) {
                 .mapNotNull { item ->
                     val handle = extractHandle(item)
 
-                    // ✅ Preserve subcategories from existing cache
                     val existingChip = categoryDao.getCategoryByHandle(handle)
                     val existingSubs = if (existingChip != null && existingChip.subCategoriesJson != "[]") {
                         ModelMappers.fromJsonList<SubCategory>(existingChip.subCategoriesJson)
                     } else {
-                        // Parse from menu item if no cache
                         item.items?.mapNotNull { subItem ->
                             if (subItem.type == "COLLECTION") {
                                 SubCategory(
@@ -114,7 +109,7 @@ class BackgroundSyncManager(context: Context) {
                         name = item.title ?: "",
                         handle = handle,
                         image = "",
-                        subCategories = existingSubs  // ✅ Use preserved subs
+                        subCategories = existingSubs
                     )
                 }
 
@@ -234,9 +229,6 @@ class BackgroundSyncManager(context: Context) {
         }
     }
 
-
-// In BackgroundSyncManager.kt - Replace this function
-
     private suspend fun updateChipsInCache(networkCategories: List<Category>) {
         try {
             val categoriesWithImages = coroutineScope {
@@ -244,7 +236,6 @@ class BackgroundSyncManager(context: Context) {
                     async {
                         var updatedCategory = category
 
-                        // Load image
                         if (category.handle.isNotEmpty()) {
                             try {
                                 val data = apiService.getCollectionByHandle(category.handle, first = 1)
@@ -253,11 +244,9 @@ class BackgroundSyncManager(context: Context) {
                                     ?.firstOrNull()?.node?.url ?: ""
                                 updatedCategory = updatedCategory.copy(image = imageUrl)
                             } catch (e: Exception) {
-                                // Keep existing
                             }
                         }
 
-                        // Preserve subcategories from existing cache
                         val existingChip = categoryDao.getCategoryByHandle(category.handle)
                         if (existingChip != null && existingChip.subCategoriesJson != "[]") {
                             val existingSubs = ModelMappers.fromJsonList<SubCategory>(existingChip.subCategoriesJson)

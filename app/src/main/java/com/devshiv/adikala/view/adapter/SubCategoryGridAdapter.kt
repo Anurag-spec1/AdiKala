@@ -10,7 +10,7 @@ import com.devshiv.adikala.databinding.ItemSubcategoryGridBinding
 import com.devshiv.adikala.model.SubCategory
 
 class SubCategoryGridAdapter(
-    private val list: List<SubCategory>,
+    private var list: List<SubCategory>,
     private val onClick: ((SubCategory) -> Unit)? = null
 ) : RecyclerView.Adapter<SubCategoryGridAdapter.ViewHolder>() {
 
@@ -39,12 +39,18 @@ class SubCategoryGridAdapter(
         }
     }
 
+    fun updateList(newList: List<SubCategory>) {
+        this.list = newList
+        notifyDataSetChanged()
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = ItemSubcategoryGridBinding.inflate(
             LayoutInflater.from(parent.context), parent, false
         )
         return ViewHolder(binding)
     }
+
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) = holder.bind(list[position])
 

@@ -71,7 +71,7 @@ class CategoriesViewModel(application: Application) : AndroidViewModel(applicati
                 onSuccess = { categories ->
                     _categories.postValue(categories)
                 },
-                onFailure = { /* Silent fail - keep showing existing data */ }
+                onFailure = { }
             )
         }
     }

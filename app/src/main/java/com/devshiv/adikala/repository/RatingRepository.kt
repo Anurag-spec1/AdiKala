@@ -25,9 +25,6 @@ class RatingRepository {
         @Volatile private var cacheTime = 0L
         @Volatile private var isCacheLoading = false
     }
-
-    // ── Public API ──
-
     suspend fun getProductReviews(
         productHandle: String,
         productId: String
@@ -111,8 +108,6 @@ class RatingRepository {
     fun invalidateCache() {
         cacheTime = 0L
     }
-
-    // ── Private Helpers ──
 
     private suspend fun ensureReviews(force: Boolean): List<JudgeMeReviewData> {
         if (!force && !isCacheExpired()) {

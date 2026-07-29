@@ -51,7 +51,7 @@ class ProductsViewModel(application: Application) : AndroidViewModel(application
                             reloadProductsSilently()
                         }
                     }
-                    else -> { /* Ignore other events */ }
+                    else -> {  }
                 }
             }
         }

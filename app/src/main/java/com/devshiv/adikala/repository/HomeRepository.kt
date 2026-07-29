@@ -110,7 +110,6 @@ class HomeRepository(context: Context) {
                     )
                 } ?: emptyList()
 
-            // Save chips immediately without images (FAST)
             if (categories.isNotEmpty()) {
                 val entities = categories.map { it.toCategoryEntity("chip") }
                 categoryDao.replaceChips(entities)
@@ -118,7 +117,6 @@ class HomeRepository(context: Context) {
                 Log.d(TAG, "Saved ${categories.size} chips without images (fast)")
             }
 
-            // Load images in background
             scope.launch {
                 try {
                     loadChipImagesInBackground(categories)
@@ -127,7 +125,6 @@ class HomeRepository(context: Context) {
                 }
             }
 
-            // Return chips immediately
             Log.d(TAG, "Fetched ${categories.size} chips from menu (fast)")
             Result.success(categories)
 
@@ -156,7 +153,6 @@ class HomeRepository(context: Context) {
             }.awaitAll()
         }
 
-        // Update cache with images
         if (categoriesWithImages.isNotEmpty()) {
             val entities = categoriesWithImages.map { it.toCategoryEntity("chip") }
             categoryDao.replaceChips(entities)

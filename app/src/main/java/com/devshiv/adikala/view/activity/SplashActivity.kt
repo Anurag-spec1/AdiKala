@@ -1,4 +1,3 @@
-// com/devshiv/adikala/view/activity/SplashActivity.kt
 package com.devshiv.adikala.view.activity
 
 import android.animation.ValueAnimator
@@ -12,6 +11,7 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import android.view.Choreographer
 import android.view.Window
 import android.view.WindowManager
@@ -36,7 +36,7 @@ class SplashActivity : AppCompatActivity() {
         R.drawable.left_1, R.drawable.left_2, R.drawable.left_3, R.drawable.left_4
     )
     private val centerImages = listOf(
-        R.drawable.center_1, R.drawable.center_2, R.drawable.center_3, R.drawable.center_4
+        R.drawable.center_2,  R.drawable.center_1,R.drawable.center_3, R.drawable.center_4
     )
     private val rightImages = listOf(
         R.drawable.right_1, R.drawable.right_2, R.drawable.right_3, R.drawable.right_4
@@ -171,6 +171,10 @@ class SplashActivity : AppCompatActivity() {
         val extraTop = (h * 0.05f).toInt()
         val extraBottom = (h * 0.10f).toInt()
         val wallHeight = (h + extraTop + extraBottom).toInt()
+
+        Log.d("SplashActivity", "Center images: ${centerImages.map { resources.getResourceEntryName(it) }}")
+        Log.d("SplashActivity", "Left images: ${leftImages.map { resources.getResourceEntryName(it) }}")
+        Log.d("SplashActivity", "Right images: ${rightImages.map { resources.getResourceEntryName(it) }}")
 
         applyColumn(
             binding.rvLeft, sideFull.toInt(), wallHeight, extraTop,

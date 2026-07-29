@@ -1,4 +1,3 @@
-// com/devshiv/adikala/database/mapper/ModelMappers.kt
 package com.devshiv.adikala.database.mapper
 
 import com.devshiv.adikala.database.entity.CategoryEntity
@@ -13,10 +12,6 @@ import com.google.gson.reflect.TypeToken
 object ModelMappers {
 
     val gson = Gson()
-
-    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-    // CATEGORY MAPPINGS
-    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
     fun CategoryEntity.toCategory(): Category {
         return Category(
@@ -50,9 +45,6 @@ object ModelMappers {
         return map { it.toCategoryEntity(type) }
     }
 
-    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-    // PRODUCT MAPPINGS
-    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
     fun ProductEntity.toProduct(): Product {
         return Product(
@@ -107,10 +99,6 @@ object ModelMappers {
     fun List<Product>.toProductEntities(collectionHandle: String): List<ProductEntity> {
         return map { it.toProductEntity(collectionHandle) }
     }
-
-    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-    // JSON HELPERS (PUBLIC)
-    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
     inline fun <reified T> fromJsonList(json: String): List<T> {
         return try {

@@ -1,4 +1,3 @@
-// com/devshiv/adikala/database/entity/ProductEntity.kt
 package com.devshiv.adikala.database.entity
 
 import androidx.room.Entity

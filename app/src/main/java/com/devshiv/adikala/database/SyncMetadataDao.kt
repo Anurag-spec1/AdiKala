@@ -1,4 +1,3 @@
-// com/devshiv/adikala/database/SyncMetadataDao.kt
 package com.devshiv.adikala.database
 
 import androidx.room.*
