@@ -1,12 +1,18 @@
 package com.devshiv.adikala.view.fragment
 
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import android.widget.CheckBox
+import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
@@ -18,9 +24,9 @@ import com.devshiv.adikala.auth.ShopifyAuthService
 import com.devshiv.adikala.databinding.FragmentProfileBinding
 import com.devshiv.adikala.model.Address
 import com.devshiv.adikala.repository.CustomerRepository
+import com.devshiv.adikala.utils.IndianStates
 import com.devshiv.adikala.view.adapter.AddressAdapter
 import com.devshiv.adikala.viewmodel.ProfileViewModel
-import com.google.android.material.textfield.TextInputEditText
 import kotlinx.coroutines.launch
 
 class ProfileFragment : Fragment() {
@@ -89,44 +95,72 @@ class ProfileFragment : Fragment() {
         }
     }
 
+    // ---------- Edit Profile (uses the re-themed dialog_edit_profile.xml,
+    // which has its own embedded Cancel/Save/Change-Email rows — plain EditTexts) ----------
     private fun showEditProfileDialog() {
         val profile = viewModel.getProfileData()
         val view = layoutInflater.inflate(R.layout.dialog_edit_profile, null)
-        val etFirstName = view.findViewById<TextInputEditText>(R.id.etFirstName)
-        val etLastName = view.findViewById<TextInputEditText>(R.id.etLastName)
+        val etFirstName = view.findViewById<EditText>(R.id.etFirstName)
+        val etLastName = view.findViewById<EditText>(R.id.etLastName)
+        val btnChangeEmail = view.findViewById<View>(R.id.btnChangeEmail)
+        val btnCancel = view.findViewById<View>(R.id.btnCancelProfile)
+        val btnSave = view.findViewById<View>(R.id.btnSaveProfile)
 
         etFirstName.setText(profile?.firstName ?: "")
         etLastName.setText(profile?.lastName ?: "")
 
-        AlertDialog.Builder(requireContext())
-            .setTitle("Edit Profile")
+        val dialog = AlertDialog.Builder(requireContext())
             .setView(view)
-            .setPositiveButton("Save") { _, _ ->
-                viewModel.updateProfile(
-                    etFirstName.text.toString().trim(),
-                    etLastName.text.toString().trim()
-                )
+            .create()
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        btnChangeEmail.setOnClickListener {
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://account.adikala.in/profile")))
+            dialog.dismiss()
+        }
+        btnCancel.setOnClickListener { dialog.dismiss() }
+        btnSave.setOnClickListener {
+            val first = etFirstName.text.toString().trim()
+            val last = etLastName.text.toString().trim()
+            if (first.isEmpty() || last.isEmpty()) {
+                Toast.makeText(requireContext(), "Please enter first and last name", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
             }
-            .setNeutralButton("Change Email") { _, _ ->
-                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://account.adikala.in/profile")))
-            }
-            .setNegativeButton("Cancel", null).show()
+            viewModel.updateProfile(first, last)
+            dialog.dismiss()
+        }
+
+        dialog.show()
     }
 
+    // ---------- Add/Edit Address (uses the re-themed dialog_add_address.xml,
+    // plain EditTexts + embedded btnCancelAddress/btnSaveAddress pill buttons) ----------
     private fun showAddAddressDialog(existingAddress: Address?) {
         val view = layoutInflater.inflate(R.layout.dialog_add_address, null)
-        val etFirstName = view.findViewById<TextInputEditText>(R.id.etFirstName)
-        val etLastName = view.findViewById<TextInputEditText>(R.id.etLastName)
-        val etCountry = view.findViewById<TextInputEditText>(R.id.etCountry)
-        val etAddress = view.findViewById<TextInputEditText>(R.id.etAddress)
-        val etApartment = view.findViewById<TextInputEditText>(R.id.etApartment)
-        val etCity = view.findViewById<TextInputEditText>(R.id.etCity)
-        val etState = view.findViewById<TextInputEditText>(R.id.etState)
-        val etZip = view.findViewById<TextInputEditText>(R.id.etZip)
-        val etPhone = view.findViewById<TextInputEditText>(R.id.etPhone)
+        val tvTitle = view.findViewById<TextView>(R.id.tvDialogTitle)
+        val etFirstName = view.findViewById<EditText>(R.id.etFirstName)
+        val etLastName = view.findViewById<EditText>(R.id.etLastName)
+        val etAddress = view.findViewById<EditText>(R.id.etAddress)
+        val etApartment = view.findViewById<EditText>(R.id.etApartment)
+        val etCity = view.findViewById<EditText>(R.id.etCity)
+        val etState = view.findViewById<AutoCompleteTextView>(R.id.etState)
+        val etZip = view.findViewById<EditText>(R.id.etZip)
+        val etPhone = view.findViewById<EditText>(R.id.etPhone)
         val cbDefault = view.findViewById<CheckBox>(R.id.cbDefault)
+        val btnCancel = view.findViewById<View>(R.id.btnCancelAddress)
+        val btnSave = view.findViewById<View>(R.id.btnSaveAddress)
 
-        etCountry.setText("India")
+        val isEdit = existingAddress != null
+        tvTitle.text = if (isEdit) "Edit Address" else "Add Address"
+
+        val stateAdapter = ArrayAdapter(
+            requireContext(),
+            R.layout.item_dropdown_state,
+            R.id.tvDropdownItem,
+            IndianStates.names
+        )
+        etState.setAdapter(stateAdapter)
+        etState.setOnClickListener { etState.showDropDown() }
 
         existingAddress?.let {
             etFirstName.setText(it.firstName)
@@ -134,54 +168,89 @@ class ProfileFragment : Fragment() {
             etAddress.setText(it.address1)
             etApartment.setText(it.address2)
             etCity.setText(it.city)
-            etState.setText(it.state)
+            val savedState = it.state ?: ""
+            etState.setText(IndianStates.nameForCode(savedState) ?: savedState, false)
             etZip.setText(it.zip)
             etPhone.setText(it.phone)
             cbDefault.isChecked = it.isDefault
         }
 
-        val isEdit = existingAddress != null
-        val title = if (isEdit) "Edit Address" else "Add Address"
-
-        AlertDialog.Builder(requireContext())
-            .setTitle(title)
+        val dialog = AlertDialog.Builder(requireContext())
             .setView(view)
-            .setPositiveButton("Save") { _, _ ->
-                val phoneInput = etPhone.text.toString().trim()
-                val formattedPhone = if (phoneInput.isNotEmpty()) {
-                    if (phoneInput.startsWith("+")) phoneInput else "+91$phoneInput"
-                } else ""
+            .create()
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
-                val countryInput = etCountry.text.toString().trim()
-                val countryCode = when {
-                    countryInput.equals("India", true) -> "IN"
-                    countryInput.length == 2 -> countryInput.uppercase()
-                    else -> "IN"
-                }
+        btnCancel.setOnClickListener { dialog.dismiss() }
 
-                val stateInput = etState.text.toString().trim()
-                val stateCode = if (stateInput.length <= 2) stateInput.uppercase() else getZoneCode(stateInput)
+        btnSave.setOnClickListener {
+            val firstName = etFirstName.text.toString().trim()
+            val lastName = etLastName.text.toString().trim()
+            val address1 = etAddress.text.toString().trim()
+            val city = etCity.text.toString().trim()
+            val stateName = etState.text.toString().trim()
+            val zip = etZip.text.toString().trim()
+            val phoneInput = etPhone.text.toString().trim()
 
-                val address = Address(
-                    id = existingAddress?.id,
-                    firstName = etFirstName.text.toString().trim(),
-                    lastName = etLastName.text.toString().trim(),
-                    address1 = etAddress.text.toString().trim(),
-                    address2 = etApartment.text.toString().trim(),
-                    city = etCity.text.toString().trim(),
-                    country = countryCode,
-                    state = stateCode,
-                    zip = etZip.text.toString().trim(),
-                    phone = formattedPhone,
-                    isDefault = cbDefault.isChecked
-                )
-                if (isEdit) {
-                    viewModel.updateAddress(existingAddress!!.id!!, address)
-                } else {
-                    viewModel.addAddress(address)
-                }
+            if (firstName.isEmpty() || lastName.isEmpty()) {
+                Toast.makeText(requireContext(), "Please enter first and last name", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
             }
-            .setNegativeButton("Cancel", null).show()
+            if (address1.isEmpty()) {
+                Toast.makeText(requireContext(), "Please enter your address", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            if (city.isEmpty()) {
+                Toast.makeText(requireContext(), "Please enter your city", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            val stateCode = IndianStates.codeForName(stateName)
+            if (stateCode == null) {
+                Toast.makeText(requireContext(), "Please select a valid state from the list", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            if (!zip.matches(Regex("^[1-9][0-9]{5}$"))) {
+                Toast.makeText(requireContext(), "Please enter a valid 6-digit PIN code", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            val digitsOnly = phoneInput.replace(Regex("[^0-9]"), "")
+            val normalizedNumber = when {
+                digitsOnly.length == 10 -> digitsOnly
+                digitsOnly.length == 12 && digitsOnly.startsWith("91") -> digitsOnly.substring(2)
+                digitsOnly.length == 11 && digitsOnly.startsWith("0") -> digitsOnly.substring(1)
+                else -> digitsOnly
+            }
+            if (!normalizedNumber.matches(Regex("^[6-9][0-9]{9}$"))) {
+                Toast.makeText(requireContext(), "Please enter a valid 10-digit Indian mobile number", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            val formattedPhone = "+91$normalizedNumber"
+
+            val address = Address(
+                id = existingAddress?.id,
+                firstName = firstName,
+                lastName = lastName,
+                address1 = address1,
+                address2 = etApartment.text.toString().trim(),
+                city = city,
+                country = "IN",
+                state = stateCode,
+                zip = zip,
+                phone = formattedPhone,
+                isDefault = cbDefault.isChecked
+            )
+
+            if (isEdit) {
+                viewModel.updateAddress(existingAddress!!.id!!, address)
+            } else {
+                viewModel.addAddress(address)
+            }
+            dialog.dismiss()
+        }
+
+        dialog.show()
     }
 
     private fun showAddressListDialog() {
@@ -193,25 +262,41 @@ class ProfileFragment : Fragment() {
         val addresses = viewModel.addresses.value ?: emptyList()
 
         if (addresses.isEmpty()) {
-            AlertDialog.Builder(requireContext())
-                .setTitle("My Addresses")
-                .setMessage("You haven't added any addresses yet.\n\nDefault location: India")
-                .setPositiveButton("Add Address") { _, _ ->
-                    showAddAddressDialog(null)
-                }
-                .setNegativeButton("Close", null)
-                .show()
+            val emptyView = layoutInflater.inflate(R.layout.dialog_address_empty, null)
+            val emptyDialog = AlertDialog.Builder(requireContext())
+                .setView(emptyView)
+                .create()
+            emptyDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+            emptyView.findViewById<View>(R.id.btnCloseEmpty).setOnClickListener { emptyDialog.dismiss() }
+            emptyView.findViewById<View>(R.id.btnAddFirstAddress).setOnClickListener {
+                emptyDialog.dismiss()
+                showAddAddressDialog(null)
+            }
+
+            addressListDialog = emptyDialog
+            emptyDialog.show()
             return
         }
 
         val view = layoutInflater.inflate(R.layout.dialog_address_list, null)
+        val tvTitle = view.findViewById<TextView>(R.id.tvAddressListTitle)
         val rvAddresses = view.findViewById<androidx.recyclerview.widget.RecyclerView>(R.id.rvAddresses)
+        val btnClose = view.findViewById<View>(R.id.btnCloseAddresses)
+        val btnAddNew = view.findViewById<View>(R.id.btnAddNewAddress)
+
+        tvTitle.text = "My Addresses (${addresses.size})"
         rvAddresses.layoutManager = LinearLayoutManager(requireContext())
+
+        val dialog = AlertDialog.Builder(requireContext())
+            .setView(view)
+            .create()
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
         val adapter = AddressAdapter(
             addresses,
             onEdit = { address ->
-                addressListDialog?.dismiss()
+                dialog.dismiss()
                 showAddAddressDialog(address)
             },
             onDelete = { address ->
@@ -234,37 +319,14 @@ class ProfileFragment : Fragment() {
         )
         rvAddresses.adapter = adapter
 
-        addressListDialog = AlertDialog.Builder(requireContext())
-            .setTitle("My Addresses (${addresses.size})")
-            .setView(view)
-            .setPositiveButton("Add New") { _, _ ->
-                addressListDialog?.dismiss()
-                showAddAddressDialog(null)
-            }
-            .setNegativeButton("Close", null)
-            .show()
-    }
-
-    private fun getZoneCode(state: String): String {
-        return when (state.uppercase().trim()) {
-            "UTTAR PRADESH", "UTTARPRADESH", "UP" -> "UP"
-            "MAHARASHTRA", "MH" -> "MH"
-            "DELHI", "DL" -> "DL"
-            "KARNATAKA", "KA" -> "KA"
-            "TAMIL NADU", "TN" -> "TN"
-            "GUJARAT", "GJ" -> "GJ"
-            "RAJASTHAN", "RJ" -> "RJ"
-            "WEST BENGAL", "WB" -> "WB"
-            "ANDHRA PRADESH", "AP" -> "AP"
-            "TELANGANA", "TS" -> "TS"
-            "KERALA", "KL" -> "KL"
-            "PUNJAB", "PB" -> "PB"
-            "HARYANA", "HR" -> "HR"
-            "BIHAR", "BR" -> "BR"
-            "MADHYA PRADESH", "MP" -> "MP"
-            "ODISHA", "OD" -> "OD"
-            else -> state.take(2).uppercase()
+        btnClose.setOnClickListener { dialog.dismiss() }
+        btnAddNew.setOnClickListener {
+            dialog.dismiss()
+            showAddAddressDialog(null)
         }
+
+        addressListDialog = dialog
+        dialog.show()
     }
 
     private fun trackOrder() {

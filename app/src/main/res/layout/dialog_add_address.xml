@@ -1,130 +1,257 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_dialog_card"
+    android:overScrollMode="never">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="22dp">
 
-        <com.google.android.material.textfield.TextInputLayout
+        <TextView
+            android:id="@+id/tvDialogTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Country/Region">
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etCountry"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="India"
-                android:inputType="text" />
-        </com.google.android.material.textfield.TextInputLayout>
+            android:fontFamily="@font/space_grotesk_semibold"
+            android:text="Add Address"
+            android:textColor="#0D3238"
+            android:textSize="20sp" />
 
-        <com.google.android.material.textfield.TextInputLayout
+        <View
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="1dp"
+            android:layout_marginTop="14dp"
+            android:layout_marginBottom="16dp"
+            android:background="@color/line" />
+
+        <EditText
+            android:id="@+id/etCountry"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/bg_input_field_disabled"
+            android:enabled="false"
+            android:fontFamily="@font/space_grotesk_semibold"
+            android:gravity="center_vertical"
+            android:paddingHorizontal="16dp"
+            android:text="India"
+            android:textColor="#5C5C5C"
+            android:textSize="15sp" />
+
+        <EditText
+            android:id="@+id/etFirstName"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/bg_input_field"
+            android:fontFamily="@font/space_grotesk_semibold"
+            android:gravity="center_vertical"
             android:hint="First Name"
-            android:layout_marginTop="8dp">
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etFirstName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textPersonName" />
-        </com.google.android.material.textfield.TextInputLayout>
+            android:inputType="textPersonName"
+            android:maxLines="1"
+            android:paddingHorizontal="16dp"
+            android:textColor="#0D3238"
+            android:textColorHint="#8A8A8A"
+            android:textSize="15sp" />
 
-        <com.google.android.material.textfield.TextInputLayout
+        <EditText
+            android:id="@+id/etLastName"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Last Name">
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etLastName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textPersonName" />
-        </com.google.android.material.textfield.TextInputLayout>
+            android:layout_height="50dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/bg_input_field"
+            android:fontFamily="@font/space_grotesk_semibold"
+            android:gravity="center_vertical"
+            android:hint="Last Name"
+            android:inputType="textPersonName"
+            android:maxLines="1"
+            android:paddingHorizontal="16dp"
+            android:textColor="#0D3238"
+            android:textColorHint="#8A8A8A"
+            android:textSize="15sp" />
 
-        <com.google.android.material.textfield.TextInputLayout
+        <EditText
+            android:id="@+id/etAddress"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Address">
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etAddress"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textPostalAddress" />
-        </com.google.android.material.textfield.TextInputLayout>
+            android:layout_height="50dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/bg_input_field"
+            android:fontFamily="@font/space_grotesk_semibold"
+            android:gravity="center_vertical"
+            android:hint="Address"
+            android:inputType="textPostalAddress"
+            android:maxLines="1"
+            android:paddingHorizontal="16dp"
+            android:textColor="#0D3238"
+            android:textColorHint="#8A8A8A"
+            android:textSize="15sp" />
 
-        <com.google.android.material.textfield.TextInputLayout
+        <EditText
+            android:id="@+id/etApartment"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Apartment, suite, etc. (optional)">
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etApartment"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="text" />
-        </com.google.android.material.textfield.TextInputLayout>
+            android:layout_height="50dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/bg_input_field"
+            android:fontFamily="@font/space_grotesk_semibold"
+            android:gravity="center_vertical"
+            android:hint="Apartment, suite, etc. (optional)"
+            android:inputType="text"
+            android:maxLines="1"
+            android:paddingHorizontal="16dp"
+            android:textColor="#0D3238"
+            android:textColorHint="#8A8A8A"
+            android:textSize="15sp" />
 
-        <com.google.android.material.textfield.TextInputLayout
+        <EditText
+            android:id="@+id/etCity"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="City">
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etCity"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="text" />
-        </com.google.android.material.textfield.TextInputLayout>
+            android:layout_height="50dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/bg_input_field"
+            android:fontFamily="@font/space_grotesk_semibold"
+            android:gravity="center_vertical"
+            android:hint="City"
+            android:inputType="text"
+            android:maxLines="1"
+            android:paddingHorizontal="16dp"
+            android:textColor="#0D3238"
+            android:textColorHint="#8A8A8A"
+            android:textSize="15sp" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:orientation="horizontal">
 
-            <com.google.android.material.textfield.TextInputLayout
+            <FrameLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:layout_marginEnd="8dp"
-                android:hint="State">
-                <com.google.android.material.textfield.TextInputEditText
+                android:layout_weight="1">
+
+                <AutoCompleteTextView
                     android:id="@+id/etState"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="text" />
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:layout_height="50dp"
+                    android:background="@drawable/bg_input_field"
+                    android:cursorVisible="false"
+                    android:dropDownVerticalOffset="6dp"
+                    android:focusable="false"
+                    android:fontFamily="@font/space_grotesk_semibold"
+                    android:gravity="center_vertical"
+                    android:hint="State"
+                    android:inputType="none"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="36dp"
+                    android:popupBackground="@drawable/bg_dropdown_popup"
+                    android:textColor="#0D3238"
+                    android:textColorHint="#8A8A8A"
+                    android:textSize="15sp" />
 
-            <com.google.android.material.textfield.TextInputLayout
+                <ImageView
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_gravity="center_vertical|end"
+                    android:layout_marginEnd="14dp"
+                    android:src="@drawable/ic_chevron_down"
+                    app:tint="#0D3238" />
+            </FrameLayout>
+
+            <EditText
+                android:id="@+id/etZip"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="50dp"
                 android:layout_weight="1"
-                android:hint="PIN Code">
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etZip"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="number" />
-            </com.google.android.material.textfield.TextInputLayout>
+                android:background="@drawable/bg_input_field"
+                android:fontFamily="@font/space_grotesk_semibold"
+                android:gravity="center_vertical"
+                android:hint="PIN Code"
+                android:inputType="number"
+                android:maxLength="6"
+                android:maxLines="1"
+                android:paddingHorizontal="16dp"
+                android:textColor="#0D3238"
+                android:textColorHint="#8A8A8A"
+                android:textSize="15sp" />
         </LinearLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
+        <EditText
+            android:id="@+id/etPhone"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Phone">
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etPhone"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="phone" />
-        </com.google.android.material.textfield.TextInputLayout>
+            android:layout_height="50dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/bg_input_field"
+            android:fontFamily="@font/space_grotesk_semibold"
+            android:gravity="center_vertical"
+            android:hint="Phone (10-digit mobile number)"
+            android:inputType="phone"
+            android:maxLength="13"
+            android:maxLines="1"
+            android:paddingHorizontal="16dp"
+            android:textColor="#0D3238"
+            android:textColorHint="#8A8A8A"
+            android:textSize="15sp" />
 
-        <CheckBox
+        <com.google.android.material.checkbox.MaterialCheckBox
             android:id="@+id/cbDefault"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Set as default address" />
+            android:layout_marginTop="14dp"
+            android:buttonTint="#0D3238"
+            android:fontFamily="@font/space_grotesk_semibold"
+            android:text="Set as default address"
+            android:textColor="#0D3238"
+            android:textSize="14sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:id="@+id/btnCancelAddress"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_marginEnd="10dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_button_outline_dark"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/space_grotesk_semibold"
+                    android:text="Cancel"
+                    android:textColor="#0D3238"
+                    android:textSize="15sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/btnSaveAddress"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_button_filled_dark"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/space_grotesk_semibold"
+                    android:text="Save"
+                    android:textColor="@color/white"
+                    android:textSize="15sp" />
+            </LinearLayout>
+        </LinearLayout>
 
     </LinearLayout>
 </ScrollView>
