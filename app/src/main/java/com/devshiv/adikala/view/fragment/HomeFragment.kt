@@ -143,50 +143,9 @@ class HomeFragment : Fragment() {
     }
 
     private fun loadProfileImage(email: String?, initial: String) {
-        Log.d("HomeFragmentAvatar", "loadProfileImage called with email=$email")
-
-        if (email.isNullOrBlank()) {
-            Log.d("HomeFragmentAvatar", "Email is null/blank, showing initials avatar")
-            binding.userImg.setImageBitmap(generateInitialAvatar(initial))
-            return
-        }
-
-        val hash = md5Hex(email.trim().lowercase())
-        val gravatarUrl = "https://www.gravatar.com/avatar/$hash?d=404&s=200"
-        Log.d("HomeFragmentAvatar", "Requesting Gravatar URL: $gravatarUrl")
-
-        Glide.with(this)
-            .load(gravatarUrl)
-            .listener(object : RequestListener<android.graphics.drawable.Drawable> {
-                override fun onLoadFailed(
-                    e: GlideException?,
-                    model: Any?,
-                    target: Target<android.graphics.drawable.Drawable>,
-                    isFirstResource: Boolean
-                ): Boolean {
-                    Log.d("HomeFragmentAvatar", "Gravatar load FAILED for $email, falling back to initials. Error: ${e?.message}")
-                    binding.userImg.setImageBitmap(generateInitialAvatar(initial))
-                    return true
-                }
-
-                override fun onResourceReady(
-                    resource: android.graphics.drawable.Drawable,
-                    model: Any,
-                    target: Target<android.graphics.drawable.Drawable>?,
-                    dataSource: DataSource,
-                    isFirstResource: Boolean
-                ): Boolean {
-                    Log.d("HomeFragmentAvatar", "Gravatar load SUCCESS for $email, dataSource=$dataSource")
-                    return false
-                }
-            })
-            .into(binding.userImg)
+        binding.userImg.setImageBitmap(generateInitialAvatar(initial))
     }
 
-    private fun md5Hex(input: String): String {
-        val digest = MessageDigest.getInstance("MD5").digest(input.toByteArray())
-        return digest.joinToString("") { "%02x".format(it) }
-    }
 
     private fun getTimeBasedGreeting(): String {
         val hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)

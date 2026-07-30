@@ -26,8 +26,8 @@
             android:layout_height="120dp"
             android:alpha="0.8"
             android:scaleType="centerCrop"
-            app:carbon_cornerRadius="60dp"
-            android:src="@drawable/user_image" />
+            android:src="@drawable/user_image"
+            app:carbon_cornerRadius="60dp" />
 
         <carbon.widget.TextView
             android:layout_width="wrap_content"
@@ -82,9 +82,9 @@
             android:gravity="center"
             app:carbon_cornerRadius="27dp"
             app:carbon_elevation="2dp"
+            app:carbon_rippleColor="#1A0D3238"
             app:carbon_stroke="#0D3238"
-            app:carbon_strokeWidth="1.5dp"
-            app:carbon_rippleColor="#1A0D3238">
+            app:carbon_strokeWidth="1.5dp">
 
             <carbon.widget.TextView
                 android:layout_width="wrap_content"
@@ -128,10 +128,10 @@
                         android:id="@+id/btnEditProfile"
                         android:layout_width="45dp"
                         android:layout_height="45dp"
-                        android:background="#0D3238"
                         android:layout_alignParentTop="true"
                         android:layout_alignParentEnd="true"
                         android:layout_marginTop="-5dp"
+                        android:background="#0D3238"
                         android:clickable="true"
                         android:focusable="true"
                         android:gravity="center_vertical"
@@ -171,11 +171,11 @@
                                 android:id="@+id/tvAvatarInitial"
                                 android:layout_width="90dp"
                                 android:layout_height="90dp"
-                                app:carbon_cornerRadius="45dp"
-                                android:scaleType="centerCrop"
                                 android:layout_gravity="center"
                                 android:background="@drawable/avatar_inner"
-                                android:gravity="center"/>
+                                android:gravity="center"
+                                android:scaleType="centerCrop"
+                                app:carbon_cornerRadius="45dp" />
 
                             <carbon.widget.TextView
                                 android:id="@+id/tvAvatarText"
@@ -186,8 +186,8 @@
                                 android:text="U"
                                 android:textColor="@color/avatar_text"
                                 android:textSize="32sp"
-                                app:carbon_font="@font/space_grotesk_semibold"
-                                android:visibility="gone" />
+                                android:visibility="gone"
+                                app:carbon_font="@font/space_grotesk_semibold" />
                         </FrameLayout>
 
                         <carbon.widget.TextView
@@ -202,119 +202,12 @@
                     </LinearLayout>
                 </RelativeLayout>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:background="@drawable/bg_orders"
-                    android:elevation="10dp"
-                    android:orientation="vertical"
-                    android:padding="20dp">
-
-                    <carbon.widget.TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="4dp"
-                        android:text="Track Orders"
-                        android:textColor="#FFFFFF"
-                        android:textSize="17sp"
-                        app:carbon_font="@font/space_grotesk_semibold" />
-
-                    <carbon.widget.TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="12dp"
-                        android:lineSpacingExtra="2dp"
-                        android:paddingHorizontal="4dp"
-                        android:text="Enter your order ID to see live status, courier &amp; delivery date."
-                        android:textColor="@color/muted_peach"
-                        android:textSize="14sp"
-                        app:carbon_font="@font/space_grotesk_semibold" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal">
-
-                        <carbon.widget.LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="52dp"
-                            android:layout_weight="1"
-                            android:background="@color/white"
-                            android:gravity="center_vertical"
-                            android:orientation="horizontal"
-                            android:paddingHorizontal="16dp"
-                            app:carbon_cornerRadius="18dp"
-                            app:carbon_elevation="4dp"
-                            app:carbon_stroke="#14000000"
-                            app:carbon_strokeWidth="1dp">
-
-                            <carbon.widget.ImageView
-                                android:layout_width="18dp"
-                                android:layout_height="18dp"
-                                android:src="@drawable/ic_search"
-                                app:carbon_tint="@color/teal" />
-
-                            <carbon.widget.EditText
-                                android:id="@+id/etOrderId"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_marginStart="10dp"
-                                android:background="@null"
-                                android:gravity="center_vertical"
-                                android:hint="Enter Your Order ID"
-                                android:inputType="text"
-                                android:maxLines="1"
-                                android:singleLine="true"
-                                android:textColor="#0D3238"
-                                android:textColorHint="@color/hint"
-                                android:textSize="18sp"
-                                app:carbon_font="@font/space_grotesk_semibold" />
-                        </carbon.widget.LinearLayout>
-
-                        <LinearLayout
-                            android:id="@+id/btnTrackOrder"
-                            android:layout_width="wrap_content"
-                            android:layout_height="52dp"
-                            android:layout_marginStart="10dp"
-                            android:background="@drawable/bg_track_button"
-                            android:clickable="true"
-                            android:elevation="6dp"
-                            android:focusable="true"
-                            android:gravity="center"
-                            android:orientation="horizontal"
-                            android:paddingHorizontal="18dp">
-
-                            <carbon.widget.TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="7dp"
-                                android:text="Track"
-                                android:textColor="@color/teal"
-                                android:textSize="15sp"
-                                app:carbon_font="@font/space_grotesk_semibold" />
-                        </LinearLayout>
-                    </LinearLayout>
-                </LinearLayout>
-
-                <carbon.widget.TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
-                    android:layout_marginTop="24dp"
-                    android:layout_marginBottom="12dp"
-                    android:text="Personal Information"
-                    android:textColor="#0D3238"
-                    android:textSize="22sp"
-                    app:carbon_font="@font/space_grotesk_semibold" />
-
                 <carbon.widget.LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/white"
                     android:orientation="vertical"
+                    android:layout_marginTop="28dp"
                     android:paddingHorizontal="18dp"
                     app:carbon_cornerRadius="24dp"
                     app:carbon_elevation="4dp"
@@ -488,8 +381,8 @@
                             android:text="DEFAULT"
                             android:textColor="@color/lake"
                             android:textSize="13sp"
-                            app:carbon_font="@font/space_grotesk_semibold"
-                            android:visibility="gone" />
+                            android:visibility="gone"
+                            app:carbon_font="@font/space_grotesk_semibold" />
                     </LinearLayout>
 
                     <carbon.widget.TextView

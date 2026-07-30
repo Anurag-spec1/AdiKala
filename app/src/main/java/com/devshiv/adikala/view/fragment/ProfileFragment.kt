@@ -1,6 +1,7 @@
 package com.devshiv.adikala.view.fragment
 
 
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -80,7 +81,6 @@ class ProfileFragment : Fragment() {
         binding.btnCreateAccount.setOnClickListener { viewModel.launchLogin() }
         binding.btnSignOut.setOnClickListener { showSignOutDialog() }
         binding.btnEditProfile.setOnClickListener { showEditProfileDialog() }
-        binding.btnTrackOrder.setOnClickListener { trackOrder() }
         binding.btnAddAddress.setOnClickListener { showAddAddressDialog(null) }
         binding.btnManageAddress.setOnClickListener {
             userRequestedAddresses = true
@@ -461,15 +461,6 @@ class ProfileFragment : Fragment() {
 
         addressListDialog = dialog
         dialog.show()
-    }
-
-    private fun trackOrder() {
-        val orderId = binding.etOrderId.text.toString().trim()
-        if (orderId.isEmpty()) {
-            Toast.makeText(requireContext(), "Enter an order ID", Toast.LENGTH_SHORT).show()
-        } else {
-            Toast.makeText(requireContext(), "Tracking: $orderId", Toast.LENGTH_SHORT).show()
-        }
     }
 
     private fun observeViewModel() {
