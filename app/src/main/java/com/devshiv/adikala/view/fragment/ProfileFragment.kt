@@ -40,6 +40,14 @@ class ProfileFragment : Fragment() {
     private var addressListDialog: AlertDialog? = null
 
     private var userRequestedAddresses = false
+    private var hasUserName = false
+    private var hasUserEmail = false
+    private var hasUserPhone = false
+    private var hasUserInitial = false
+    private var hasDefaultAddressName = false
+    private var hasDefaultAddress = false
+
+    private var currentAuthState: ProfileViewModel.AuthState? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -79,9 +87,9 @@ class ProfileFragment : Fragment() {
         binding.btnPrivacyPolicy.setOnClickListener { }
         binding.btnTerms.setOnClickListener { }
     }
+
     private val shimmerView: ShimmerFrameLayout
         get() = binding.shimmerProfile.root
-
 
     private fun showShimmer() {
         shimmerView.visibility = View.VISIBLE
@@ -93,6 +101,50 @@ class ProfileFragment : Fragment() {
         shimmerView.visibility = View.GONE
     }
 
+    private fun resetDataLoadedFlags() {
+        hasUserName = false
+        hasUserEmail = false
+        hasUserPhone = false
+        hasUserInitial = false
+        hasDefaultAddressName = false
+        hasDefaultAddress = false
+    }
+
+    private fun isAllProfileDataLoaded(): Boolean {
+        return hasUserName && hasUserEmail && hasUserPhone &&
+                hasUserInitial && hasDefaultAddressName && hasDefaultAddress
+    }
+
+    private fun revealContentIfReady() {
+        when (currentAuthState) {
+            ProfileViewModel.AuthState.AUTHENTICATED -> {
+                if (isAllProfileDataLoaded()) {
+                    hideShimmer()
+                    binding.layoutLoggedIn.visibility = View.VISIBLE
+                    binding.layoutLoggedOut.visibility = View.GONE
+                } else {
+                    binding.layoutLoggedIn.visibility = View.GONE
+                    showShimmer()
+                }
+            }
+            ProfileViewModel.AuthState.EXPIRED -> {
+                hideShimmer()
+                binding.layoutLoggedIn.visibility = View.GONE
+                binding.layoutLoggedOut.visibility = View.VISIBLE
+            }
+            ProfileViewModel.AuthState.LOGGED_OUT -> {
+                hideShimmer()
+                binding.layoutLoggedIn.visibility = View.GONE
+                binding.layoutLoggedOut.visibility = View.VISIBLE
+            }
+            ProfileViewModel.AuthState.LOADING, null -> {
+                binding.layoutLoggedIn.visibility = View.GONE
+                binding.layoutLoggedOut.visibility = View.GONE
+                showShimmer()
+            }
+            else -> Unit
+        }
+    }
 
     private fun showSignOutDialog() {
         val view = layoutInflater.inflate(R.layout.dialog_signout, null)
@@ -395,48 +447,32 @@ class ProfileFragment : Fragment() {
 
     private fun observeViewModel() {
         viewModel.authState.observe(viewLifecycleOwner) { state ->
-            when (state) {
-                ProfileViewModel.AuthState.LOADING -> {
-
-                    binding.layoutLoggedIn.visibility = View.GONE
-                    binding.layoutLoggedOut.visibility = View.GONE
-                    showShimmer()
-                }
-
-                ProfileViewModel.AuthState.AUTHENTICATED -> {
-                    hideShimmer()
-                    binding.layoutLoggedIn.visibility = View.VISIBLE
-                    binding.layoutLoggedOut.visibility = View.GONE
-                }
-
-                ProfileViewModel.AuthState.EXPIRED -> {
-                    hideShimmer()
-                    binding.layoutLoggedIn.visibility = View.GONE
-                    binding.layoutLoggedOut.visibility = View.VISIBLE
-                    Toast.makeText(
-                        requireContext(),
-                        "Session expired. Please login again.",
-                        Toast.LENGTH_LONG
-                    ).show()
-                }
-
-                ProfileViewModel.AuthState.LOGGED_OUT -> {
-                    hideShimmer()
-                    binding.layoutLoggedIn.visibility = View.GONE
-                    binding.layoutLoggedOut.visibility = View.VISIBLE
-                }
+            currentAuthState = state
+            if (state == ProfileViewModel.AuthState.LOADING) {
+                resetDataLoadedFlags()
             }
+            revealContentIfReady()
         }
 
-        viewModel.userName.observe(viewLifecycleOwner) { binding.tvUserName.text = it ?: "User" }
+        viewModel.userName.observe(viewLifecycleOwner) {
+            binding.tvUserName.text = it ?: "User"
+            hasUserName = true
+            revealContentIfReady()
+        }
         viewModel.userEmail.observe(viewLifecycleOwner) {
             binding.tvUserEmail.text = it ?: "No email"
+            hasUserEmail = true
+            revealContentIfReady()
         }
         viewModel.userPhone.observe(viewLifecycleOwner) {
             binding.tvUserPhone.text = it ?: "No phone"
+            hasUserPhone = true
+            revealContentIfReady()
         }
         viewModel.userInitial.observe(viewLifecycleOwner) {
             binding.tvAvatarInitial.text = it ?: "U"
+            hasUserInitial = true
+            revealContentIfReady()
         }
 
         viewModel.defaultAddressName.observe(viewLifecycleOwner) { name ->
@@ -456,6 +492,8 @@ class ProfileFragment : Fragment() {
                     binding.tvDefaultBadge.visibility = View.VISIBLE
                 }
             }
+            hasDefaultAddressName = true
+            revealContentIfReady()
         }
 
         viewModel.defaultAddress.observe(viewLifecycleOwner) { address ->
@@ -465,6 +503,8 @@ class ProfileFragment : Fragment() {
                 } else {
                     address
                 }
+            hasDefaultAddress = true
+            revealContentIfReady()
         }
 
         viewModel.addresses.observe(viewLifecycleOwner) { addresses ->
@@ -475,12 +515,9 @@ class ProfileFragment : Fragment() {
         }
 
         viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
-            val contentAlreadyVisible = binding.layoutLoggedIn.visibility == View.VISIBLE ||
-                    binding.layoutLoggedOut.visibility == View.VISIBLE
-            if (isLoading && !contentAlreadyVisible) {
+            if (isLoading) {
+                binding.layoutLoggedIn.visibility = View.GONE
                 showShimmer()
-            } else if (!isLoading && viewModel.authState.value != ProfileViewModel.AuthState.LOADING) {
-                hideShimmer()
             }
         }
         viewModel.isOffline.observe(viewLifecycleOwner) { offline ->
