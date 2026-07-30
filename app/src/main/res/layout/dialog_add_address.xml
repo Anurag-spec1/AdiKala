@@ -97,7 +97,7 @@
             android:background="@drawable/bg_input_field"
             android:fontFamily="@font/space_grotesk_semibold"
             android:gravity="center_vertical"
-            android:hint="Apartment, suite, etc. (optional)"
+            android:hint="Apartment, suite, etc."
             android:inputType="text"
             android:maxLines="1"
             android:paddingHorizontal="16dp"

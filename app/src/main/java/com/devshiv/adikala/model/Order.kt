@@ -19,8 +19,21 @@ data class ShopifyOrder(
     val cancelledAt: String?,
     val totalPrice: String,
     val currencyCode: String,
+    val totalTax: String? = null,
+    val email: String? = null,
+    val shippingAddress: ShippingAddress? = null,
     val items: List<OrderLineItem>,
-    val trackingInfo: TrackingInfo?
+    val trackingInfo: TrackingInfo? = null
+)
+
+data class ShippingAddress(
+    val name: String?,
+    val address1: String?,
+    val address2: String?,
+    val city: String?,
+    val province: String?,
+    val zip: String?,
+    val country: String?
 )
 
 data class OrderLineItem(
@@ -76,7 +89,11 @@ data class Order(
     val progressStep: Int = 0,
     val showTracker: Boolean = true,
     val showTrackButton: Boolean = false,
-    val isPaused: Boolean = false
+    val isPaused: Boolean = false,
+    val email: String? = null,
+    val shippingAddress: String? = null,
+    val totalTax: String? = null,
+    val paymentMethod: String? = null
 )
 
 enum class OrderStatus(val label: String) {

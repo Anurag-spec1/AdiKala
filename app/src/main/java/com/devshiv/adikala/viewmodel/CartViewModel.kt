@@ -98,7 +98,7 @@ class CartViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun addItem(variantId: String, productName: String, quantity: Int = 1) {
+    fun addItem(variantId: String, productName: String, quantity: Int = 1, onComplete: (() -> Unit)? = null) {
         CartManager.saveProductName(app, variantId, productName)
         viewModelScope.launch {
             _isLoading.value = true
@@ -123,6 +123,7 @@ class CartViewModel(application: Application) : AndroidViewModel(application) {
             _itemAdded.value = true
             _operationMessage.value = "Added to cart"
             _isLoading.value = false
+            onComplete?.invoke()
         }
     }
 

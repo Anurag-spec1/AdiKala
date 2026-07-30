@@ -6,6 +6,7 @@ import com.devshiv.adikala.model.Address
 import com.devshiv.adikala.model.OrderLineItem
 import com.devshiv.adikala.model.OrderResponse
 import com.devshiv.adikala.model.Profile
+import com.devshiv.adikala.model.ShippingAddress
 import com.devshiv.adikala.model.ShopifyOrder
 import com.devshiv.adikala.model.TrackingInfo
 import kotlinx.coroutines.Dispatchers
@@ -45,7 +46,9 @@ class CustomerRepository {
         """.trimIndent()
 
             val body = JSONObject().apply { put("query", query) }.toString().toRequestBody(JSON)
-            val request = Request.Builder().url(graphqlUrl).header("Authorization", accessToken).post(body).build()
+            val request =
+                Request.Builder().url(graphqlUrl).header("Authorization", accessToken).post(body)
+                    .build()
 
             val response = client.newCall(request).execute()
             val responseBody = response.body?.string() ?: ""
@@ -62,7 +65,8 @@ class CustomerRepository {
                 }
             }
 
-            val customer = json.optJSONObject("data")?.optJSONObject("customer") ?: return@withContext null
+            val customer =
+                json.optJSONObject("data")?.optJSONObject("customer") ?: return@withContext null
 
             val addrJson = customer.optJSONObject("defaultAddress")
             val address = if (addrJson != null) {
@@ -92,9 +96,10 @@ class CustomerRepository {
         }
     }
 
-    suspend fun updateProfile(accessToken: String, firstName: String, lastName: String): Boolean = withContext(Dispatchers.IO) {
-        try {
-            val query = """
+    suspend fun updateProfile(accessToken: String, firstName: String, lastName: String): Boolean =
+        withContext(Dispatchers.IO) {
+            try {
+                val query = """
             mutation {
                 customerUpdate(input: {
                     firstName: "$firstName"
@@ -105,12 +110,155 @@ class CustomerRepository {
                 }
             }
             """.trimIndent()
-            executeMutation(accessToken, query)
-        } catch (e: Exception) {
-            Log.e("CustomerRepo", "Error updating profile", e)
-            false
+                executeMutation(accessToken, query)
+            } catch (e: Exception) {
+                Log.e("CustomerRepo", "Error updating profile", e)
+                false
+            }
+        }
+
+    suspend fun getCustomerOrders(accessToken: String): List<ShopifyOrder> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val query = """
+query {
+    customer {
+        orders(first: 20) {
+            nodes {
+                id
+                name
+                processedAt
+                fulfillmentStatus
+                financialStatus
+                email
+                totalPrice { amount currencyCode }
+                totalTax { amount currencyCode }
+                shippingAddress {
+                    name
+                    address1
+                    address2
+                    city
+                    province
+                    zip
+                    country
+                }
+                lineItems(first: 10) {
+                    nodes {
+                        title
+                        quantity
+                        image { url }
+                    }
+                }
+                fulfillments(first: 3) {
+                    nodes {
+                        status
+                        estimatedDeliveryAt
+                        trackingInformation {
+                            number
+                            url
+                            company
+                        }
+                    }
+                }
+            }
         }
     }
+}
+""".trimIndent()
+
+                val body = JSONObject().apply { put("query", query) }.toString().toRequestBody(JSON)
+                val request = Request.Builder()
+                    .url("https://account.adikala.in/customer/api/2026-07/graphql")
+                    .header("Authorization", accessToken)
+                    .post(body)
+                    .build()
+
+                val response = client.newCall(request).execute()
+                val json = JSONObject(response.body?.string() ?: "")
+
+                if (json.has("errors")) {
+                    Log.e("CustomerRepo", "Errors: ${json.getJSONArray("errors")}")
+                    return@withContext emptyList()
+                }
+
+                val ordersArray = json.getJSONObject("data")
+                    .getJSONObject("customer")
+                    .getJSONObject("orders")
+                    .getJSONArray("nodes")
+
+                val orders = mutableListOf<ShopifyOrder>()
+                for (i in 0 until ordersArray.length()) {
+                    orders.add(parseOrder(ordersArray.getJSONObject(i)))
+                }
+                Log.d("CustomerRepo", "Parsed ${orders.size} orders")
+                orders
+            } catch (e: Exception) {
+                Log.e("CustomerRepo", "Failed to fetch orders", e)
+                emptyList()
+            }
+        }
+    }
+
+    private fun parseOrder(json: JSONObject): ShopifyOrder {
+        val lineItemsArray = json.optJSONObject("lineItems")?.optJSONArray("nodes")
+        val items = mutableListOf<OrderLineItem>()
+        if (lineItemsArray != null) {
+            for (i in 0 until lineItemsArray.length()) {
+                val item = lineItemsArray.getJSONObject(i)
+                items.add(OrderLineItem(
+                    title = item.optString("title", ""),
+                    quantity = item.optInt("quantity", 1),
+                    price = "0",
+                    imageUrl = item.optJSONObject("image")?.optString("url"),
+                    productHandle = null
+                ))
+            }
+        }
+
+        val fulfillmentsArray = json.optJSONObject("fulfillments")?.optJSONArray("nodes")
+        var trackingInfo: TrackingInfo? = null
+        if (fulfillmentsArray != null && fulfillmentsArray.length() > 0) {
+            val fulfillment = fulfillmentsArray.getJSONObject(0)
+            val tracking = fulfillment.optJSONObject("trackingInformation")
+            trackingInfo = TrackingInfo(
+                number = tracking?.optString("number"),
+                url = tracking?.optString("url"),
+                company = tracking?.optString("company"),
+                estimatedDelivery = fulfillment.optString("estimatedDeliveryAt", null)
+            )
+        }
+
+        val shippingJson = json.optJSONObject("shippingAddress")
+        val shippingAddress = if (shippingJson != null) {
+            ShippingAddress(
+                name = shippingJson.optString("name"),
+                address1 = shippingJson.optString("address1"),
+                address2 = shippingJson.optString("address2"),
+                city = shippingJson.optString("city"),
+                province = shippingJson.optString("province"),
+                zip = shippingJson.optString("zip"),
+                country = shippingJson.optString("country")
+            )
+        } else null
+
+        return ShopifyOrder(
+            id = json.optString("id", ""),
+            orderNumber = json.optString("name", "").removePrefix("#").toIntOrNull() ?: 0,
+            name = json.optString("name", ""),
+            financialStatus = json.optString("financialStatus"),
+            fulfillmentStatus = json.optString("fulfillmentStatus"),
+            processedAt = json.optString("processedAt"),
+            cancelledAt = null,
+            totalPrice = json.optJSONObject("totalPrice")?.optString("amount", "0") ?: "0",
+            currencyCode = json.optJSONObject("totalPrice")?.optString("currencyCode", "INR") ?: "INR",
+            totalTax = json.optJSONObject("totalTax")?.optString("amount"),
+            email = json.optString("email"),
+            shippingAddress = shippingAddress,
+            items = items,
+            trackingInfo = trackingInfo
+        )
+    }
+
 
     suspend fun getAddresses(accessToken: String): List<Address> = withContext(Dispatchers.IO) {
         try {
@@ -146,33 +294,39 @@ class CustomerRepository {
                 put("variables", variables)
             }.toString().toRequestBody(JSON)
 
-            val request = Request.Builder().url(graphqlUrl).header("Authorization", accessToken).post(body).build()
+            val request =
+                Request.Builder().url(graphqlUrl).header("Authorization", accessToken).post(body)
+                    .build()
             val response = client.newCall(request).execute()
             val json = JSONObject(response.body?.string() ?: "")
             Log.d("CustomerRepo", "Addresses response: $json")
 
-            val customer = json.optJSONObject("data")?.optJSONObject("customer") ?: return@withContext emptyList()
+            val customer = json.optJSONObject("data")?.optJSONObject("customer")
+                ?: return@withContext emptyList()
             val defaultAddressId = customer.optJSONObject("defaultAddress")?.optString("id")
-            val nodes = customer.optJSONObject("addresses")?.optJSONArray("nodes") ?: return@withContext emptyList()
+            val nodes = customer.optJSONObject("addresses")?.optJSONArray("nodes")
+                ?: return@withContext emptyList()
 
             val addressList = mutableListOf<Address>()
 
             for (i in 0 until nodes.length()) {
                 val addr = nodes.getJSONObject(i)
                 val id = addr.optString("id", null)
-                addressList.add(Address(
-                    id = id,
-                    firstName = addr.optString("firstName", null),
-                    lastName = addr.optString("lastName", null),
-                    address1 = addr.optString("address1", null),
-                    address2 = addr.optString("address2", null),
-                    city = addr.optString("city", null),
-                    country = addr.optString("country", null),
-                    state = addr.optString("provinceCode", null),
-                    zip = addr.optString("zip", null),
-                    phone = addr.optString("phone", null),
-                    isDefault = id == defaultAddressId
-                ))
+                addressList.add(
+                    Address(
+                        id = id,
+                        firstName = addr.optString("firstName", null),
+                        lastName = addr.optString("lastName", null),
+                        address1 = addr.optString("address1", null),
+                        address2 = addr.optString("address2", null),
+                        city = addr.optString("city", null),
+                        country = addr.optString("country", null),
+                        state = addr.optString("provinceCode", null),
+                        zip = addr.optString("zip", null),
+                        phone = addr.optString("phone", null),
+                        isDefault = id == defaultAddressId
+                    )
+                )
             }
 
             addressList.sortByDescending { it.isDefault }
@@ -185,26 +339,27 @@ class CustomerRepository {
         }
     }
 
-    suspend fun addAddress(accessToken: String, address: Address): Boolean = withContext(Dispatchers.IO) {
-        try {
-            val addressInput = JSONObject().apply {
-                put("address1", address.address1 ?: "")
-                address.address2?.let { if (it.isNotEmpty()) put("address2", it) }
-                put("city", address.city ?: "")
-                put("territoryCode", address.country ?: "IN")
-                address.state?.let { if (it.isNotEmpty()) put("zoneCode", it) }
-                put("zip", address.zip ?: "")
-                address.phone?.let { if (it.isNotEmpty()) put("phoneNumber", it) }
-                address.firstName?.let { if (it.isNotEmpty()) put("firstName", it) }
-                address.lastName?.let { if (it.isNotEmpty()) put("lastName", it) }
-            }
+    suspend fun addAddress(accessToken: String, address: Address): Boolean =
+        withContext(Dispatchers.IO) {
+            try {
+                val addressInput = JSONObject().apply {
+                    put("address1", address.address1 ?: "")
+                    address.address2?.let { if (it.isNotEmpty()) put("address2", it) }
+                    put("city", address.city ?: "")
+                    put("territoryCode", address.country ?: "IN")
+                    address.state?.let { if (it.isNotEmpty()) put("zoneCode", it) }
+                    put("zip", address.zip ?: "")
+                    address.phone?.let { if (it.isNotEmpty()) put("phoneNumber", it) }
+                    address.firstName?.let { if (it.isNotEmpty()) put("firstName", it) }
+                    address.lastName?.let { if (it.isNotEmpty()) put("lastName", it) }
+                }
 
-            val variables = JSONObject().apply {
-                put("addressInput", addressInput)
-                put("defaultAddress", address.isDefault)
-            }
+                val variables = JSONObject().apply {
+                    put("addressInput", addressInput)
+                    put("defaultAddress", address.isDefault)
+                }
 
-            val query = """
+                val query = """
         mutation AddressCreate(${'$'}addressInput: CustomerAddressInput!, ${'$'}defaultAddress: Boolean) {
             customerAddressCreate(address: ${'$'}addressInput, defaultAddress: ${'$'}defaultAddress) {
                 customerAddress { id }
@@ -213,75 +368,77 @@ class CustomerRepository {
         }
         """.trimIndent()
 
-            val body = JSONObject().apply {
-                put("operationName", "AddressCreate")
-                put("query", query)
-                put("variables", variables)
-            }.toString().toRequestBody(JSON)
+                val body = JSONObject().apply {
+                    put("operationName", "AddressCreate")
+                    put("query", query)
+                    put("variables", variables)
+                }.toString().toRequestBody(JSON)
 
-            Log.d("CustomerRepo", "Body: $body")
+                Log.d("CustomerRepo", "Body: $body")
 
-            val request = Request.Builder().url(graphqlUrl).header("Authorization", accessToken).post(body).build()
-            val response = client.newCall(request).execute()
-            val responseBody = response.body?.string() ?: ""
-            Log.d("CustomerRepo", "Response: $responseBody")
+                val request = Request.Builder().url(graphqlUrl).header("Authorization", accessToken)
+                    .post(body).build()
+                val response = client.newCall(request).execute()
+                val responseBody = response.body?.string() ?: ""
+                Log.d("CustomerRepo", "Response: $responseBody")
 
-            val json = JSONObject(responseBody)
+                val json = JSONObject(responseBody)
 
-            if (json.has("errors")) {
-                Log.e("CustomerRepo", "GraphQL errors: ${json.getJSONArray("errors")}")
-                return@withContext false
-            }
-
-            val data = json.optJSONObject("data")
-            val customerAddressCreate = data?.optJSONObject("customerAddressCreate")
-            val userErrors = customerAddressCreate?.optJSONArray("userErrors")
-
-            if (userErrors != null && userErrors.length() > 0) {
-                val errorMessages = mutableListOf<String>()
-                for (i in 0 until userErrors.length()) {
-                    val error = userErrors.getJSONObject(i)
-                    val field = error.optJSONArray("field")?.let { arr ->
-                        (0 until arr.length()).map { arr.getString(it) }
-                    } ?: emptyList()
-                    val message = error.optString("message", "Unknown error")
-                    errorMessages.add("${field.joinToString(", ")}: $message")
+                if (json.has("errors")) {
+                    Log.e("CustomerRepo", "GraphQL errors: ${json.getJSONArray("errors")}")
+                    return@withContext false
                 }
-                Log.e("CustomerRepo", "User errors: $errorMessages")
-                return@withContext false
+
+                val data = json.optJSONObject("data")
+                val customerAddressCreate = data?.optJSONObject("customerAddressCreate")
+                val userErrors = customerAddressCreate?.optJSONArray("userErrors")
+
+                if (userErrors != null && userErrors.length() > 0) {
+                    val errorMessages = mutableListOf<String>()
+                    for (i in 0 until userErrors.length()) {
+                        val error = userErrors.getJSONObject(i)
+                        val field = error.optJSONArray("field")?.let { arr ->
+                            (0 until arr.length()).map { arr.getString(it) }
+                        } ?: emptyList()
+                        val message = error.optString("message", "Unknown error")
+                        errorMessages.add("${field.joinToString(", ")}: $message")
+                    }
+                    Log.e("CustomerRepo", "User errors: $errorMessages")
+                    return@withContext false
+                }
+
+                val customerAddress = customerAddressCreate?.optJSONObject("customerAddress")
+                val success = customerAddress != null && customerAddress.has("id")
+
+                Log.d("CustomerRepo", "Address add success: $success")
+                return@withContext success
+
+            } catch (e: Exception) {
+                Log.e("CustomerRepo", "Error adding address", e)
+                false
             }
-
-            val customerAddress = customerAddressCreate?.optJSONObject("customerAddress")
-            val success = customerAddress != null && customerAddress.has("id")
-
-            Log.d("CustomerRepo", "Address add success: $success")
-            return@withContext success
-
-        } catch (e: Exception) {
-            Log.e("CustomerRepo", "Error adding address", e)
-            false
         }
-    }
 
-    suspend fun updateAddress(accessToken: String, addressId: String, address: Address): Boolean = withContext(Dispatchers.IO) {
-        try {
-            val addressInput = JSONObject().apply {
-                put("address1", address.address1 ?: "")
-                address.address2?.let { if (it.isNotEmpty()) put("address2", it) }
-                put("city", address.city ?: "")
-                put("territoryCode", address.country ?: "IN")
-                address.state?.let { if (it.isNotEmpty()) put("zoneCode", it) }
-                put("zip", address.zip ?: "")
-                address.phone?.let { if (it.isNotEmpty()) put("phoneNumber", it) }
-            }
+    suspend fun updateAddress(accessToken: String, addressId: String, address: Address): Boolean =
+        withContext(Dispatchers.IO) {
+            try {
+                val addressInput = JSONObject().apply {
+                    put("address1", address.address1 ?: "")
+                    address.address2?.let { if (it.isNotEmpty()) put("address2", it) }
+                    put("city", address.city ?: "")
+                    put("territoryCode", address.country ?: "IN")
+                    address.state?.let { if (it.isNotEmpty()) put("zoneCode", it) }
+                    put("zip", address.zip ?: "")
+                    address.phone?.let { if (it.isNotEmpty()) put("phoneNumber", it) }
+                }
 
-            val variables = JSONObject().apply {
-                put("addressId", addressId)
-                put("addressInput", addressInput)
-                put("defaultAddress", address.isDefault)
-            }
+                val variables = JSONObject().apply {
+                    put("addressId", addressId)
+                    put("addressInput", addressInput)
+                    put("defaultAddress", address.isDefault)
+                }
 
-            val query = """
+                val query = """
             mutation AddressUpdate(${'$'}addressId: ID!, ${'$'}addressInput: CustomerAddressInput!, ${'$'}defaultAddress: Boolean) {
                 customerAddressUpdate(addressId: ${'$'}addressId, address: ${'$'}addressInput, defaultAddress: ${'$'}defaultAddress) {
                     customerAddress { id }
@@ -290,32 +447,34 @@ class CustomerRepository {
             }
             """.trimIndent()
 
-            val body = JSONObject().apply {
-                put("operationName", "AddressUpdate")
-                put("query", query)
-                put("variables", variables)
-            }.toString().toRequestBody(JSON)
+                val body = JSONObject().apply {
+                    put("operationName", "AddressUpdate")
+                    put("query", query)
+                    put("variables", variables)
+                }.toString().toRequestBody(JSON)
 
-            val request = Request.Builder().url(graphqlUrl).header("Authorization", accessToken).post(body).build()
-            val response = client.newCall(request).execute()
-            val responseBody = response.body?.string() ?: ""
-            Log.d("CustomerRepo", "Update response: $responseBody")
+                val request = Request.Builder().url(graphqlUrl).header("Authorization", accessToken)
+                    .post(body).build()
+                val response = client.newCall(request).execute()
+                val responseBody = response.body?.string() ?: ""
+                Log.d("CustomerRepo", "Update response: $responseBody")
 
-            val json = JSONObject(responseBody)
-            !json.has("errors")
-        } catch (e: Exception) {
-            Log.e("CustomerRepo", "Error updating address", e)
-            false
+                val json = JSONObject(responseBody)
+                !json.has("errors")
+            } catch (e: Exception) {
+                Log.e("CustomerRepo", "Error updating address", e)
+                false
+            }
         }
-    }
 
-    suspend fun deleteAddress(accessToken: String, addressId: String): Boolean = withContext(Dispatchers.IO) {
-        try {
-            Log.d("CustomerRepo", "Deleting address: $addressId")
+    suspend fun deleteAddress(accessToken: String, addressId: String): Boolean =
+        withContext(Dispatchers.IO) {
+            try {
+                Log.d("CustomerRepo", "Deleting address: $addressId")
 
-            val variables = JSONObject().apply { put("id", addressId) }
+                val variables = JSONObject().apply { put("id", addressId) }
 
-            val query = """
+                val query = """
         mutation AddressDelete(${'$'}id: ID!) {
             customerAddressDelete(addressId: ${'$'}id) {
                 deletedAddressId
@@ -324,53 +483,60 @@ class CustomerRepository {
         }
         """.trimIndent()
 
-            val body = JSONObject().apply {
-                put("operationName", "AddressDelete")
-                put("query", query)
-                put("variables", variables)
-            }.toString().toRequestBody(JSON)
+                val body = JSONObject().apply {
+                    put("operationName", "AddressDelete")
+                    put("query", query)
+                    put("variables", variables)
+                }.toString().toRequestBody(JSON)
 
-            val request = Request.Builder().url(graphqlUrl).header("Authorization", accessToken).post(body).build()
-            val response = client.newCall(request).execute()
-            val responseBody = response.body?.string() ?: ""
-            Log.d("CustomerRepo", "Delete response: $responseBody")
+                val request = Request.Builder().url(graphqlUrl).header("Authorization", accessToken)
+                    .post(body).build()
+                val response = client.newCall(request).execute()
+                val responseBody = response.body?.string() ?: ""
+                Log.d("CustomerRepo", "Delete response: $responseBody")
 
-            val json = JSONObject(responseBody)
+                val json = JSONObject(responseBody)
 
-            if (json.has("errors")) {
-                val errors = json.getJSONArray("errors")
-                Log.e("CustomerRepo", "GraphQL errors: $errors")
-                return@withContext false
+                if (json.has("errors")) {
+                    val errors = json.getJSONArray("errors")
+                    Log.e("CustomerRepo", "GraphQL errors: $errors")
+                    return@withContext false
+                }
+
+                val data = json.optJSONObject("data")?.optJSONObject("customerAddressDelete")
+                val userErrors = data?.optJSONArray("userErrors")
+                if (userErrors != null && userErrors.length() > 0) {
+                    val error = userErrors.getJSONObject(0)
+                    Log.e("CustomerRepo", "User error: ${error.optString("message")}")
+                    return@withContext false
+                }
+
+                val deletedId = data?.optString("deletedAddressId")
+                Log.d("CustomerRepo", "Deleted address ID: $deletedId")
+
+                deletedId != null && deletedId.isNotEmpty()
+            } catch (e: Exception) {
+                Log.e("CustomerRepo", "Error deleting address", e)
+                false
             }
-
-            val data = json.optJSONObject("data")?.optJSONObject("customerAddressDelete")
-            val userErrors = data?.optJSONArray("userErrors")
-            if (userErrors != null && userErrors.length() > 0) {
-                val error = userErrors.getJSONObject(0)
-                Log.e("CustomerRepo", "User error: ${error.optString("message")}")
-                return@withContext false
-            }
-
-            val deletedId = data?.optString("deletedAddressId")
-            Log.d("CustomerRepo", "Deleted address ID: $deletedId")
-
-            deletedId != null && deletedId.isNotEmpty()
-        } catch (e: Exception) {
-            Log.e("CustomerRepo", "Error deleting address", e)
-            false
         }
-    }
 
     private suspend fun executeMutation(accessToken: String, query: String): Boolean {
         val body = JSONObject().apply { put("query", query) }.toString().toRequestBody(JSON)
-        val request = Request.Builder().url(graphqlUrl).header("Authorization", accessToken).post(body).build()
+        val request =
+            Request.Builder().url(graphqlUrl).header("Authorization", accessToken).post(body)
+                .build()
         val response = client.newCall(request).execute()
         val json = JSONObject(response.body?.string() ?: "")
         return !json.has("errors")
     }
 
 
-    suspend fun getOrders(accessToken: String, first: Int = 20, after: String? = null): OrderResponse = withContext(Dispatchers.IO) {
+    suspend fun getOrders(
+        accessToken: String,
+        first: Int = 20,
+        after: String? = null
+    ): OrderResponse = withContext(Dispatchers.IO) {
         try {
             val afterParam = if (after != null) "\"$after\"" else "null"
 
@@ -423,12 +589,19 @@ class CustomerRepository {
         """.trimIndent()
 
             val body = JSONObject().apply { put("query", query) }.toString().toRequestBody(JSON)
-            val request = Request.Builder().url(graphqlUrl).header("Authorization", accessToken).post(body).build()
+            val request =
+                Request.Builder().url(graphqlUrl).header("Authorization", accessToken).post(body)
+                    .build()
             val response = client.newCall(request).execute()
             val json = JSONObject(response.body?.string() ?: "{}")
 
-            val ordersData = json.optJSONObject("data")?.optJSONObject("customer")?.optJSONObject("orders")
-            val edges = ordersData?.optJSONArray("edges") ?: return@withContext OrderResponse(emptyList(), false, null)
+            val ordersData =
+                json.optJSONObject("data")?.optJSONObject("customer")?.optJSONObject("orders")
+            val edges = ordersData?.optJSONArray("edges") ?: return@withContext OrderResponse(
+                emptyList(),
+                false,
+                null
+            )
             val pageInfo = ordersData?.optJSONObject("pageInfo")
 
             val orders = mutableListOf<ShopifyOrder>()

@@ -312,7 +312,7 @@
                 android:id="@+id/ivPrimaryIcon"
                 android:layout_width="16dp"
                 android:layout_height="16dp"
-                android:src="@drawable/ic_truck"
+                android:src="@drawable/ic_message"
                 app:carbon_tint="@color/white" />
 
             <carbon.widget.TextView
@@ -320,7 +320,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:text="Track Order"
+                android:text="Contact Support"
                 android:textColor="@color/white"
                 android:textSize="14sp"
                 app:carbon_font="@font/space_grotesk_semibold" />

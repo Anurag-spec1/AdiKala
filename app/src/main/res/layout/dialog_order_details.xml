@@ -1,0 +1,379 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:fillViewport="true">
+
+    <carbon.widget.LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:orientation="vertical"
+        android:padding="24dp"
+        app:carbon_cornerRadius="24dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <carbon.widget.TextView
+                android:id="@+id/tvDialogOrderId"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Order #AK2"
+                android:textColor="#0D3238"
+                android:textSize="20sp"
+                app:carbon_font="@font/space_grotesk_semibold" />
+
+            <carbon.widget.LinearLayout
+                android:id="@+id/statusBadge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#E4EDF2"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="10dp"
+                android:paddingTop="5dp"
+                android:paddingEnd="12dp"
+                android:paddingBottom="5dp"
+                app:carbon_cornerRadius="10dp">
+
+                <carbon.widget.LinearLayout
+                    android:id="@+id/statusDot"
+                    android:layout_width="8dp"
+                    android:layout_height="8dp"
+                    android:background="#3F6076"
+                    app:carbon_cornerRadius="4dp" />
+
+                <carbon.widget.TextView
+                    android:id="@+id/tvDialogStatus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="6dp"
+                    android:text="Connnn"
+                    android:textColor="#3F6076"
+                    android:textSize="13sp"
+                    app:carbon_font="@font/space_grotesk_semibold" />
+            </carbon.widget.LinearLayout>
+        </LinearLayout>
+
+        <carbon.widget.TextView
+            android:id="@+id/tvDialogDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="31 aug"
+            android:textColor="#888888"
+            android:textSize="13sp"
+            app:carbon_font="@font/space_grotesk_semibold" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:background="@color/line" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <carbon.widget.ImageView
+                android:id="@+id/imgProduct"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:scaleType="centerCrop"
+                app:carbon_cornerRadius="14dp" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="14dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <carbon.widget.TextView
+                    android:id="@+id/tvProductName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="2"
+                    android:text="Clock"
+                    android:textColor="#0D3238"
+                    android:textSize="15sp"
+                    app:carbon_font="@font/space_grotesk_semibold" />
+
+                <carbon.widget.TextView
+                    android:id="@+id/tvItemQty"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="Qty: 6"
+                    android:textColor="#888888"
+                    android:textSize="13sp"
+                    app:carbon_font="@font/space_grotesk_semibold" />
+            </LinearLayout>
+
+            <carbon.widget.TextView
+                android:id="@+id/tvItemPrice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="₹100"
+                android:textColor="#0D3238"
+                android:textSize="16sp"
+                app:carbon_font="@font/space_grotesk_semibold" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:background="@color/line" />
+
+        <carbon.widget.TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Order Summary"
+            android:textColor="#0D3238"
+            android:textSize="16sp"
+            app:carbon_font="@font/space_grotesk_semibold" />
+
+        <carbon.widget.LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:background="#F8F5F2"
+            android:orientation="vertical"
+            android:padding="16dp"
+            app:carbon_cornerRadius="14dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingVertical="8dp">
+
+                <carbon.widget.TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Subtotal"
+                    android:textColor="#666666"
+                    android:textSize="14sp"
+                    app:carbon_font="@font/space_grotesk_semibold" />
+
+                <carbon.widget.TextView
+                    android:id="@+id/tvSubtotal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="₹20.00"
+                    android:textColor="#0D3238"
+                    android:textSize="14sp"
+                    app:carbon_font="@font/space_grotesk_semibold" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/line" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingVertical="8dp">
+
+                <carbon.widget.TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Shipping"
+                    android:textColor="#666666"
+                    android:textSize="14sp"
+                    app:carbon_font="@font/space_grotesk_semibold" />
+
+                <carbon.widget.TextView
+                    android:id="@+id/tvShippingCost"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="₹30.00"
+                    android:textColor="#0D3238"
+                    android:textSize="14sp"
+                    app:carbon_font="@font/space_grotesk_semibold" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/line" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingVertical="8dp">
+
+                <carbon.widget.TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Tax"
+                    android:textColor="#666666"
+                    android:textSize="14sp"
+                    app:carbon_font="@font/space_grotesk_semibold" />
+
+                <carbon.widget.TextView
+                    android:id="@+id/tvTax"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="₹10"
+                    android:textColor="#0D3238"
+                    android:textSize="14sp"
+                    app:carbon_font="@font/space_grotesk_semibold" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/line" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingVertical="8dp">
+
+                <carbon.widget.TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Total"
+                    android:textColor="#0D3238"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    app:carbon_font="@font/space_grotesk_semibold" />
+
+                <carbon.widget.TextView
+                    android:id="@+id/tvTotal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="₹340.00 INR"
+                    android:textColor="#0D3238"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    app:carbon_font="@font/space_grotesk_semibold" />
+            </LinearLayout>
+
+        </carbon.widget.LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:background="@color/line" />
+
+        <carbon.widget.TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Contact"
+            android:textColor="#888888"
+            android:textSize="12sp"
+            app:carbon_font="@font/space_grotesk_semibold" />
+
+        <carbon.widget.TextView
+            android:id="@+id/tvEmail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="anurag@gmail.com"
+            android:textColor="#0D3238"
+            android:textSize="14sp"
+            app:carbon_font="@font/space_grotesk_semibold" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="14dp"
+            android:layout_marginBottom="14dp"
+            android:background="@color/line" />
+
+        <carbon.widget.TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ship To"
+            android:textColor="#888888"
+            android:textSize="12sp"
+            app:carbon_font="@font/space_grotesk_semibold" />
+
+        <carbon.widget.TextView
+            android:id="@+id/tvShippingAddress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:lineSpacingExtra="3dp"
+            android:text="unknwn"
+            android:textColor="#0D3238"
+            android:textSize="14sp"
+            app:carbon_font="@font/space_grotesk_semibold" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="14dp"
+            android:layout_marginBottom="14dp"
+            android:background="@color/line" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <carbon.widget.TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Method"
+                android:textColor="#888888"
+                android:textSize="12sp"
+                app:carbon_font="@font/space_grotesk_semibold" />
+
+            <carbon.widget.TextView
+                android:id="@+id/tvPaymentMethod"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cash"
+                android:textColor="#0D3238"
+                android:textSize="14sp"
+                app:carbon_font="@font/space_grotesk_semibold" />
+        </LinearLayout>
+
+        <carbon.widget.LinearLayout
+            android:id="@+id/btnClose"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="24dp"
+            android:background="#0D3238"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            app:carbon_cornerRadius="24dp">
+
+            <carbon.widget.TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Close"
+                android:textColor="@color/white"
+                android:textSize="15sp"
+                app:carbon_font="@font/space_grotesk_semibold" />
+        </carbon.widget.LinearLayout>
+
+    </carbon.widget.LinearLayout>
+</ScrollView>

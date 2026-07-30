@@ -13,16 +13,19 @@ import com.devshiv.adikala.model.Order
 import com.devshiv.adikala.model.OrderStatus
 
 class OrderAdapter(
-    private val list: List<Order>,
+    private var list: List<Order>,
     private val onCardClick: ((Order) -> Unit)? = null,
     private val onPrimaryClick: ((Order) -> Unit)? = null,
     private val onSecondaryClick: ((Order) -> Unit)? = null
 ) : RecyclerView.Adapter<OrderAdapter.ViewHolder>() {
 
+    fun updateList(newList: List<Order>) {
+        list = newList
+        notifyDataSetChanged()
+    }
+
     private val activeColor = Color.parseColor("#0D3238")
     private val pendingColor = Color.parseColor("#E0D8D0")
-    private val pausedColor = Color.parseColor("#D4A854")
-    private val partialColor = Color.parseColor("#8BA4B8")
 
     inner class ViewHolder(val binding: ItemOrderBinding) : RecyclerView.ViewHolder(binding.root) {
 
@@ -65,37 +68,11 @@ class OrderAdapter(
             binding.tvStatusBadge.setTextColor(Color.parseColor(fg))
         }
 
-        private fun applyTracker(item: Order) {
-            if (!item.showTracker) {
-                binding.progressTracker.visibility = View.GONE
-                binding.progressLabels.visibility = View.GONE
+        private fun applyDeliveryStrip(item: Order) {
+            if (!item.isOngoing) {
+                binding.deliveryStrip.visibility = View.GONE
                 return
             }
-            binding.progressTracker.visibility = View.VISIBLE
-            binding.progressLabels.visibility = View.VISIBLE
-
-            val step = item.progressStep.coerceIn(0, 3)
-            val dots = listOf(binding.dot1, binding.dot2, binding.dot3, binding.dot4)
-            val lines = listOf(binding.line1, binding.line2, binding.line3)
-
-            if (item.isPaused) {
-                dots.forEachIndexed { i, dot ->
-                    dot.setBackgroundColor(if (i <= step) pausedColor else pendingColor)
-                }
-                lines.forEachIndexed { i, line ->
-                    line.setBackgroundColor(if (i < step) pausedColor else pendingColor)
-                }
-            } else {
-                dots.forEachIndexed { i, dot ->
-                    dot.setBackgroundColor(if (i <= step) activeColor else pendingColor)
-                }
-                lines.forEachIndexed { i, line ->
-                    line.setBackgroundColor(if (i < step) activeColor else pendingColor)
-                }
-            }
-        }
-
-        private fun applyDeliveryStrip(item: Order) {
             when {
                 item.status == OrderStatus.DELIVERED -> {
                     binding.deliveryStrip.visibility = View.VISIBLE
@@ -104,11 +81,7 @@ class OrderAdapter(
                 item.status == OrderStatus.CANCELLED || item.status == OrderStatus.RETURNED -> {
                     binding.deliveryStrip.visibility = View.GONE
                 }
-                item.isOngoing && item.showTrackButton -> {
-                    binding.deliveryStrip.visibility = View.VISIBLE
-                    binding.tvDeliveryInfo.text = if (item.estimatedDelivery.isNotBlank()) "Arriving by ${item.estimatedDelivery}" else "Tracking available"
-                }
-                item.isOngoing && !item.showTrackButton -> {
+                item.isOngoing -> {
                     binding.deliveryStrip.visibility = View.VISIBLE
                     binding.tvDeliveryInfo.text = if (item.estimatedDelivery.isNotBlank()) "Estimated: ${item.estimatedDelivery}" else "Awaiting carrier update"
                 }
@@ -118,20 +91,21 @@ class OrderAdapter(
             }
         }
 
+        private fun applyTracker(item: Order) {
+            binding.progressTracker.visibility = View.GONE
+            binding.progressLabels.visibility = View.GONE
+        }
+
         private fun applyActions(item: Order) {
-            if (item.showTrackButton) {
-                binding.ivPrimaryIcon.setImageResource(R.drawable.ic_truck)
-                binding.tvPrimaryAction.text = "Track Order"
-                binding.tvSecondaryAction.text = "View Details"
-            } else if (item.isOngoing) {
-                binding.ivPrimaryIcon.setImageResource(R.drawable.ic_help)
-                binding.tvPrimaryAction.text = "Contact Support"
-                binding.tvSecondaryAction.text = "View Details"
-            } else {
-                binding.ivPrimaryIcon.setImageResource(R.drawable.ic_repeat)
-                binding.tvPrimaryAction.text = "Buy Again"
-                binding.tvSecondaryAction.text = if (item.status == OrderStatus.DELIVERED) "Rate" else "View Details"
+            if (!item.isOngoing) {
+                binding.btnPrimary.visibility = View.GONE
+                binding.btnSecondary.visibility = View.GONE
+                return
             }
+            binding.btnPrimary.visibility = View.VISIBLE
+
+            binding.btnSecondary.visibility = View.VISIBLE
+            binding.tvSecondaryAction.text = "View Details"
         }
     }
 

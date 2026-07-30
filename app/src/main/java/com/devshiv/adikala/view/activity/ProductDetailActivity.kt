@@ -257,8 +257,11 @@ class ProductDetailActivity : AppCompatActivity() {
         }
 
         binding.btnBuyNow.setOnClickListener {
-            cartViewModel.addItem(getVariantId(), product.name, quantity)
-            startActivity(Intent(this, CartActivity::class.java))
+            cartViewModel.addItem(getVariantId(), product.name, quantity) {
+                val intent = Intent(this, CartActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+                startActivity(intent)
+            }
         }
 
         binding.btnSubmitQuery.setOnClickListener { submitQuery() }

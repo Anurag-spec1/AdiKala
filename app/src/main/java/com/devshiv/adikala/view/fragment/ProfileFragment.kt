@@ -294,21 +294,42 @@ class ProfileFragment : Fragment() {
             val firstName = etFirstName.text.toString().trim()
             val lastName = etLastName.text.toString().trim()
             val address1 = etAddress.text.toString().trim()
+            val apartment = etApartment.text.toString().trim()
             val city = etCity.text.toString().trim()
             val stateName = etState.text.toString().trim()
             val zip = etZip.text.toString().trim()
             val phoneInput = etPhone.text.toString().trim()
 
-            if (firstName.isEmpty() || lastName.isEmpty()) {
-                Toast.makeText(requireContext(), "Please enter first and last name", Toast.LENGTH_SHORT).show()
+            if (firstName.isEmpty()) {
+                Toast.makeText(requireContext(), "Please enter first name", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            if (lastName.isEmpty()) {
+                Toast.makeText(requireContext(), "Please enter last name", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
             if (address1.isEmpty()) {
                 Toast.makeText(requireContext(), "Please enter your address", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
+            if (apartment.isEmpty()) {
+                Toast.makeText(requireContext(), "Please enter apartment/floor", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
             if (city.isEmpty()) {
                 Toast.makeText(requireContext(), "Please enter your city", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            if (stateName.isEmpty()) {
+                Toast.makeText(requireContext(), "Please select your state", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            if (zip.isEmpty()) {
+                Toast.makeText(requireContext(), "Please enter PIN code", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            if (phoneInput.isEmpty()) {
+                Toast.makeText(requireContext(), "Please enter phone number", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
@@ -341,7 +362,7 @@ class ProfileFragment : Fragment() {
                 firstName = firstName,
                 lastName = lastName,
                 address1 = address1,
-                address2 = etApartment.text.toString().trim(),
+                address2 = apartment,
                 city = city,
                 country = "IN",
                 state = stateCode,
