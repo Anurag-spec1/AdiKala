@@ -14,6 +14,7 @@ import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -41,6 +42,13 @@ import com.devshiv.adikala.model.Category
 import com.devshiv.adikala.model.PopularCollection
 import com.devshiv.adikala.viewmodel.HomeViewModel
 import java.util.Calendar
+
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
+import java.security.MessageDigest
 
 class HomeFragment : Fragment() {
 
@@ -122,15 +130,61 @@ class HomeFragment : Fragment() {
         val authManager = ShopifyAuthManager(requireContext())
         val firstName =
             authManager.getFirstName() ?: authManager.getFullName()?.split(" ")?.firstOrNull() ?: ""
+        val email = authManager.getEmail()
 
         val greeting = getTimeBasedGreeting()
         binding.gestureTag.text = greeting
         binding.userName.text = if (firstName.isNotEmpty()) firstName else "User"
         binding.userName.setTypeface(null, Typeface.BOLD)
+
         val initial = if (firstName.isNotEmpty()) firstName.first().uppercaseChar().toString() else "U"
-        binding.userImg.post {
+        loadProfileImage(email, initial)
+    }
+
+    private fun loadProfileImage(email: String?, initial: String) {
+        Log.d("HomeFragmentAvatar", "loadProfileImage called with email=$email")
+
+        if (email.isNullOrBlank()) {
+            Log.d("HomeFragmentAvatar", "Email is null/blank, showing initials avatar")
             binding.userImg.setImageBitmap(generateInitialAvatar(initial))
+            return
         }
+
+        val hash = md5Hex(email.trim().lowercase())
+        val gravatarUrl = "https://www.gravatar.com/avatar/$hash?d=404&s=200"
+        Log.d("HomeFragmentAvatar", "Requesting Gravatar URL: $gravatarUrl")
+
+        Glide.with(this)
+            .load(gravatarUrl)
+            .listener(object : RequestListener<android.graphics.drawable.Drawable> {
+                override fun onLoadFailed(
+                    e: GlideException?,
+                    model: Any?,
+                    target: Target<android.graphics.drawable.Drawable>,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    Log.d("HomeFragmentAvatar", "Gravatar load FAILED for $email, falling back to initials. Error: ${e?.message}")
+                    binding.userImg.setImageBitmap(generateInitialAvatar(initial))
+                    return true
+                }
+
+                override fun onResourceReady(
+                    resource: android.graphics.drawable.Drawable,
+                    model: Any,
+                    target: Target<android.graphics.drawable.Drawable>?,
+                    dataSource: DataSource,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    Log.d("HomeFragmentAvatar", "Gravatar load SUCCESS for $email, dataSource=$dataSource")
+                    return false
+                }
+            })
+            .into(binding.userImg)
+    }
+
+    private fun md5Hex(input: String): String {
+        val digest = MessageDigest.getInstance("MD5").digest(input.toByteArray())
+        return digest.joinToString("") { "%02x".format(it) }
     }
 
     private fun getTimeBasedGreeting(): String {

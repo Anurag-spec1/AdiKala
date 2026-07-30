@@ -1,9 +1,9 @@
 package com.devshiv.adikala.view.fragment
 
-import android.content.Intent
+
+import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -24,11 +24,12 @@ import com.devshiv.adikala.R
 import com.devshiv.adikala.auth.ShopifyAuthService
 import com.devshiv.adikala.databinding.FragmentProfileBinding
 import com.devshiv.adikala.model.Address
-import com.devshiv.adikala.repository.CustomerRepository
 import com.devshiv.adikala.utils.IndianStates
 import com.devshiv.adikala.view.adapter.AddressAdapter
 import com.devshiv.adikala.viewmodel.ProfileViewModel
 import kotlinx.coroutines.launch
+import android.util.Log
+
 
 class ProfileFragment : Fragment() {
 
@@ -46,6 +47,9 @@ class ProfileFragment : Fragment() {
     private var hasUserInitial = false
     private var hasDefaultAddressName = false
     private var hasDefaultAddress = false
+    private var latestInitial: String? = null
+    private var latestEmail: String? = null
+    private var isUserOperation = false
 
     private var currentAuthState: ProfileViewModel.AuthState? = null
 
@@ -122,9 +126,6 @@ class ProfileFragment : Fragment() {
                     hideShimmer()
                     binding.layoutLoggedIn.visibility = View.VISIBLE
                     binding.layoutLoggedOut.visibility = View.GONE
-                } else {
-                    binding.layoutLoggedIn.visibility = View.GONE
-                    showShimmer()
                 }
             }
             ProfileViewModel.AuthState.EXPIRED -> {
@@ -142,8 +143,41 @@ class ProfileFragment : Fragment() {
                 binding.layoutLoggedOut.visibility = View.GONE
                 showShimmer()
             }
-            else -> Unit
         }
+    }
+
+    private fun loadProfileImage(email: String?, initial: String) {
+        val safeInitial = initial.trim().takeIf { it.isNotBlank() }?.first()?.uppercase() ?: "U"
+        binding.tvAvatarInitial.setImageBitmap(generateInitialAvatar(safeInitial))
+    }
+
+    private fun generateInitialAvatar(initial: String): Bitmap {
+        val safeInitial = initial.trim().takeIf { it.isNotBlank() }?.first()?.uppercase() ?: "U"
+        Log.d("AvatarDebug", "generateInitialAvatar: input='$initial' → safeInitial='$safeInitial'")
+
+        val sizePx = (100 * resources.displayMetrics.density).toInt()
+
+        val bitmap = Bitmap.createBitmap(sizePx, sizePx, Bitmap.Config.ARGB_8888)
+        val canvas = android.graphics.Canvas(bitmap)
+        val radius = sizePx / 2f
+
+        val bgPaint = android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG).apply {
+            style = android.graphics.Paint.Style.FILL
+            color = Color.parseColor("#0D3238")
+        }
+        canvas.drawCircle(radius, radius, radius, bgPaint)
+
+        val textPaint = android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG).apply {
+            color = Color.WHITE
+            textAlign = android.graphics.Paint.Align.CENTER
+            textSize = sizePx * 0.45f
+            isFakeBoldText = true
+        }
+        val textY = radius - (textPaint.descent() + textPaint.ascent()) / 2f
+        canvas.drawText(safeInitial, radius, textY, textPaint)
+
+        Log.d("AvatarDebug", "generateInitialAvatar: bitmap ready with text='$safeInitial'")
+        return bitmap
     }
 
     private fun showSignOutDialog() {
@@ -169,8 +203,7 @@ class ProfileFragment : Fragment() {
         lifecycleScope.launch {
             try {
                 viewModel.logout()
-                Toast.makeText(requireContext(), "Signed out successfully", Toast.LENGTH_SHORT)
-                    .show()
+                Toast.makeText(requireContext(), "Signed out successfully", Toast.LENGTH_SHORT).show()
                 viewModel.checkLoginStatus()
             } catch (e: Exception) {
                 Toast.makeText(requireContext(), "Sign out failed", Toast.LENGTH_SHORT).show()
@@ -194,19 +227,15 @@ class ProfileFragment : Fragment() {
             .create()
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
-
         btnCancel.setOnClickListener { dialog.dismiss() }
         btnSave.setOnClickListener {
             val first = etFirstName.text.toString().trim()
             val last = etLastName.text.toString().trim()
             if (first.isEmpty() || last.isEmpty()) {
-                Toast.makeText(
-                    requireContext(),
-                    "Please enter first and last name",
-                    Toast.LENGTH_SHORT
-                ).show()
+                Toast.makeText(requireContext(), "Please enter first and last name", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
+            isUserOperation = true
             viewModel.updateProfile(first, last)
             dialog.dismiss()
         }
@@ -271,40 +300,26 @@ class ProfileFragment : Fragment() {
             val phoneInput = etPhone.text.toString().trim()
 
             if (firstName.isEmpty() || lastName.isEmpty()) {
-                Toast.makeText(
-                    requireContext(),
-                    "Please enter first and last name",
-                    Toast.LENGTH_SHORT
-                ).show()
+                Toast.makeText(requireContext(), "Please enter first and last name", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
             if (address1.isEmpty()) {
-                Toast.makeText(requireContext(), "Please enter your address", Toast.LENGTH_SHORT)
-                    .show()
+                Toast.makeText(requireContext(), "Please enter your address", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
             if (city.isEmpty()) {
-                Toast.makeText(requireContext(), "Please enter your city", Toast.LENGTH_SHORT)
-                    .show()
+                Toast.makeText(requireContext(), "Please enter your city", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
             val stateCode = IndianStates.codeForName(stateName)
             if (stateCode == null) {
-                Toast.makeText(
-                    requireContext(),
-                    "Please select a valid state from the list",
-                    Toast.LENGTH_SHORT
-                ).show()
+                Toast.makeText(requireContext(), "Please select a valid state from the list", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
             if (!zip.matches(Regex("^[1-9][0-9]{5}$"))) {
-                Toast.makeText(
-                    requireContext(),
-                    "Please enter a valid 6-digit PIN code",
-                    Toast.LENGTH_SHORT
-                ).show()
+                Toast.makeText(requireContext(), "Please enter a valid 6-digit PIN code", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
@@ -316,11 +331,7 @@ class ProfileFragment : Fragment() {
                 else -> digitsOnly
             }
             if (!normalizedNumber.matches(Regex("^[6-9][0-9]{9}$"))) {
-                Toast.makeText(
-                    requireContext(),
-                    "Please enter a valid 10-digit Indian mobile number",
-                    Toast.LENGTH_SHORT
-                ).show()
+                Toast.makeText(requireContext(), "Please enter a valid 10-digit Indian mobile number", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
             val formattedPhone = "+91$normalizedNumber"
@@ -339,6 +350,7 @@ class ProfileFragment : Fragment() {
                 isDefault = cbDefault.isChecked
             )
 
+            isUserOperation = true
             if (isEdit) {
                 viewModel.updateAddress(existingAddress!!.id!!, address)
             } else {
@@ -365,8 +377,7 @@ class ProfileFragment : Fragment() {
                 .create()
             emptyDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
-            emptyView.findViewById<View>(R.id.btnCloseEmpty)
-                .setOnClickListener { emptyDialog.dismiss() }
+            emptyView.findViewById<View>(R.id.btnCloseEmpty).setOnClickListener { emptyDialog.dismiss() }
             emptyView.findViewById<View>(R.id.btnAddFirstAddress).setOnClickListener {
                 emptyDialog.dismiss()
                 showAddAddressDialog(null)
@@ -379,8 +390,7 @@ class ProfileFragment : Fragment() {
 
         val view = layoutInflater.inflate(R.layout.dialog_address_list, null)
         val tvTitle = view.findViewById<TextView>(R.id.tvAddressListTitle)
-        val rvAddresses =
-            view.findViewById<androidx.recyclerview.widget.RecyclerView>(R.id.rvAddresses)
+        val rvAddresses = view.findViewById<androidx.recyclerview.widget.RecyclerView>(R.id.rvAddresses)
         val btnClose = view.findViewById<View>(R.id.btnCloseAddresses)
         val btnAddNew = view.findViewById<View>(R.id.btnAddNewAddress)
 
@@ -400,26 +410,22 @@ class ProfileFragment : Fragment() {
             },
             onDelete = { address ->
                 if (addresses.size <= 1) {
-                    Toast.makeText(
-                        requireContext(),
-                        "Cannot delete your only address. Add another address first.",
-                        Toast.LENGTH_LONG
-                    ).show()
+                    Toast.makeText(requireContext(), "Cannot delete your only address. Add another address first.", Toast.LENGTH_LONG).show()
                 } else if (address.isDefault) {
-                    Toast.makeText(
-                        requireContext(),
-                        "Set another address as default first, then delete this one.",
-                        Toast.LENGTH_LONG
-                    ).show()
+                    Toast.makeText(requireContext(), "Set another address as default first, then delete this one.", Toast.LENGTH_LONG).show()
                 } else {
                     AlertDialog.Builder(requireContext())
                         .setTitle("Delete Address")
                         .setMessage("Are you sure you want to delete this address?")
-                        .setPositiveButton("Delete") { _, _ -> viewModel.deleteAddress(address.id!!) }
+                        .setPositiveButton("Delete") { _, _ ->
+                            isUserOperation = true
+                            viewModel.deleteAddress(address.id!!)
+                        }
                         .setNegativeButton("Cancel", null).show()
                 }
             },
             onSetDefault = { address ->
+                isUserOperation = true
                 val updatedAddress = address.copy(isDefault = true)
                 viewModel.updateAddress(address.id!!, updatedAddress)
             }
@@ -457,20 +463,44 @@ class ProfileFragment : Fragment() {
         viewModel.userName.observe(viewLifecycleOwner) {
             binding.tvUserName.text = it ?: "User"
             hasUserName = true
+
+            val newInitial = it?.trim()?.firstOrNull()?.uppercaseChar()?.toString() ?: latestInitial ?: "U"
+            if (newInitial != latestInitial) {
+                latestInitial = newInitial
+                val currentEmail = latestEmail
+                latestEmail = null
+                binding.tvAvatarInitial.setImageBitmap(generateInitialAvatar(newInitial))
+                latestEmail = currentEmail
+            }
+
             revealContentIfReady()
         }
+
         viewModel.userEmail.observe(viewLifecycleOwner) {
             binding.tvUserEmail.text = it ?: "No email"
+            latestEmail = it
+            loadProfileImage(latestEmail, latestInitial ?: "U")
             hasUserEmail = true
             revealContentIfReady()
         }
+
         viewModel.userPhone.observe(viewLifecycleOwner) {
             binding.tvUserPhone.text = it ?: "No phone"
             hasUserPhone = true
             revealContentIfReady()
         }
+
         viewModel.userInitial.observe(viewLifecycleOwner) {
-            binding.tvAvatarInitial.text = it ?: "U"
+            val newInitial = it?.takeIf { s -> s.isNotBlank() } ?: "U"
+            Log.d("AvatarDebug", "userInitial observer: '$it' → newInitial='$newInitial', latestInitial='$latestInitial'")
+
+            if (latestInitial == null || newInitial == latestInitial || latestInitial == "U") {
+                latestInitial = newInitial
+                loadProfileImage(latestEmail, latestInitial ?: "U")
+            } else {
+                Log.d("AvatarDebug", "SKIPPING userInitial update - keeping latestInitial='$latestInitial'")
+            }
+
             hasUserInitial = true
             revealContentIfReady()
         }
@@ -481,12 +511,10 @@ class ProfileFragment : Fragment() {
                     binding.tvDefaultAddressName.text = "Default address"
                     binding.tvDefaultBadge.visibility = View.GONE
                 }
-
                 name == "Default address" -> {
                     binding.tvDefaultAddressName.text = "Default address"
                     binding.tvDefaultBadge.visibility = View.GONE
                 }
-
                 else -> {
                     binding.tvDefaultAddressName.text = name
                     binding.tvDefaultBadge.visibility = View.VISIBLE
@@ -497,12 +525,11 @@ class ProfileFragment : Fragment() {
         }
 
         viewModel.defaultAddress.observe(viewLifecycleOwner) { address ->
-            binding.tvDefaultAddress.text =
-                if (address.isNullOrEmpty() || address == "No address saved yet") {
-                    "No address saved yet"
-                } else {
-                    address
-                }
+            binding.tvDefaultAddress.text = if (address.isNullOrEmpty() || address == "No address saved yet") {
+                "No address saved yet"
+            } else {
+                address
+            }
             hasDefaultAddress = true
             revealContentIfReady()
         }
@@ -515,43 +542,31 @@ class ProfileFragment : Fragment() {
         }
 
         viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
-            if (isLoading) {
-                binding.layoutLoggedIn.visibility = View.GONE
+            if (isLoading && isUserOperation) {
                 showShimmer()
+                binding.layoutLoggedIn.visibility = View.GONE
+            } else if (!isLoading && isUserOperation) {
+                hideShimmer()
+                binding.layoutLoggedIn.visibility = View.VISIBLE
+                isUserOperation = false
             }
         }
         viewModel.isOffline.observe(viewLifecycleOwner) { offline ->
             if (offline) {
-                Toast.makeText(
-                    requireContext(),
-                    "You're offline. Showing cached data.",
-                    Toast.LENGTH_SHORT
-                ).show()
+                Toast.makeText(requireContext(), "You're offline. Showing cached data.", Toast.LENGTH_SHORT).show()
             }
         }
         viewModel.errorMessage.observe(viewLifecycleOwner) {
-            it?.let {
-                Toast.makeText(
-                    requireContext(),
-                    it,
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
+            it?.let { Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show() }
         }
         viewModel.successMessage.observe(viewLifecycleOwner) {
-            it?.let {
-                Toast.makeText(
-                    requireContext(),
-                    it,
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
+            it?.let { Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show() }
         }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        shimmerView.stopShimmer()
+       shimmerView.stopShimmer()
         addressListDialog?.dismiss()
         _binding = null
     }
