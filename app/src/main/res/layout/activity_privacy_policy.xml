@@ -1,0 +1,761 @@
+<?xml version="1.0" encoding="utf-8"?>
+<carbon.widget.RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/main_bg"
+    android:fitsSystemWindows="true"
+    tools:context=".view.activity.PrivacyPolicyActivity">
+
+    <RelativeLayout
+        android:id="@+id/topBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:paddingHorizontal="20dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="8dp">
+
+        <carbon.widget.LinearLayout
+            android:id="@+id/btnBack"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:background="@color/white"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            app:carbon_cornerRadius="21dp"
+            app:carbon_elevation="4dp"
+            app:carbon_stroke="#14000000"
+            app:carbon_strokeWidth="1dp"
+            app:carbon_rippleColor="#1A0D3238">
+
+            <carbon.widget.ImageView
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:src="@drawable/ic_back"
+                app:carbon_tint="#0D3238" />
+        </carbon.widget.LinearLayout>
+
+        <carbon.widget.TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="Privacy Policy"
+            android:textColor="#0D3238"
+            android:textSize="18sp"
+            app:carbon_font="@font/space_grotesk_semibold" />
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/topBar"
+        android:fillViewport="true"
+        android:overScrollMode="never"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:orientation="vertical"
+            android:paddingHorizontal="20dp"
+            android:paddingTop="6dp"
+            android:paddingBottom="40dp">
+
+            <!-- INTRO CARD -->
+            <carbon.widget.LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/bg_orders"
+                android:elevation="10dp"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <carbon.widget.ImageView
+                        android:layout_width="26dp"
+                        android:layout_height="26dp"
+                        android:src="@drawable/ic_shield"
+                        app:carbon_tint="@color/white" />
+
+                    <carbon.widget.TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:text="Your Privacy Matters"
+                        android:textColor="@color/white"
+                        android:textSize="17sp"
+                        app:carbon_font="@font/space_grotesk_semibold" />
+                </LinearLayout>
+
+                <carbon.widget.TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:lineSpacingExtra="3dp"
+                    android:text="This policy explains what information we collect, how we use it, and the choices you have. Tap any section below to read more."
+                    android:textColor="@color/muted_peach"
+                    android:textSize="14sp"
+                    app:carbon_font="@font/space_grotesk_semibold" />
+            </carbon.widget.LinearLayout>
+
+            <carbon.widget.TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="26dp"
+                android:layout_marginBottom="12dp"
+                android:text="Policy Sections"
+                android:textColor="#0D3238"
+                android:textSize="22sp"
+                app:carbon_font="@font/space_grotesk_semibold" />
+
+            <!-- ACCORDION CONTAINER -->
+            <carbon.widget.LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:orientation="vertical"
+                android:paddingHorizontal="18dp"
+                app:carbon_cornerRadius="24dp"
+                app:carbon_elevation="4dp"
+                app:carbon_stroke="#14000000"
+                app:carbon_strokeWidth="1dp">
+
+                <!-- SECTION 1 -->
+                <LinearLayout
+                    android:id="@+id/headerSection1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingVertical="16dp">
+
+                    <carbon.widget.TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="1. What We Do With Your Information"
+                        android:textColor="#0D3238"
+                        android:textSize="15sp"
+                        app:carbon_font="@font/space_grotesk_semibold" />
+
+                    <carbon.widget.ImageView
+                        android:id="@+id/chevronSection1"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/ic_chevron_right"
+                        app:carbon_tint="@color/chev" />
+                </LinearLayout>
+
+                <carbon.widget.TextView
+                    android:id="@+id/bodySection1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:lineSpacingExtra="3dp"
+                    android:paddingBottom="18dp"
+                    android:text="When you purchase from our website, we collect personal information such as your name, address and email as part of the buying and selling process. When you browse our site, we also automatically receive your computer's IP address, which helps us learn about your browser and operating system.\n\nEmail marketing: we may send you emails about our website, new products, and other updates."
+                    android:textColor="#5C5C5C"
+                    android:textSize="14sp"
+                    android:visibility="gone"
+                    app:carbon_font="@font/space_grotesk_semibold" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/line" />
+
+                <!-- SECTION 2 -->
+                <LinearLayout
+                    android:id="@+id/headerSection2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingVertical="16dp">
+
+                    <carbon.widget.TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="2. Consent"
+                        android:textColor="#0D3238"
+                        android:textSize="15sp"
+                        app:carbon_font="@font/space_grotesk_semibold" />
+
+                    <carbon.widget.ImageView
+                        android:id="@+id/chevronSection2"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/ic_chevron_right"
+                        app:carbon_tint="@color/chev" />
+                </LinearLayout>
+
+                <carbon.widget.TextView
+                    android:id="@+id/bodySection2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:lineSpacingExtra="3dp"
+                    android:paddingBottom="18dp"
+                    android:text="How do you get my consent? When you provide personal information to complete a transaction, verify a card, place an order, arrange delivery, or return a purchase, we imply that you consent to us collecting and using it for that specific reason only.\n\nIf we ask for your information for a secondary reason, like marketing, we will either ask directly for your express consent or give you the opportunity to say no.\n\nHow do I withdraw my consent? You may withdraw consent at any time by contacting us at contact@adikala.in"
+                    android:textColor="#5C5C5C"
+                    android:textSize="14sp"
+                    android:visibility="gone"
+                    app:carbon_font="@font/space_grotesk_semibold" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/line" />
+
+                <!-- SECTION 3 -->
+                <LinearLayout
+                    android:id="@+id/headerSection3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingVertical="16dp">
+
+                    <carbon.widget.TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="3. Disclosure"
+                        android:textColor="#0D3238"
+                        android:textSize="15sp"
+                        app:carbon_font="@font/space_grotesk_semibold" />
+
+                    <carbon.widget.ImageView
+                        android:id="@+id/chevronSection3"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/ic_chevron_right"
+                        app:carbon_tint="@color/chev" />
+                </LinearLayout>
+
+                <carbon.widget.TextView
+                    android:id="@+id/bodySection3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:lineSpacingExtra="3dp"
+                    android:paddingBottom="18dp"
+                    android:text="We may disclose your personal information if we are required by law to do so, or if you violate our Terms of Service."
+                    android:textColor="#5C5C5C"
+                    android:textSize="14sp"
+                    android:visibility="gone"
+                    app:carbon_font="@font/space_grotesk_semibold" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/line" />
+
+                <!-- SECTION 4 -->
+                <LinearLayout
+                    android:id="@+id/headerSection4"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingVertical="16dp">
+
+                    <carbon.widget.TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="4. Shopify &amp; Payments"
+                        android:textColor="#0D3238"
+                        android:textSize="15sp"
+                        app:carbon_font="@font/space_grotesk_semibold" />
+
+                    <carbon.widget.ImageView
+                        android:id="@+id/chevronSection4"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/ic_chevron_right"
+                        app:carbon_tint="@color/chev" />
+                </LinearLayout>
+
+                <carbon.widget.TextView
+                    android:id="@+id/bodySection4"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:lineSpacingExtra="3dp"
+                    android:paddingBottom="18dp"
+                    android:text="adikala.in is hosted on Shopify Inc, which provides the e-commerce platform that lets us sell our products and services to you. Your data is stored through Shopify's data storage, databases, and application, on a secure server behind a firewall.\n\nPayment: if you choose a direct payment gateway, Shopify stores your credit card data, encrypted through the Payment Card Industry Data Security Standard (PCI-DSS). Your purchase transaction data is stored only as long as necessary to complete the transaction, then deleted.\n\nAll direct payment gateways adhere to PCI-DSS standards managed by the PCI Security Standards Council, a joint effort of Visa, MasterCard, American Express and Discover.\n\nFor more, see Shopify's Terms of Service or Privacy Statement at shopify.com/legal."
+                    android:textColor="#5C5C5C"
+                    android:textSize="14sp"
+                    android:visibility="gone"
+                    app:carbon_font="@font/space_grotesk_semibold" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/line" />
+
+                <!-- SECTION 5 -->
+                <LinearLayout
+                    android:id="@+id/headerSection5"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingVertical="16dp">
+
+                    <carbon.widget.TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="5. Third-Party Services"
+                        android:textColor="#0D3238"
+                        android:textSize="15sp"
+                        app:carbon_font="@font/space_grotesk_semibold" />
+
+                    <carbon.widget.ImageView
+                        android:id="@+id/chevronSection5"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/ic_chevron_right"
+                        app:carbon_tint="@color/chev" />
+                </LinearLayout>
+
+                <carbon.widget.TextView
+                    android:id="@+id/bodySection5"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:lineSpacingExtra="3dp"
+                    android:paddingBottom="18dp"
+                    android:text="Third-party providers we use will only collect, use and disclose your information to the extent necessary to perform the services they provide us.\n\nCertain providers, such as payment gateways, have their own privacy policies regarding the information we're required to give them for purchase-related transactions — we recommend reading those separately.\n\nSome providers may be located in a different jurisdiction than you or us, so your information may become subject to the laws of that jurisdiction. For example, if you're in Canada and your transaction is processed by a US-based gateway, your data may be subject to disclosure under US legislation.\n\nOnce you leave our site or are redirected to a third-party site, you are no longer governed by this Privacy Policy. We are not responsible for the privacy practices of other sites and encourage you to read their policies."
+                    android:textColor="#5C5C5C"
+                    android:textSize="14sp"
+                    android:visibility="gone"
+                    app:carbon_font="@font/space_grotesk_semibold" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/line" />
+
+                <!-- SECTION 6 -->
+                <LinearLayout
+                    android:id="@+id/headerSection6"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingVertical="16dp">
+
+                    <carbon.widget.TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="6. Security"
+                        android:textColor="#0D3238"
+                        android:textSize="15sp"
+                        app:carbon_font="@font/space_grotesk_semibold" />
+
+                    <carbon.widget.ImageView
+                        android:id="@+id/chevronSection6"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/ic_chevron_right"
+                        app:carbon_tint="@color/chev" />
+                </LinearLayout>
+
+                <carbon.widget.TextView
+                    android:id="@+id/bodySection6"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:lineSpacingExtra="3dp"
+                    android:paddingBottom="18dp"
+                    android:text="To protect your personal information, we take reasonable precautions and follow industry best practices to ensure it isn't inappropriately lost, misused, accessed, disclosed, altered, or destroyed.\n\nIf you provide credit card information, it is encrypted using secure socket layer technology (SSL) and stored with AES-256 encryption. While no method of transmission or storage is 100% secure, we follow all PCI-DSS requirements plus additional industry standards."
+                    android:textColor="#5C5C5C"
+                    android:textSize="14sp"
+                    android:visibility="gone"
+                    app:carbon_font="@font/space_grotesk_semibold" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/line" />
+
+                <!-- SECTION 7 -->
+                <LinearLayout
+                    android:id="@+id/headerSection7"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingVertical="16dp">
+
+                    <carbon.widget.TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="7. Cookies"
+                        android:textColor="#0D3238"
+                        android:textSize="15sp"
+                        app:carbon_font="@font/space_grotesk_semibold" />
+
+                    <carbon.widget.ImageView
+                        android:id="@+id/chevronSection7"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/ic_chevron_right"
+                        app:carbon_tint="@color/chev" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/bodySection7"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingBottom="18dp"
+                    android:visibility="gone">
+
+                    <carbon.widget.TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="12dp"
+                        android:lineSpacingExtra="3dp"
+                        android:text="Here is a list of cookies we use, so you can choose whether to opt out."
+                        android:textColor="#5C5C5C"
+                        android:textSize="14sp"
+                        app:carbon_font="@font/space_grotesk_semibold" />
+
+                    <carbon.widget.LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/main_bg"
+                        android:orientation="vertical"
+                        android:padding="14dp"
+                        app:carbon_cornerRadius="16dp">
+
+                        <carbon.widget.TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="_session_id"
+                            android:textColor="#0D3238"
+                            android:textSize="14sp"
+                            app:carbon_font="@font/space_grotesk_semibold" />
+
+                        <carbon.widget.TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="Sessional · Allows Shopify to store session info (referrer, landing page, etc.)"
+                            android:textColor="#5C5C5C"
+                            android:textSize="13sp"
+                            app:carbon_font="@font/space_grotesk_semibold" />
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginVertical="10dp"
+                            android:background="@color/line" />
+
+                        <carbon.widget.TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="_shopify_visit"
+                            android:textColor="#0D3238"
+                            android:textSize="14sp"
+                            app:carbon_font="@font/space_grotesk_semibold" />
+
+                        <carbon.widget.TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="Persistent 30 min · Tracks number of visits for our stats tracker"
+                            android:textColor="#5C5C5C"
+                            android:textSize="13sp"
+                            app:carbon_font="@font/space_grotesk_semibold" />
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginVertical="10dp"
+                            android:background="@color/line" />
+
+                        <carbon.widget.TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="_shopify_uniq"
+                            android:textColor="#0D3238"
+                            android:textSize="14sp"
+                            app:carbon_font="@font/space_grotesk_semibold" />
+
+                        <carbon.widget.TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="Expires midnight next day · Counts visits by a single customer"
+                            android:textColor="#5C5C5C"
+                            android:textSize="13sp"
+                            app:carbon_font="@font/space_grotesk_semibold" />
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginVertical="10dp"
+                            android:background="@color/line" />
+
+                        <carbon.widget.TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="cart"
+                            android:textColor="#0D3238"
+                            android:textSize="14sp"
+                            app:carbon_font="@font/space_grotesk_semibold" />
+
+                        <carbon.widget.TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="Persistent 2 weeks · Stores contents of your cart"
+                            android:textColor="#5C5C5C"
+                            android:textSize="13sp"
+                            app:carbon_font="@font/space_grotesk_semibold" />
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginVertical="10dp"
+                            android:background="@color/line" />
+
+                        <carbon.widget.TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="_secure_session_id"
+                            android:textColor="#0D3238"
+                            android:textSize="14sp"
+                            app:carbon_font="@font/space_grotesk_semibold" />
+
+                        <carbon.widget.TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="Sessional · Unique token"
+                            android:textColor="#5C5C5C"
+                            android:textSize="13sp"
+                            app:carbon_font="@font/space_grotesk_semibold" />
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginVertical="10dp"
+                            android:background="@color/line" />
+
+                        <carbon.widget.TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="storefront_digest"
+                            android:textColor="#0D3238"
+                            android:textSize="14sp"
+                            app:carbon_font="@font/space_grotesk_semibold" />
+
+                        <carbon.widget.TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="Indefinite · Determines password-protected store access"
+                            android:textColor="#5C5C5C"
+                            android:textSize="13sp"
+                            app:carbon_font="@font/space_grotesk_semibold" />
+                    </carbon.widget.LinearLayout>
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/line" />
+
+                <!-- SECTION 8 -->
+                <LinearLayout
+                    android:id="@+id/headerSection8"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingVertical="16dp">
+
+                    <carbon.widget.TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="8. Age of Consent"
+                        android:textColor="#0D3238"
+                        android:textSize="15sp"
+                        app:carbon_font="@font/space_grotesk_semibold" />
+
+                    <carbon.widget.ImageView
+                        android:id="@+id/chevronSection8"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/ic_chevron_right"
+                        app:carbon_tint="@color/chev" />
+                </LinearLayout>
+
+                <carbon.widget.TextView
+                    android:id="@+id/bodySection8"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:lineSpacingExtra="3dp"
+                    android:paddingBottom="18dp"
+                    android:text="By using this site, you represent that you are at least the age of majority in your state or province of residence, or that you have given us consent to allow any minor dependents to use this site."
+                    android:textColor="#5C5C5C"
+                    android:textSize="14sp"
+                    android:visibility="gone"
+                    app:carbon_font="@font/space_grotesk_semibold" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/line" />
+
+                <!-- SECTION 9 -->
+                <LinearLayout
+                    android:id="@+id/headerSection9"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingVertical="16dp">
+
+                    <carbon.widget.TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="9. Changes To This Policy"
+                        android:textColor="#0D3238"
+                        android:textSize="15sp"
+                        app:carbon_font="@font/space_grotesk_semibold" />
+
+                    <carbon.widget.ImageView
+                        android:id="@+id/chevronSection9"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/ic_chevron_right"
+                        app:carbon_tint="@color/chev" />
+                </LinearLayout>
+
+                <carbon.widget.TextView
+                    android:id="@+id/bodySection9"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:lineSpacingExtra="3dp"
+                    android:paddingBottom="18dp"
+                    android:text="We reserve the right to modify this privacy policy at any time, so please review it frequently. Changes take effect immediately upon posting. If we make material changes, we will notify you here so you're aware of what information we collect, how we use it, and under what circumstances we disclose it."
+                    android:textColor="#5C5C5C"
+                    android:textSize="14sp"
+                    android:visibility="gone"
+                    app:carbon_font="@font/space_grotesk_semibold" />
+            </carbon.widget.LinearLayout>
+
+            <!-- CONTACT CARD -->
+            <carbon.widget.TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="12dp"
+                android:text="Questions About Your Data?"
+                android:textColor="#0D3238"
+                android:textSize="22sp"
+                app:carbon_font="@font/space_grotesk_semibold" />
+
+            <carbon.widget.LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:orientation="horizontal"
+                android:padding="18dp"
+                app:carbon_cornerRadius="24dp"
+                app:carbon_elevation="4dp"
+                app:carbon_stroke="#14000000"
+                app:carbon_strokeWidth="1dp">
+
+                <carbon.widget.ImageView
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:background="#0D3238"
+                    android:padding="12dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_mail"
+                    app:carbon_cornerRadius="15dp"
+                    app:carbon_tint="@color/white" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="14dp"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:orientation="vertical">
+
+                    <carbon.widget.TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:lineSpacingExtra="3dp"
+                        android:text="To access, correct, amend, or delete your personal information, or to register a complaint, contact us at:"
+                        android:textColor="#5C5C5C"
+                        android:textSize="14sp"
+                        app:carbon_font="@font/space_grotesk_semibold" />
+
+                    <carbon.widget.TextView
+                        android:id="@+id/tvContactEmail"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:text="contact@adikala.in"
+                        android:textColor="@color/teal"
+                        android:textSize="15sp"
+                        app:carbon_font="@font/space_grotesk_semibold" />
+                </LinearLayout>
+            </carbon.widget.LinearLayout>
+
+            <carbon.widget.TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:gravity="center"
+                android:text="Adikala · Version 1.0.4"
+                android:textColor="#B6A89F"
+                android:textSize="11sp"
+                app:carbon_font="@font/space_grotesk_semibold" />
+
+        </LinearLayout>
+    </ScrollView>
+
+</carbon.widget.RelativeLayout>

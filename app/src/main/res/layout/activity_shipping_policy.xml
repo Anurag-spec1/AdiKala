@@ -1,0 +1,568 @@
+<?xml version="1.0" encoding="utf-8"?>
+<carbon.widget.RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/main_bg"
+    android:fitsSystemWindows="true"
+    tools:context=".view.activity.ShippingPolicyActivity">
+
+    <RelativeLayout
+        android:id="@+id/topBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:paddingHorizontal="20dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="8dp">
+
+        <carbon.widget.LinearLayout
+            android:id="@+id/btnBack"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:background="@color/white"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            app:carbon_cornerRadius="21dp"
+            app:carbon_elevation="4dp"
+            app:carbon_stroke="#14000000"
+            app:carbon_strokeWidth="1dp"
+            app:carbon_rippleColor="#1A0D3238">
+
+            <carbon.widget.ImageView
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:src="@drawable/ic_back"
+                app:carbon_tint="#0D3238" />
+        </carbon.widget.LinearLayout>
+
+        <carbon.widget.TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="Shipping Policy"
+            android:textColor="#0D3238"
+            android:textSize="18sp"
+            app:carbon_font="@font/space_grotesk_semibold" />
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/topBar"
+        android:fillViewport="true"
+        android:overScrollMode="never"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:orientation="vertical"
+            android:paddingHorizontal="20dp"
+            android:paddingTop="6dp"
+            android:paddingBottom="40dp">
+
+            <!-- WAREHOUSE + DELIVERY WINDOW HERO -->
+            <carbon.widget.LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/bg_orders"
+                android:elevation="10dp"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <carbon.widget.ImageView
+                        android:layout_width="26dp"
+                        android:layout_height="26dp"
+                        android:src="@drawable/ic_home"
+                        app:carbon_tint="@color/white" />
+
+                    <carbon.widget.TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:text="Shipped From Our Warehouse"
+                        android:textColor="@color/white"
+                        android:textSize="17sp"
+                        app:carbon_font="@font/space_grotesk_semibold" />
+                </LinearLayout>
+
+                <carbon.widget.TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:lineSpacingExtra="3dp"
+                    android:text="All purchases are shipped by courier from our warehouse in Ganesh Nagar, Delhi – India."
+                    android:textColor="@color/muted_peach"
+                    android:textSize="14sp"
+                    app:carbon_font="@font/space_grotesk_semibold" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="18dp"
+                    android:background="#26FFFFFF" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="18dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <carbon.widget.TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="India Wide"
+                            android:textColor="@color/muted_peach"
+                            android:textSize="13sp"
+                            app:carbon_font="@font/space_grotesk_semibold" />
+
+                        <carbon.widget.TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="3 – 7 Business Days"
+                            android:textColor="@color/white"
+                            android:textSize="20sp"
+                            app:carbon_font="@font/space_grotesk_semibold" />
+                    </LinearLayout>
+                </LinearLayout>
+            </carbon.widget.LinearLayout>
+
+            <!-- DELIVERY DETAILS -->
+            <carbon.widget.TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="26dp"
+                android:layout_marginBottom="12dp"
+                android:text="Delivery Details"
+                android:textColor="#0D3238"
+                android:textSize="22sp"
+                app:carbon_font="@font/space_grotesk_semibold" />
+
+            <carbon.widget.LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:orientation="vertical"
+                android:paddingHorizontal="18dp"
+                app:carbon_cornerRadius="24dp"
+                app:carbon_elevation="4dp"
+                app:carbon_stroke="#14000000"
+                app:carbon_strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingVertical="16dp">
+
+                    <carbon.widget.ImageView
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
+                        android:background="#0D3238"
+                        android:padding="12dp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/ic_help"
+                        app:carbon_cornerRadius="15dp"
+                        app:carbon_tint="@color/white" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="14dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <carbon.widget.TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Delivery Hours"
+                            android:textColor="#0D3238"
+                            android:textSize="16sp"
+                            app:carbon_font="@font/space_grotesk_semibold" />
+
+                        <carbon.widget.TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="9 AM – 5 PM, Monday – Saturday"
+                            android:textColor="#5C5C5C"
+                            android:textSize="14sp"
+                            app:carbon_font="@font/space_grotesk_semibold" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/line" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingVertical="16dp">
+
+                    <carbon.widget.ImageView
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
+                        android:background="#0D3238"
+                        android:padding="12dp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/ic_file"
+                        app:carbon_cornerRadius="15dp"
+                        app:carbon_tint="@color/white" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="14dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <carbon.widget.TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Signature Required"
+                            android:textColor="#0D3238"
+                            android:textSize="16sp"
+                            app:carbon_font="@font/space_grotesk_semibold" />
+
+                        <carbon.widget.TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:lineSpacingExtra="3dp"
+                            android:text="Goods must be signed for on delivery. If unavailable, you may nominate a family member, colleague, or neighbor to receive it."
+                            android:textColor="#5C5C5C"
+                            android:textSize="14sp"
+                            app:carbon_font="@font/space_grotesk_semibold" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/line" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingVertical="16dp">
+
+                    <carbon.widget.ImageView
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
+                        android:background="#0D3238"
+                        android:padding="12dp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/ic_shield"
+                        app:carbon_cornerRadius="15dp"
+                        app:carbon_tint="@color/white" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="14dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <carbon.widget.TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Shipping Charges"
+                            android:textColor="#0D3238"
+                            android:textSize="16sp"
+                            app:carbon_font="@font/space_grotesk_semibold" />
+
+                        <carbon.widget.TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:lineSpacingExtra="3dp"
+                            android:text="Rates vary by product, packaging, size, volume, and type. Charges are shown at checkout, before you make payment."
+                            android:textColor="#5C5C5C"
+                            android:textSize="14sp"
+                            app:carbon_font="@font/space_grotesk_semibold" />
+                    </LinearLayout>
+                </LinearLayout>
+            </carbon.widget.LinearLayout>
+
+            <!-- RESPONSIBILITY / DISCLAIMER -->
+            <carbon.widget.TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="12dp"
+                android:text="Please Note"
+                android:textColor="#0D3238"
+                android:textSize="22sp"
+                app:carbon_font="@font/space_grotesk_semibold" />
+
+            <carbon.widget.LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:orientation="vertical"
+                android:paddingHorizontal="18dp"
+                android:paddingVertical="6dp"
+                app:carbon_cornerRadius="24dp"
+                app:carbon_elevation="4dp"
+                app:carbon_stroke="#14000000"
+                app:carbon_strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingVertical="14dp">
+
+                    <carbon.widget.LinearLayout
+                        android:layout_width="7dp"
+                        android:layout_height="7dp"
+                        android:layout_marginTop="7dp"
+                        android:background="@color/teal"
+                        app:carbon_cornerRadius="3.5dp" />
+
+                    <carbon.widget.TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="14dp"
+                        android:layout_weight="1"
+                        android:lineSpacingExtra="3dp"
+                        android:text="Adikala takes no responsibility for goods signed by an alternative person."
+                        android:textColor="#5C5C5C"
+                        android:textSize="14sp"
+                        app:carbon_font="@font/space_grotesk_semibold" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/line" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingVertical="14dp">
+
+                    <carbon.widget.LinearLayout
+                        android:layout_width="7dp"
+                        android:layout_height="7dp"
+                        android:layout_marginTop="7dp"
+                        android:background="@color/teal"
+                        app:carbon_cornerRadius="3.5dp" />
+
+                    <carbon.widget.TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="14dp"
+                        android:layout_weight="1"
+                        android:lineSpacingExtra="3dp"
+                        android:text="Adikala is not responsible for damage occurring after delivery."
+                        android:textColor="#5C5C5C"
+                        android:textSize="14sp"
+                        app:carbon_font="@font/space_grotesk_semibold" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/line" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingVertical="14dp">
+
+                    <carbon.widget.LinearLayout
+                        android:layout_width="7dp"
+                        android:layout_height="7dp"
+                        android:layout_marginTop="7dp"
+                        android:background="@color/teal"
+                        app:carbon_cornerRadius="3.5dp" />
+
+                    <carbon.widget.TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="14dp"
+                        android:layout_weight="1"
+                        android:lineSpacingExtra="3dp"
+                        android:text="All claims for shortages or damages must be reported to customer service on the day of delivery."
+                        android:textColor="#5C5C5C"
+                        android:textSize="14sp"
+                        app:carbon_font="@font/space_grotesk_semibold" />
+                </LinearLayout>
+            </carbon.widget.LinearLayout>
+
+            <!-- UNBOXING VIDEO NOTE -->
+            <carbon.widget.TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="12dp"
+                android:text="Unboxing Video Requirement"
+                android:textColor="#0D3238"
+                android:textSize="22sp"
+                app:carbon_font="@font/space_grotesk_semibold" />
+
+            <carbon.widget.LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#0D3238"
+                android:elevation="10dp"
+                app:carbon_cornerRadius="24dp"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <carbon.widget.LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <carbon.widget.ImageView
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:src="@drawable/ic_shield"
+                        app:carbon_tint="@color/muted_peach" />
+
+                    <carbon.widget.TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:text="24-Hour Reporting Window"
+                        android:textColor="@color/white"
+                        android:textSize="16sp"
+                        app:carbon_font="@font/space_grotesk_semibold" />
+                </carbon.widget.LinearLayout>
+
+                <carbon.widget.TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:lineSpacingExtra="3dp"
+                    android:text="Please send us a parcel opening video without any cuts or pauses, showing clear details of the product if it is short, different, or defective/damaged — along with an image of the product while it is still in its packaging."
+                    android:textColor="@color/muted_peach"
+                    android:textSize="14sp"
+                    app:carbon_font="@font/space_grotesk_semibold" />
+
+                <carbon.widget.TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:lineSpacingExtra="3dp"
+                    android:text="If you are eligible for a replacement, share the unboxing video within 24 hours of delivery. If we are not notified within this window, no replacement or refund will be initiated."
+                    android:textColor="@color/muted_peach"
+                    android:textSize="14sp"
+                    app:carbon_font="@font/space_grotesk_semibold" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="18dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:id="@+id/btnEmailSupport"
+                        android:layout_width="0dp"
+                        android:layout_height="48dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_solid"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <carbon.widget.ImageView
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:src="@drawable/ic_mail"
+                            app:carbon_tint="#FFFFFF" />
+
+                        <carbon.widget.TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="7dp"
+                            android:text="Email Us"
+                            android:textColor="#FFFFFF"
+                            android:textSize="15sp"
+                            app:carbon_font="@font/space_grotesk_semibold" />
+                    </LinearLayout>
+
+                    <carbon.widget.LinearLayout
+                        android:id="@+id/btnWhatsappSupport"
+                        android:layout_width="0dp"
+                        android:layout_height="48dp"
+                        android:layout_weight="1"
+                        android:background="@color/white"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:gravity="center"
+                        app:carbon_cornerRadius="16dp"
+                        android:orientation="horizontal">
+
+                        <carbon.widget.ImageView
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:src="@drawable/ic_message"
+                            app:carbon_tint="@color/teal" />
+
+                        <carbon.widget.TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="7dp"
+                            android:text="WhatsApp"
+                            android:textColor="@color/teal"
+                            android:textSize="15sp"
+                            app:carbon_font="@font/space_grotesk_semibold" />
+                    </carbon.widget.LinearLayout>
+                </LinearLayout>
+            </carbon.widget.LinearLayout>
+
+            <carbon.widget.TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:gravity="center"
+                android:text="Adikala · Version 1.0.4"
+                android:textColor="#B6A89F"
+                android:textSize="11sp"
+                app:carbon_font="@font/space_grotesk_semibold" />
+
+        </LinearLayout>
+    </ScrollView>
+
+</carbon.widget.RelativeLayout>

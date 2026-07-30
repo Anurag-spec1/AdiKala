@@ -90,6 +90,7 @@ class HomeFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         updateGreeting()
+        viewModel.loadHomeData()
     }
 
 

@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.devshiv.adikala.R
 import com.devshiv.adikala.databinding.ItemThumbnailBinding
 
 class ThumbnailAdapter(
@@ -14,8 +15,6 @@ class ThumbnailAdapter(
 ) : RecyclerView.Adapter<ThumbnailAdapter.VH>() {
 
     private var selected = 0
-    private val active = Color.parseColor("#0D3238")
-    private val inactive = Color.parseColor("#00000000")
 
     fun setSelected(pos: Int) {
         if (pos == selected) return
@@ -28,8 +27,18 @@ class ThumbnailAdapter(
     inner class VH(val b: ItemThumbnailBinding) : RecyclerView.ViewHolder(b.root) {
         fun bind(url: String, pos: Int) {
             Glide.with(b.ivThumb).load(url).centerCrop().into(b.ivThumb)
-            b.ivThumb.stroke = ColorStateList.valueOf(if (pos == selected) active else inactive)
-            b.ivThumb.alpha = if (pos == selected) 1f else 0.55f
+
+            val isSelected = pos == selected
+            b.ivThumb.alpha = if (isSelected) 1f else 0.55f
+
+            val context = b.ivThumb.context
+            val strokeColor = if (isSelected) {
+                androidx.core.content.ContextCompat.getColor(context, R.color.teal)
+            } else {
+                android.graphics.Color.TRANSPARENT
+            }
+            b.ivThumb.stroke = ColorStateList.valueOf(strokeColor)
+
             b.ivThumb.setOnClickListener { onPick(pos) }
         }
     }

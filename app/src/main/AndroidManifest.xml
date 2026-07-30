@@ -29,7 +29,21 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AdiKala">
-
+        <activity
+            android:name=".view.activity.TermsOfUseActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.activity.PrivacyPolicyActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.activity.ShippingPolicyActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.activity.RefundsReturnsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.activity.AboutUsActivity"
+            android:exported="false" />
         <activity
             android:name=".view.activity.WishlistActivity"
             android:exported="false" />

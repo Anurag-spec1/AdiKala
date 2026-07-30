@@ -1,0 +1,475 @@
+<?xml version="1.0" encoding="utf-8"?>
+<carbon.widget.RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/main_bg"
+    android:fitsSystemWindows="true"
+    tools:context=".view.activity.RefundsReturnsActivity">
+
+    <RelativeLayout
+        android:id="@+id/topBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:paddingHorizontal="20dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="8dp">
+
+        <carbon.widget.LinearLayout
+            android:id="@+id/btnBack"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:background="@color/white"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            app:carbon_cornerRadius="21dp"
+            app:carbon_elevation="4dp"
+            app:carbon_stroke="#14000000"
+            app:carbon_strokeWidth="1dp"
+            app:carbon_rippleColor="#1A0D3238">
+
+            <carbon.widget.ImageView
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:src="@drawable/ic_back"
+                app:carbon_tint="#0D3238" />
+        </carbon.widget.LinearLayout>
+
+        <carbon.widget.TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="Refunds &amp; Returns"
+            android:textColor="#0D3238"
+            android:textSize="18sp"
+            app:carbon_font="@font/space_grotesk_semibold" />
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/topBar"
+        android:fillViewport="true"
+        android:overScrollMode="never"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:orientation="vertical"
+            android:paddingHorizontal="20dp"
+            android:paddingTop="6dp"
+            android:paddingBottom="40dp">
+
+            <carbon.widget.LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/bg_orders"
+                android:elevation="10dp"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <carbon.widget.ImageView
+                        android:layout_width="26dp"
+                        android:layout_height="26dp"
+                        android:src="@drawable/ic_help"
+                        app:carbon_tint="@color/white" />
+
+                    <carbon.widget.TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:text="Please Read Before You Report"
+                        android:textColor="@color/white"
+                        android:textSize="17sp"
+                        app:carbon_font="@font/space_grotesk_semibold" />
+                </LinearLayout>
+
+                <carbon.widget.TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:lineSpacingExtra="3dp"
+                    android:text="Please send us a parcel opening video without any cuts or pauses, showing clear details of the product if it is short, different, or defective/damaged — along with an image of the product while it is still in its packaging."
+                    android:textColor="@color/muted_peach"
+                    android:textSize="14sp"
+                    app:carbon_font="@font/space_grotesk_semibold" />
+
+                <carbon.widget.TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:lineSpacingExtra="3dp"
+                    android:text="If you are eligible for a replacement, share the unboxing video within 24 hours of delivery. If we are not notified within this window, no replacement or refund will be initiated."
+                    android:textColor="@color/muted_peach"
+                    android:textSize="14sp"
+                    app:carbon_font="@font/space_grotesk_semibold" />
+
+                <carbon.widget.LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="18dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <carbon.widget.LinearLayout
+                        android:id="@+id/btnEmailSupport"
+                        android:layout_width="0dp"
+                        android:layout_height="48dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_weight="1"
+                        app:carbon_cornerRadius="16dp"
+                        android:background="#245A53"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <carbon.widget.ImageView
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:src="@drawable/ic_mail"
+                            app:carbon_tint="#FFFFFF" />
+
+                        <carbon.widget.TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="7dp"
+                            android:text="Email Us"
+                            android:textColor="#FFFFFF"
+                            android:textSize="15sp"
+                            app:carbon_font="@font/space_grotesk_semibold" />
+                    </carbon.widget.LinearLayout>
+
+                    <carbon.widget.LinearLayout
+                        android:id="@+id/btnWhatsappSupport"
+                        android:layout_width="0dp"
+                        android:layout_height="48dp"
+                        android:layout_weight="1"
+                        app:carbon_cornerRadius="16dp"
+                        android:background="@color/white"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <carbon.widget.ImageView
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:src="@drawable/ic_message"
+                            app:carbon_tint="@color/teal" />
+
+                        <carbon.widget.TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="7dp"
+                            android:text="WhatsApp"
+                            android:textColor="@color/teal"
+                            android:textSize="15sp"
+                            app:carbon_font="@font/space_grotesk_semibold" />
+                    </carbon.widget.LinearLayout>
+                </carbon.widget.LinearLayout>
+            </carbon.widget.LinearLayout>
+
+            <carbon.widget.TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="26dp"
+                android:layout_marginBottom="12dp"
+                android:text="Returns Policy"
+                android:textColor="#0D3238"
+                android:textSize="22sp"
+                app:carbon_font="@font/space_grotesk_semibold" />
+
+            <carbon.widget.LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:orientation="horizontal"
+                android:padding="18dp"
+                app:carbon_cornerRadius="24dp"
+                app:carbon_elevation="4dp"
+                app:carbon_stroke="#14000000"
+                app:carbon_strokeWidth="1dp">
+
+                <carbon.widget.ImageView
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:background="#0D3238"
+                    android:padding="12dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_file"
+                    app:carbon_cornerRadius="15dp"
+                    app:carbon_tint="@color/white" />
+
+                <carbon.widget.TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="14dp"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:lineSpacingExtra="3dp"
+                    android:text="Adikala endeavors to serve its clients and offer the best experience. We do not facilitate returns for products once delivered."
+                    android:textColor="#5C5C5C"
+                    android:textSize="14sp"
+                    app:carbon_font="@font/space_grotesk_semibold" />
+            </carbon.widget.LinearLayout>
+
+            <carbon.widget.TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="12dp"
+                android:text="Refund Policy"
+                android:textColor="#0D3238"
+                android:textSize="22sp"
+                app:carbon_font="@font/space_grotesk_semibold" />
+
+            <carbon.widget.LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:orientation="vertical"
+                android:paddingHorizontal="18dp"
+                android:paddingVertical="6dp"
+                app:carbon_cornerRadius="24dp"
+                app:carbon_elevation="4dp"
+                app:carbon_stroke="#14000000"
+                app:carbon_strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingVertical="14dp">
+
+                    <carbon.widget.LinearLayout
+                        android:layout_width="7dp"
+                        android:layout_height="7dp"
+                        android:layout_marginTop="7dp"
+                        android:background="@color/teal"
+                        app:carbon_cornerRadius="3.5dp" />
+
+                    <carbon.widget.TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="14dp"
+                        android:layout_weight="1"
+                        android:lineSpacingExtra="3dp"
+                        android:text="The refund process will be initiated after Adikala.in checks the returned goods to ensure the return policy clauses have been adhered to."
+                        android:textColor="#5C5C5C"
+                        android:textSize="14sp"
+                        app:carbon_font="@font/space_grotesk_semibold" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/line" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingVertical="14dp">
+
+                    <carbon.widget.LinearLayout
+                        android:layout_width="7dp"
+                        android:layout_height="7dp"
+                        android:layout_marginTop="7dp"
+                        android:background="@color/teal"
+                        app:carbon_cornerRadius="3.5dp" />
+
+                    <carbon.widget.TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="14dp"
+                        android:layout_weight="1"
+                        android:lineSpacingExtra="3dp"
+                        android:text="Refunds are subject to deduction of the shipping cost, as shipping charges are non-refundable."
+                        android:textColor="#5C5C5C"
+                        android:textSize="14sp"
+                        app:carbon_font="@font/space_grotesk_semibold" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/line" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingVertical="14dp">
+
+                    <carbon.widget.LinearLayout
+                        android:layout_width="7dp"
+                        android:layout_height="7dp"
+                        android:layout_marginTop="7dp"
+                        android:background="@color/teal"
+                        app:carbon_cornerRadius="3.5dp" />
+
+                    <carbon.widget.TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="14dp"
+                        android:layout_weight="1"
+                        android:lineSpacingExtra="3dp"
+                        android:text="Refunds are processed and completed within 7 working days from the date the return/refund is accepted."
+                        android:textColor="#5C5C5C"
+                        android:textSize="14sp"
+                        app:carbon_font="@font/space_grotesk_semibold" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/line" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingVertical="14dp">
+
+                    <carbon.widget.LinearLayout
+                        android:layout_width="7dp"
+                        android:layout_height="7dp"
+                        android:layout_marginTop="7dp"
+                        android:background="@color/teal"
+                        app:carbon_cornerRadius="3.5dp" />
+
+                    <carbon.widget.TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="14dp"
+                        android:layout_weight="1"
+                        android:lineSpacingExtra="3dp"
+                        android:text="For Cash on Delivery orders, refunds can be processed via bank transfer using the details you provide, or credited to your account."
+                        android:textColor="#5C5C5C"
+                        android:textSize="14sp"
+                        app:carbon_font="@font/space_grotesk_semibold" />
+                </LinearLayout>
+            </carbon.widget.LinearLayout>
+
+            <carbon.widget.LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:background="@color/white"
+                android:orientation="horizontal"
+                android:padding="16dp"
+                app:carbon_cornerRadius="20dp"
+                app:carbon_elevation="2dp"
+                app:carbon_stroke="#14000000"
+                app:carbon_strokeWidth="1dp">
+
+                <carbon.widget.ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_shield"
+                    app:carbon_tint="@color/carbon_red_900" />
+
+                <carbon.widget.TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:layout_weight="1"
+                    android:lineSpacingExtra="3dp"
+                    android:text="For prepaid orders denied by the customer after shipping, the refund will be initiated without refunding the delivery charges."
+                    android:textColor="@color/carbon_red_900"
+                    android:textSize="13sp"
+                    app:carbon_font="@font/space_grotesk_semibold" />
+            </carbon.widget.LinearLayout>
+
+            <carbon.widget.TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="12dp"
+                android:text="Cancellation Policy"
+                android:textColor="#0D3238"
+                android:textSize="22sp"
+                app:carbon_font="@font/space_grotesk_semibold" />
+
+            <carbon.widget.LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:orientation="horizontal"
+                android:padding="18dp"
+                app:carbon_cornerRadius="24dp"
+                app:carbon_elevation="4dp"
+                app:carbon_stroke="#14000000"
+                app:carbon_strokeWidth="1dp">
+
+                <carbon.widget.ImageView
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:background="#0D3238"
+                    android:padding="12dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_help"
+                    app:carbon_cornerRadius="15dp"
+                    app:carbon_tint="@color/white" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="14dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <carbon.widget.TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:lineSpacingExtra="3dp"
+                        android:text="Cancellations are accepted if made before dispatch of goods. Cancellation refunds are processed within 7 working days."
+                        android:textColor="#5C5C5C"
+                        android:textSize="14sp"
+                        app:carbon_font="@font/space_grotesk_semibold" />
+
+                    <carbon.widget.TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:lineSpacingExtra="3dp"
+                        android:text="A 5% gateway charge + Shopify fee will be deducted, and the balance amount refunded to the cardholder."
+                        android:textColor="#5C5C5C"
+                        android:textSize="14sp"
+                        app:carbon_font="@font/space_grotesk_semibold" />
+                </LinearLayout>
+            </carbon.widget.LinearLayout>
+
+            <carbon.widget.TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:gravity="center"
+                android:text="Adikala · Version 1.0.4"
+                android:textColor="#B6A89F"
+                android:textSize="11sp"
+                app:carbon_font="@font/space_grotesk_semibold" />
+
+        </LinearLayout>
+    </ScrollView>
+
+</carbon.widget.RelativeLayout>

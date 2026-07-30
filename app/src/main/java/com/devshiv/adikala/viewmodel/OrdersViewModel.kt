@@ -1,4 +1,3 @@
-// com/devshiv/adikala/viewmodel/OrdersViewModel.kt
 package com.devshiv.adikala.viewmodel
 
 import android.app.Application
@@ -40,15 +39,14 @@ class OrdersViewModel(application: Application) : AndroidViewModel(application) 
                 val allOrders = repository.getCustomerOrders(token)
 
                 _ongoingOrders.value = allOrders.filter {
-                    it.fulfillmentStatus != "FULFILLED" &&
-                            it.financialStatus != "CANCELLED" &&
-                            it.financialStatus != "REFUNDED"
+                    it.financialStatus == "PENDING" || it.financialStatus == "PAID"
                 }
 
                 _pastOrders.value = allOrders.filter {
-                    it.fulfillmentStatus == "FULFILLED" ||
+                    it.financialStatus == "VOIDED" ||
                             it.financialStatus == "CANCELLED" ||
-                            it.financialStatus == "REFUNDED"
+                            it.financialStatus == "REFUNDED" ||
+                            it.fulfillmentStatus == "FULFILLED"
                 }
             } catch (e: Exception) {
                 _error.value = "Failed to load orders"

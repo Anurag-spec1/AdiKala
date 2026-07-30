@@ -8,11 +8,16 @@ import com.devshiv.adikala.model.Address
 import com.devshiv.adikala.repository.CustomerRepository
 
 class AddressAdapter(
-    private val addresses: List<Address>,
+    private var addresses: List<Address>,
     private val onEdit: (Address) -> Unit,
     private val onDelete: (Address) -> Unit,
     private val onSetDefault: (Address) -> Unit
 ) : RecyclerView.Adapter<AddressAdapter.ViewHolder>() {
+
+    fun updateList(newList: List<Address>) {
+        addresses = newList
+        notifyDataSetChanged()
+    }
 
     inner class ViewHolder(
         val binding: ItemAddressBinding

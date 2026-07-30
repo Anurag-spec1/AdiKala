@@ -11,7 +11,10 @@ import android.util.Patterns
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.databinding.library.BuildConfig
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.transition.AutoTransition
 import androidx.transition.TransitionManager
@@ -27,6 +30,12 @@ import com.devshiv.adikala.model.Product
 import com.devshiv.adikala.utils.WishlistManager
 import com.devshiv.adikala.viewmodel.CartViewModel
 import com.devshiv.adikala.viewmodel.ProductDetailViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import okhttp3.FormBody
+import okhttp3.OkHttpClient
+import okhttp3.Request
 
 class ProductDetailActivity : AppCompatActivity() {
 
@@ -164,7 +173,6 @@ class ProductDetailActivity : AppCompatActivity() {
         toggleSection(binding.headerOffers, binding.contentOffers, binding.chevOffers)
         toggleSection(binding.headerBulk, binding.contentBulk, binding.chevBulk)
         toggleSection(binding.headerReviews, binding.contentReviews, binding.chevReviews)
-        toggleSection(binding.headerAsk, binding.contentAsk, binding.chevAsk)
     }
 
     private fun toggleSection(header: View, content: View, chevron: View) {
@@ -224,10 +232,13 @@ class ProductDetailActivity : AppCompatActivity() {
         binding.btnBack.setOnClickListener { finish() }
 
         binding.btnShare.setOnClickListener {
-            val text = "${product.name}\n₹${product.discountedPrice} on Adikala"
-            startActivity(Intent.createChooser(Intent(Intent.ACTION_SEND).apply {
-                type = "text/plain"; putExtra(Intent.EXTRA_TEXT, text)
-            }, "Share via"))
+            val appUrl = "https://play.google.com/store/apps/details?id=$packageName"
+            val text = "${product.name}\n₹${product.discountedPrice} on Adikala\n\nDownload the app: $appUrl"
+            val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                type = "text/plain"
+                putExtra(Intent.EXTRA_TEXT, text)
+            }
+            startActivity(Intent.createChooser(shareIntent, "Share via"))
         }
 
         binding.btnWishlist.setOnClickListener {
@@ -264,7 +275,6 @@ class ProductDetailActivity : AppCompatActivity() {
             }
         }
 
-        binding.btnSubmitQuery.setOnClickListener { submitQuery() }
     }
 
     private fun setupReviews() {
@@ -373,23 +383,5 @@ class ProductDetailActivity : AppCompatActivity() {
         cartViewModel.itemAdded.observe(this) { added ->
             if (added == true) cartViewModel.clearItemAdded()
         }
-    }
-
-    private fun submitQuery() {
-        val name = binding.etName.text.toString().trim()
-        val email = binding.etEmail.text.toString().trim()
-        val msg = binding.etMessage.text.toString().trim()
-
-        if (name.isEmpty()) { binding.etName.error = "Enter your name"; return }
-        if (email.isEmpty() || !Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            binding.etEmail.error = "Enter a valid email"; return
-        }
-        if (msg.isEmpty()) { binding.etMessage.error = "Enter your message"; return }
-
-        Toast.makeText(this, "Thanks! We'll get back to you soon.", Toast.LENGTH_LONG).show()
-        binding.etName.text?.clear()
-        binding.etEmail.text?.clear()
-        binding.etPhone.text?.clear()
-        binding.etMessage.text?.clear()
     }
 }

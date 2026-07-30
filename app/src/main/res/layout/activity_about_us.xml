@@ -1,0 +1,610 @@
+<?xml version="1.0" encoding="utf-8"?>
+<carbon.widget.RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/main_bg"
+    android:fitsSystemWindows="true"
+    tools:context=".view.activity.AboutUsActivity">
+
+    <RelativeLayout
+        android:id="@+id/topBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:paddingHorizontal="20dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="8dp">
+
+        <carbon.widget.LinearLayout
+            android:id="@+id/btnBack"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:background="@color/white"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            app:carbon_cornerRadius="21dp"
+            app:carbon_elevation="4dp"
+            app:carbon_stroke="#14000000"
+            app:carbon_strokeWidth="1dp"
+            app:carbon_rippleColor="#1A0D3238">
+
+            <carbon.widget.ImageView
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:src="@drawable/ic_back"
+                app:carbon_tint="#0D3238" />
+        </carbon.widget.LinearLayout>
+
+        <carbon.widget.TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="About Us"
+            android:textColor="#0D3238"
+            android:textSize="18sp"
+            app:carbon_font="@font/space_grotesk_semibold" />
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/topBar"
+        android:fillViewport="true"
+        android:overScrollMode="never"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:orientation="vertical"
+            android:paddingHorizontal="20dp"
+            android:paddingTop="6dp"
+            android:paddingBottom="40dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:paddingTop="10dp"
+                android:paddingBottom="8dp">
+
+                <FrameLayout
+                    android:layout_width="96dp"
+                    android:layout_height="96dp">
+
+                    <View
+                        android:layout_width="96dp"
+                        android:layout_height="96dp"
+                        android:background="@drawable/avatar_ring" />
+
+                    <carbon.widget.ImageView
+                        android:layout_width="86dp"
+                        android:layout_height="86dp"
+                        android:layout_gravity="center"
+                        android:background="#0D3238"
+                        android:padding="20dp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/ic_craft"
+                        app:carbon_cornerRadius="43dp"
+                        app:carbon_tint="@color/white" />
+                </FrameLayout>
+
+                <carbon.widget.TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="Adikala"
+                    android:textColor="#0D3238"
+                    android:textSize="30sp"
+                    app:carbon_font="@font/space_grotesk_semibold" />
+
+                <carbon.widget.TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:letterSpacing="0.08"
+                    android:text="SINCE ANCIENT TIMES"
+                    android:textColor="@color/teal"
+                    android:textSize="12sp"
+                    app:carbon_font="@font/space_grotesk_semibold" />
+            </LinearLayout>
+
+            <carbon.widget.TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="26dp"
+                android:layout_marginBottom="12dp"
+                android:text="Our Story"
+                android:textColor="#0D3238"
+                android:textSize="22sp"
+                app:carbon_font="@font/space_grotesk_semibold" />
+
+            <carbon.widget.LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:orientation="vertical"
+                android:padding="20dp"
+                app:carbon_cornerRadius="24dp"
+                app:carbon_elevation="4dp"
+                app:carbon_stroke="#14000000"
+                app:carbon_strokeWidth="1dp">
+
+                <carbon.widget.TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:lineSpacingExtra="4dp"
+                    android:text="Hastkala — the art of the hand — has been cherished across our country since ancient times. Yet in the modern age, art lovers often struggle to find it, and the artisans who keep it alive struggle to be found."
+                    android:textColor="#5C5C5C"
+                    android:textSize="15sp"
+                    app:carbon_font="@font/space_grotesk_semibold" />
+            </carbon.widget.LinearLayout>
+
+            <carbon.widget.TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="12dp"
+                android:text="The Journey"
+                android:textColor="#0D3238"
+                android:textSize="22sp"
+                app:carbon_font="@font/space_grotesk_semibold" />
+
+            <carbon.widget.LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:orientation="vertical"
+                android:paddingHorizontal="18dp"
+                app:carbon_cornerRadius="24dp"
+                app:carbon_elevation="4dp"
+                app:carbon_stroke="#14000000"
+                app:carbon_strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingVertical="18dp">
+
+                    <carbon.widget.ImageView
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
+                        android:background="#0D3238"
+                        android:padding="12dp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/ic_search"
+                        app:carbon_cornerRadius="15dp"
+                        app:carbon_tint="@color/white" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="14dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <carbon.widget.TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="A Search That Went Nowhere"
+                            android:textColor="#0D3238"
+                            android:textSize="16sp"
+                            app:carbon_font="@font/space_grotesk_semibold" />
+
+                        <carbon.widget.TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:lineSpacingExtra="3dp"
+                            android:text="Wanting to give my home a traditional look, I went looking for wall decor and home furnishings — and came back empty-handed. What I did find was rarely within budget."
+                            android:textColor="#5C5C5C"
+                            android:textSize="14sp"
+                            app:carbon_font="@font/space_grotesk_semibold" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/line" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingVertical="18dp">
+
+                    <carbon.widget.ImageView
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
+                        android:background="#0D3238"
+                        android:padding="12dp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/ic_bulb"
+                        app:carbon_cornerRadius="15dp"
+                        app:carbon_tint="@color/white" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="14dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <carbon.widget.TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="A Realization"
+                            android:textColor="#0D3238"
+                            android:textSize="16sp"
+                            app:carbon_font="@font/space_grotesk_semibold" />
+
+                        <carbon.widget.TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:lineSpacingExtra="3dp"
+                            android:text="If I was struggling to find these pieces, surely other art lovers — online and offline — were facing the same disappointment. Not everyone would have the patience, or the access, to search it out."
+                            android:textColor="#5C5C5C"
+                            android:textSize="14sp"
+                            app:carbon_font="@font/space_grotesk_semibold" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/line" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingVertical="18dp">
+
+                    <carbon.widget.ImageView
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
+                        android:background="#0D3238"
+                        android:padding="12dp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/ic_hands"
+                        app:carbon_cornerRadius="15dp"
+                        app:carbon_tint="@color/white" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="14dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <carbon.widget.TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Reaching the Artisans"
+                            android:textColor="#0D3238"
+                            android:textSize="16sp"
+                            app:carbon_font="@font/space_grotesk_semibold" />
+
+                        <carbon.widget.TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:lineSpacingExtra="3dp"
+                            android:text="I began reaching out to niche manufacturers and artisans across different regions of India, and work on the website slowly took shape."
+                            android:textColor="#5C5C5C"
+                            android:textSize="14sp"
+                            app:carbon_font="@font/space_grotesk_semibold" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/line" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingVertical="18dp">
+
+                    <carbon.widget.ImageView
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
+                        android:background="#0D3238"
+                        android:padding="12dp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/ic_sparkle"
+                        app:carbon_cornerRadius="15dp"
+                        app:carbon_tint="@color/white" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="14dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <carbon.widget.TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Finding a Name"
+                            android:textColor="#0D3238"
+                            android:textSize="16sp"
+                            app:carbon_font="@font/space_grotesk_semibold" />
+
+                        <carbon.widget.TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:lineSpacingExtra="3dp"
+                            android:text="We wanted a name that captured our aim — to refine ancient art and present it in a modern way. That's how we became Adikala."
+                            android:textColor="#5C5C5C"
+                            android:textSize="14sp"
+                            app:carbon_font="@font/space_grotesk_semibold" />
+                    </LinearLayout>
+                </LinearLayout>
+            </carbon.widget.LinearLayout>
+
+            <carbon.widget.LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                app:carbon_cornerRadius="24dp"
+                android:background="#0D3238"
+                android:elevation="10dp"
+                android:orientation="vertical"
+                android:padding="24dp">
+
+                <carbon.widget.ImageView
+                    android:layout_width="26dp"
+                    android:layout_height="26dp"
+                    android:alpha="0.6"
+                    android:src="@drawable/ic_quote"
+                    app:carbon_tint="@color/muted_peach" />
+
+                <carbon.widget.TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:lineSpacingExtra="4dp"
+                    android:text="Adikala means since ancient times — because Hastkala has been appreciated in our country since ancient times, and we exist to help it thrive in modern times too."
+                    android:textColor="@color/white"
+                    android:textSize="17sp"
+                    app:carbon_font="@font/space_grotesk_semibold" />
+            </carbon.widget.LinearLayout>
+
+            <carbon.widget.TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="12dp"
+                android:text="Our Mission"
+                android:textColor="#0D3238"
+                android:textSize="22sp"
+                app:carbon_font="@font/space_grotesk_semibold" />
+
+            <carbon.widget.LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:orientation="vertical"
+                android:paddingHorizontal="18dp"
+                app:carbon_cornerRadius="24dp"
+                app:carbon_elevation="4dp"
+                app:carbon_stroke="#14000000"
+                app:carbon_strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingVertical="16dp">
+
+                    <carbon.widget.ImageView
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
+                        android:background="#0D3238"
+                        android:padding="12dp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/ic_shield"
+                        app:carbon_cornerRadius="15dp"
+                        app:carbon_tint="@color/white" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="14dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <carbon.widget.TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Protect the craft"
+                            android:textColor="#0D3238"
+                            android:textSize="16sp"
+                            app:carbon_font="@font/space_grotesk_semibold" />
+
+                        <carbon.widget.TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="Save ancient art forms from fading away"
+                            android:textColor="#5C5C5C"
+                            android:textSize="13sp"
+                            app:carbon_font="@font/space_grotesk_semibold" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/line" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingVertical="16dp">
+
+                    <carbon.widget.ImageView
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
+                        android:background="#0D3238"
+                        android:padding="12dp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/ic_hands"
+                        app:carbon_cornerRadius="15dp"
+                        app:carbon_tint="@color/white" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="14dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <carbon.widget.TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Support the artisans"
+                            android:textColor="#0D3238"
+                            android:textSize="16sp"
+                            app:carbon_font="@font/space_grotesk_semibold" />
+
+                        <carbon.widget.TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="Give craftspeople across India a fair way to be found"
+                            android:textColor="#5C5C5C"
+                            android:textSize="13sp"
+                            app:carbon_font="@font/space_grotesk_semibold" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/line" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingVertical="16dp">
+
+                    <carbon.widget.ImageView
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
+                        android:background="#0D3238"
+                        android:padding="12dp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/ic_home"
+                        app:carbon_cornerRadius="15dp"
+                        app:carbon_tint="@color/white" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="14dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <carbon.widget.TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Bring heritage home"
+                            android:textColor="#0D3238"
+                            android:textSize="16sp"
+                            app:carbon_font="@font/space_grotesk_semibold" />
+
+                        <carbon.widget.TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="Make authentic Hastkala accessible, without the budget shock"
+                            android:textColor="#5C5C5C"
+                            android:textSize="13sp"
+                            app:carbon_font="@font/space_grotesk_semibold" />
+                    </LinearLayout>
+                </LinearLayout>
+            </carbon.widget.LinearLayout>
+
+            <carbon.widget.LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:background="@color/white"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:padding="24dp"
+                app:carbon_cornerRadius="24dp"
+                app:carbon_elevation="4dp"
+                app:carbon_stroke="#14000000"
+                app:carbon_strokeWidth="1dp">
+
+                <carbon.widget.TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:lineSpacingExtra="4dp"
+                    android:text="With this small step, we hope to help the craftsmen who keep this ancient art alive. Thank you for appreciating the art of our country, and for helping us equip your home while keeping it thriving."
+                    android:textColor="#5C5C5C"
+                    android:textSize="15sp"
+                    app:carbon_font="@font/space_grotesk_semibold" />
+
+                <carbon.widget.LinearLayout
+                    android:id="@+id/btnExploreCollection"
+                    android:layout_width="match_parent"
+                    android:layout_height="54dp"
+                    app:carbon_cornerRadius="24dp"
+                    android:layout_marginTop="20dp"
+                    android:background="#0D3238"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <carbon.widget.TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Explore the Collection"
+                        android:textColor="@color/white"
+                        android:textSize="17sp"
+                        app:carbon_font="@font/space_grotesk_semibold" />
+                </carbon.widget.LinearLayout>
+            </carbon.widget.LinearLayout>
+
+            <carbon.widget.TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:gravity="center"
+                android:text="Adikala · Handcrafted with care"
+                android:textColor="#B6A89F"
+                android:textSize="11sp"
+                app:carbon_font="@font/space_grotesk_semibold" />
+
+        </LinearLayout>
+    </ScrollView>
+
+</carbon.widget.RelativeLayout>

@@ -1,0 +1,1009 @@
+<?xml version="1.0" encoding="utf-8"?>
+<carbon.widget.RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/main_bg"
+    android:fitsSystemWindows="true"
+    tools:context=".view.activity.TermsOfUseActivity">
+
+    <RelativeLayout
+        android:id="@+id/topBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:paddingHorizontal="20dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="8dp">
+
+        <carbon.widget.LinearLayout
+            android:id="@+id/btnBack"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:background="@color/white"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            app:carbon_cornerRadius="21dp"
+            app:carbon_elevation="4dp"
+            app:carbon_stroke="#14000000"
+            app:carbon_strokeWidth="1dp"
+            app:carbon_rippleColor="#1A0D3238">
+
+            <carbon.widget.ImageView
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:src="@drawable/ic_back"
+                app:carbon_tint="#0D3238" />
+        </carbon.widget.LinearLayout>
+
+        <carbon.widget.TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="Terms of Use"
+            android:textColor="#0D3238"
+            android:textSize="18sp"
+            app:carbon_font="@font/space_grotesk_semibold" />
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/topBar"
+        android:fillViewport="true"
+        android:overScrollMode="never"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:orientation="vertical"
+            android:paddingHorizontal="20dp"
+            android:paddingTop="6dp"
+            android:paddingBottom="40dp">
+
+            <!-- OVERVIEW CARD -->
+            <carbon.widget.LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/bg_orders"
+                android:elevation="10dp"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <carbon.widget.ImageView
+                        android:layout_width="26dp"
+                        android:layout_height="26dp"
+                        android:src="@drawable/ic_file"
+                        app:carbon_tint="@color/white" />
+
+                    <carbon.widget.TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:text="Overview"
+                        android:textColor="@color/white"
+                        android:textSize="17sp"
+                        app:carbon_font="@font/space_grotesk_semibold" />
+                </LinearLayout>
+
+                <carbon.widget.TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:lineSpacingExtra="3dp"
+                    android:text="This website is operated by adikala.in. &quot;We&quot;, &quot;us&quot; and &quot;our&quot; refer to adikala.in. By visiting our site or purchasing something from us, you agree to be bound by the following Terms of Service, including any additional terms and policies referenced here.\n\nPlease read these Terms carefully. If you do not agree to all of them, you may not access the website or use any of our services. Our store is hosted on Shopify Inc, which provides the e-commerce platform that lets us sell our products and services to you."
+                    android:textColor="@color/muted_peach"
+                    android:textSize="14sp"
+                    app:carbon_font="@font/space_grotesk_semibold" />
+            </carbon.widget.LinearLayout>
+
+            <carbon.widget.TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="26dp"
+                android:layout_marginBottom="12dp"
+                android:text="All Sections"
+                android:textColor="#0D3238"
+                android:textSize="22sp"
+                app:carbon_font="@font/space_grotesk_semibold" />
+
+            <!-- ACCORDION CONTAINER -->
+            <carbon.widget.LinearLayout
+                android:id="@+id/accordionContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:orientation="vertical"
+                android:paddingHorizontal="18dp"
+                app:carbon_cornerRadius="24dp"
+                app:carbon_elevation="4dp"
+                app:carbon_stroke="#14000000"
+                app:carbon_strokeWidth="1dp">
+
+                <!-- 1 -->
+                <LinearLayout
+                    android:id="@+id/header1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingVertical="16dp">
+
+                    <carbon.widget.TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="1. Online Store Terms"
+                        android:textColor="#0D3238"
+                        android:textSize="15sp"
+                        app:carbon_font="@font/space_grotesk_semibold" />
+
+                    <carbon.widget.ImageView
+                        android:id="@+id/chevron1"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/ic_chevron_right"
+                        app:carbon_tint="@color/chev" />
+                </LinearLayout>
+
+                <carbon.widget.TextView
+                    android:id="@+id/body1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:lineSpacingExtra="3dp"
+                    android:paddingBottom="18dp"
+                    android:text="By agreeing to these Terms, you represent that you are at least the age of majority in your state or province of residence, or that you have given consent for a minor dependent to use this site.\n\nYou may not use our products for any illegal or unauthorized purpose, nor violate any laws in your jurisdiction, including copyright laws. You must not transmit any worms, viruses, or destructive code. Any breach of these Terms results in immediate termination of your Services."
+                    android:textColor="#5C5C5C"
+                    android:textSize="14sp"
+                    android:visibility="gone"
+                    app:carbon_font="@font/space_grotesk_semibold" />
+
+                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/line" />
+
+                <!-- 2 -->
+                <LinearLayout
+                    android:id="@+id/header2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingVertical="16dp">
+
+                    <carbon.widget.TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="2. General Conditions"
+                        android:textColor="#0D3238"
+                        android:textSize="15sp"
+                        app:carbon_font="@font/space_grotesk_semibold" />
+
+                    <carbon.widget.ImageView
+                        android:id="@+id/chevron2"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/ic_chevron_right"
+                        app:carbon_tint="@color/chev" />
+                </LinearLayout>
+
+                <carbon.widget.TextView
+                    android:id="@+id/body2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:lineSpacingExtra="3dp"
+                    android:paddingBottom="18dp"
+                    android:text="We reserve the right to refuse service to anyone, for any reason, at any time.\n\nYour content (excluding credit card information) may be transferred unencrypted over various networks and may be adapted to technical requirements of connecting networks or devices. Credit card information is always encrypted during transfer.\n\nYou agree not to reproduce, duplicate, copy, sell, resell, or exploit any portion of the Service without our express written permission. Headings in this agreement are for convenience only and do not affect these Terms."
+                    android:textColor="#5C5C5C"
+                    android:textSize="14sp"
+                    android:visibility="gone"
+                    app:carbon_font="@font/space_grotesk_semibold" />
+
+                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/line" />
+
+                <!-- 3 -->
+                <LinearLayout
+                    android:id="@+id/header3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingVertical="16dp">
+
+                    <carbon.widget.TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="3. Accuracy of Information"
+                        android:textColor="#0D3238"
+                        android:textSize="15sp"
+                        app:carbon_font="@font/space_grotesk_semibold" />
+
+                    <carbon.widget.ImageView
+                        android:id="@+id/chevron3"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/ic_chevron_right"
+                        app:carbon_tint="@color/chev" />
+                </LinearLayout>
+
+                <carbon.widget.TextView
+                    android:id="@+id/body3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:lineSpacingExtra="3dp"
+                    android:paddingBottom="18dp"
+                    android:text="We are not responsible if information on this site is inaccurate, incomplete, or outdated. Material here is provided for general information only and should not be the sole basis for decisions — any reliance on it is at your own risk.\n\nThis site may contain historical information provided for reference only. We reserve the right to modify site content at any time, without an obligation to update it. Monitoring changes to our site is your responsibility."
+                    android:textColor="#5C5C5C"
+                    android:textSize="14sp"
+                    android:visibility="gone"
+                    app:carbon_font="@font/space_grotesk_semibold" />
+
+                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/line" />
+
+                <!-- 4 -->
+                <LinearLayout
+                    android:id="@+id/header4"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingVertical="16dp">
+
+                    <carbon.widget.TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="4. Modifications to Service &amp; Prices"
+                        android:textColor="#0D3238"
+                        android:textSize="15sp"
+                        app:carbon_font="@font/space_grotesk_semibold" />
+
+                    <carbon.widget.ImageView
+                        android:id="@+id/chevron4"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/ic_chevron_right"
+                        app:carbon_tint="@color/chev" />
+                </LinearLayout>
+
+                <carbon.widget.TextView
+                    android:id="@+id/body4"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:lineSpacingExtra="3dp"
+                    android:paddingBottom="18dp"
+                    android:text="Prices for our products are subject to change without notice. We reserve the right to modify or discontinue the Service, or any part of it, without notice at any time. We shall not be liable to you or any third party for any modification, price change, suspension, or discontinuance of the Service."
+                    android:textColor="#5C5C5C"
+                    android:textSize="14sp"
+                    android:visibility="gone"
+                    app:carbon_font="@font/space_grotesk_semibold" />
+
+                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/line" />
+
+                <!-- 5 -->
+                <LinearLayout
+                    android:id="@+id/header5"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingVertical="16dp">
+
+                    <carbon.widget.TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="5. Products or Services"
+                        android:textColor="#0D3238"
+                        android:textSize="15sp"
+                        app:carbon_font="@font/space_grotesk_semibold" />
+
+                    <carbon.widget.ImageView
+                        android:id="@+id/chevron5"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/ic_chevron_right"
+                        app:carbon_tint="@color/chev" />
+                </LinearLayout>
+
+                <carbon.widget.TextView
+                    android:id="@+id/body5"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:lineSpacingExtra="3dp"
+                    android:paddingBottom="18dp"
+                    android:text="Certain products or services may be available exclusively online, in limited quantities, and are subject to exchange only per our Exchange Policy.\n\nWe've made every effort to display product colors and images accurately, but cannot guarantee your monitor's display is accurate.\n\nWe reserve the right, but are not obligated, to limit sales to any person, region, or jurisdiction, and to limit quantities offered. Product descriptions and pricing are subject to change at any time at our sole discretion, and we may discontinue any product without notice. We do not warrant that products, services, or information will meet your expectations, or that errors in the Service will be corrected."
+                    android:textColor="#5C5C5C"
+                    android:textSize="14sp"
+                    android:visibility="gone"
+                    app:carbon_font="@font/space_grotesk_semibold" />
+
+                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/line" />
+
+                <!-- 6 -->
+                <LinearLayout
+                    android:id="@+id/header6"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingVertical="16dp">
+
+                    <carbon.widget.TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="6. Billing &amp; Account Accuracy"
+                        android:textColor="#0D3238"
+                        android:textSize="15sp"
+                        app:carbon_font="@font/space_grotesk_semibold" />
+
+                    <carbon.widget.ImageView
+                        android:id="@+id/chevron6"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/ic_chevron_right"
+                        app:carbon_tint="@color/chev" />
+                </LinearLayout>
+
+                <carbon.widget.TextView
+                    android:id="@+id/body6"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:lineSpacingExtra="3dp"
+                    android:paddingBottom="18dp"
+                    android:text="We reserve the right to refuse any order, and may limit or cancel quantities purchased per person, household, or order — including orders sharing the same account, credit card, or billing/shipping address. If we change or cancel an order, we may attempt to notify you via the email, billing address, or phone number provided.\n\nWe reserve the right to limit or prohibit orders that, in our judgment, appear to be placed by dealers, resellers, or distributors.\n\nYou agree to provide current, complete, and accurate account and purchase information, and to promptly update it. For more detail, please review our Returns, Refunds &amp; Exchanges Policy."
+                    android:textColor="#5C5C5C"
+                    android:textSize="14sp"
+                    android:visibility="gone"
+                    app:carbon_font="@font/space_grotesk_semibold" />
+
+                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/line" />
+
+                <!-- 7 -->
+                <LinearLayout
+                    android:id="@+id/header7"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingVertical="16dp">
+
+                    <carbon.widget.TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="7. Optional Tools"
+                        android:textColor="#0D3238"
+                        android:textSize="15sp"
+                        app:carbon_font="@font/space_grotesk_semibold" />
+
+                    <carbon.widget.ImageView
+                        android:id="@+id/chevron7"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/ic_chevron_right"
+                        app:carbon_tint="@color/chev" />
+                </LinearLayout>
+
+                <carbon.widget.TextView
+                    android:id="@+id/body7"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:lineSpacingExtra="3dp"
+                    android:paddingBottom="18dp"
+                    android:text="We may give you access to third-party tools we neither monitor nor control. Such tools are provided &quot;as is&quot; and &quot;as available&quot;, without warranties of any kind, and we have no liability arising from your use of them.\n\nUse of any optional tools is entirely at your own risk — you should review the relevant third-party provider's own terms. We may offer new features or services in the future, which will also be subject to these Terms."
+                    android:textColor="#5C5C5C"
+                    android:textSize="14sp"
+                    android:visibility="gone"
+                    app:carbon_font="@font/space_grotesk_semibold" />
+
+                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/line" />
+
+                <!-- 8 -->
+                <LinearLayout
+                    android:id="@+id/header8"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingVertical="16dp">
+
+                    <carbon.widget.TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="8. Third-Party Links"
+                        android:textColor="#0D3238"
+                        android:textSize="15sp"
+                        app:carbon_font="@font/space_grotesk_semibold" />
+
+                    <carbon.widget.ImageView
+                        android:id="@+id/chevron8"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/ic_chevron_right"
+                        app:carbon_tint="@color/chev" />
+                </LinearLayout>
+
+                <carbon.widget.TextView
+                    android:id="@+id/body8"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:lineSpacingExtra="3dp"
+                    android:paddingBottom="18dp"
+                    android:text="Certain content, products, and services on our site may include materials from third parties, and third-party links may direct you to sites not affiliated with us. We do not evaluate or warrant such third-party content and have no liability for it.\n\nWe are not liable for any harm related to your use of third-party goods, services, or websites. Please review any third party's own policies before transacting with them — complaints regarding third-party products should be directed to that third party."
+                    android:textColor="#5C5C5C"
+                    android:textSize="14sp"
+                    android:visibility="gone"
+                    app:carbon_font="@font/space_grotesk_semibold" />
+
+                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/line" />
+
+                <!-- 9 -->
+                <LinearLayout
+                    android:id="@+id/header9"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingVertical="16dp">
+
+                    <carbon.widget.TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="9. User Comments &amp; Submissions"
+                        android:textColor="#0D3238"
+                        android:textSize="15sp"
+                        app:carbon_font="@font/space_grotesk_semibold" />
+
+                    <carbon.widget.ImageView
+                        android:id="@+id/chevron9"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/ic_chevron_right"
+                        app:carbon_tint="@color/chev" />
+                </LinearLayout>
+
+                <carbon.widget.TextView
+                    android:id="@+id/body9"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:lineSpacingExtra="3dp"
+                    android:paddingBottom="18dp"
+                    android:text="If you send us comments, ideas, or other submissions — requested or not — you agree that we may edit, copy, publish, distribute, translate, and otherwise use them in any medium, without restriction, compensation, or obligation to keep them confidential or to respond.\n\nWe may, but have no obligation to, monitor, edit, or remove content we deem unlawful, offensive, or otherwise objectionable.\n\nYou agree your comments won't violate any third party's rights, won't contain unlawful, abusive, or obscene material or malware, and won't misrepresent your identity. You are solely responsible for your comments, and we assume no liability for content posted by you or any third party."
+                    android:textColor="#5C5C5C"
+                    android:textSize="14sp"
+                    android:visibility="gone"
+                    app:carbon_font="@font/space_grotesk_semibold" />
+
+                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/line" />
+
+                <!-- 10 -->
+                <LinearLayout
+                    android:id="@+id/header10"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingVertical="16dp">
+
+                    <carbon.widget.TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="10. Personal Information"
+                        android:textColor="#0D3238"
+                        android:textSize="15sp"
+                        app:carbon_font="@font/space_grotesk_semibold" />
+
+                    <carbon.widget.ImageView
+                        android:id="@+id/chevron10"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/ic_chevron_right"
+                        app:carbon_tint="@color/chev" />
+                </LinearLayout>
+
+                <carbon.widget.TextView
+                    android:id="@+id/body10"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:lineSpacingExtra="3dp"
+                    android:paddingBottom="18dp"
+                    android:text="Your submission of personal information through the store is governed by our Privacy Policy."
+                    android:textColor="#5C5C5C"
+                    android:textSize="14sp"
+                    android:visibility="gone"
+                    app:carbon_font="@font/space_grotesk_semibold" />
+
+                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/line" />
+
+                <!-- 11 -->
+                <LinearLayout
+                    android:id="@+id/header11"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingVertical="16dp">
+
+                    <carbon.widget.TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="11. Errors, Inaccuracies &amp; Omissions"
+                        android:textColor="#0D3238"
+                        android:textSize="15sp"
+                        app:carbon_font="@font/space_grotesk_semibold" />
+
+                    <carbon.widget.ImageView
+                        android:id="@+id/chevron11"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/ic_chevron_right"
+                        app:carbon_tint="@color/chev" />
+                </LinearLayout>
+
+                <carbon.widget.TextView
+                    android:id="@+id/body11"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:lineSpacingExtra="3dp"
+                    android:paddingBottom="18dp"
+                    android:text="Our site or Service may occasionally contain typographical errors, inaccuracies, or omissions relating to product descriptions, pricing, promotions, offers, shipping charges, transit times, or availability. We reserve the right to correct these, and to update information or cancel orders at any time without prior notice, even after you've submitted an order.\n\nWe have no obligation to update or clarify information except as required by law, and no refresh date should be taken to mean all information has been updated."
+                    android:textColor="#5C5C5C"
+                    android:textSize="14sp"
+                    android:visibility="gone"
+                    app:carbon_font="@font/space_grotesk_semibold" />
+
+                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/line" />
+
+                <!-- 12 -->
+                <LinearLayout
+                    android:id="@+id/header12"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingVertical="16dp">
+
+                    <carbon.widget.TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="12. Prohibited Uses"
+                        android:textColor="#0D3238"
+                        android:textSize="15sp"
+                        app:carbon_font="@font/space_grotesk_semibold" />
+
+                    <carbon.widget.ImageView
+                        android:id="@+id/chevron12"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/ic_chevron_right"
+                        app:carbon_tint="@color/chev" />
+                </LinearLayout>
+
+                <carbon.widget.TextView
+                    android:id="@+id/body12"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:lineSpacingExtra="3dp"
+                    android:paddingBottom="18dp"
+                    android:text="You are prohibited from using the site or its content for any unlawful purpose; to solicit unlawful acts; to violate any regulations or laws; to infringe our or others' intellectual property; to harass, abuse, or discriminate against anyone; to submit false or misleading information; to upload viruses or malicious code; to collect others' personal information; to spam, phish, or scrape; for any obscene purpose; or to interfere with or circumvent the Service's security features. We reserve the right to terminate your use of the Service for violating any of these."
+                    android:textColor="#5C5C5C"
+                    android:textSize="14sp"
+                    android:visibility="gone"
+                    app:carbon_font="@font/space_grotesk_semibold" />
+
+                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/line" />
+
+                <!-- 13 -->
+                <LinearLayout
+                    android:id="@+id/header13"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingVertical="16dp">
+
+                    <carbon.widget.TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="13. Disclaimer &amp; Limitation of Liability"
+                        android:textColor="#0D3238"
+                        android:textSize="15sp"
+                        app:carbon_font="@font/space_grotesk_semibold" />
+
+                    <carbon.widget.ImageView
+                        android:id="@+id/chevron13"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/ic_chevron_right"
+                        app:carbon_tint="@color/chev" />
+                </LinearLayout>
+
+                <carbon.widget.TextView
+                    android:id="@+id/body13"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:lineSpacingExtra="3dp"
+                    android:paddingBottom="18dp"
+                    android:text="We do not guarantee that your use of the Service will be uninterrupted, timely, secure, or error-free, or that results obtained will be accurate or reliable. We may remove or cancel the Service at any time without notice, and your use of it is at your sole risk.\n\nThe Service and all products delivered through it are provided &quot;as is&quot; and &quot;as available&quot;, without warranties of any kind, express or implied.\n\nIn no case shall adikala.in or its directors, officers, employees, affiliates, agents, or suppliers be liable for any direct, indirect, incidental, punitive, special, or consequential damages arising from your use of the Service, including lost profits, revenue, savings, or data — even if advised of the possibility. Where a jurisdiction doesn't allow such limitations, our liability shall be limited to the maximum extent permitted by law."
+                    android:textColor="#5C5C5C"
+                    android:textSize="14sp"
+                    android:visibility="gone"
+                    app:carbon_font="@font/space_grotesk_semibold" />
+
+                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/line" />
+
+                <!-- 14 -->
+                <LinearLayout
+                    android:id="@+id/header14"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingVertical="16dp">
+
+                    <carbon.widget.TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="14. Indemnification"
+                        android:textColor="#0D3238"
+                        android:textSize="15sp"
+                        app:carbon_font="@font/space_grotesk_semibold" />
+
+                    <carbon.widget.ImageView
+                        android:id="@+id/chevron14"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/ic_chevron_right"
+                        app:carbon_tint="@color/chev" />
+                </LinearLayout>
+
+                <carbon.widget.TextView
+                    android:id="@+id/body14"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:lineSpacingExtra="3dp"
+                    android:paddingBottom="18dp"
+                    android:text="You agree to indemnify, defend, and hold harmless adikala.in and our affiliates, partners, officers, agents, and employees from any claim or demand — including reasonable attorneys' fees — made by a third party arising from your breach of these Terms or your violation of any law or third-party right."
+                    android:textColor="#5C5C5C"
+                    android:textSize="14sp"
+                    android:visibility="gone"
+                    app:carbon_font="@font/space_grotesk_semibold" />
+
+                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/line" />
+
+                <!-- 15 -->
+                <LinearLayout
+                    android:id="@+id/header15"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingVertical="16dp">
+
+                    <carbon.widget.TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="15. Severability"
+                        android:textColor="#0D3238"
+                        android:textSize="15sp"
+                        app:carbon_font="@font/space_grotesk_semibold" />
+
+                    <carbon.widget.ImageView
+                        android:id="@+id/chevron15"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/ic_chevron_right"
+                        app:carbon_tint="@color/chev" />
+                </LinearLayout>
+
+                <carbon.widget.TextView
+                    android:id="@+id/body15"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:lineSpacingExtra="3dp"
+                    android:paddingBottom="18dp"
+                    android:text="If any provision of these Terms is found unlawful, void, or unenforceable, it shall still be enforced to the fullest extent permitted by law, and the unenforceable part shall be severed — without affecting the validity of the remaining provisions."
+                    android:textColor="#5C5C5C"
+                    android:textSize="14sp"
+                    android:visibility="gone"
+                    app:carbon_font="@font/space_grotesk_semibold" />
+
+                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/line" />
+
+                <!-- 16 -->
+                <LinearLayout
+                    android:id="@+id/header16"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingVertical="16dp">
+
+                    <carbon.widget.TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="16. Termination"
+                        android:textColor="#0D3238"
+                        android:textSize="15sp"
+                        app:carbon_font="@font/space_grotesk_semibold" />
+
+                    <carbon.widget.ImageView
+                        android:id="@+id/chevron16"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/ic_chevron_right"
+                        app:carbon_tint="@color/chev" />
+                </LinearLayout>
+
+                <carbon.widget.TextView
+                    android:id="@+id/body16"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:lineSpacingExtra="3dp"
+                    android:paddingBottom="18dp"
+                    android:text="Obligations and liabilities incurred prior to termination survive termination of this agreement. These Terms remain effective until terminated by either you or us — you may terminate at any time by ceasing to use our site.\n\nIf we believe you've failed to comply with any term, we may terminate this agreement without notice, deny you access to our Services, and you'll remain liable for all amounts due up to the termination date."
+                    android:textColor="#5C5C5C"
+                    android:textSize="14sp"
+                    android:visibility="gone"
+                    app:carbon_font="@font/space_grotesk_semibold" />
+
+                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/line" />
+
+                <!-- 17 -->
+                <LinearLayout
+                    android:id="@+id/header17"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingVertical="16dp">
+
+                    <carbon.widget.TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="17. Entire Agreement"
+                        android:textColor="#0D3238"
+                        android:textSize="15sp"
+                        app:carbon_font="@font/space_grotesk_semibold" />
+
+                    <carbon.widget.ImageView
+                        android:id="@+id/chevron17"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/ic_chevron_right"
+                        app:carbon_tint="@color/chev" />
+                </LinearLayout>
+
+                <carbon.widget.TextView
+                    android:id="@+id/body17"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:lineSpacingExtra="3dp"
+                    android:paddingBottom="18dp"
+                    android:text="Our failure to exercise or enforce any right or provision of these Terms does not constitute a waiver of it. These Terms, together with any policies posted by us, constitute the entire agreement between you and us, superseding any prior agreements or communications. Ambiguities in interpretation shall not be construed against the drafting party."
+                    android:textColor="#5C5C5C"
+                    android:textSize="14sp"
+                    android:visibility="gone"
+                    app:carbon_font="@font/space_grotesk_semibold" />
+
+                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/line" />
+
+                <!-- 18 -->
+                <LinearLayout
+                    android:id="@+id/header18"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingVertical="16dp">
+
+                    <carbon.widget.TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="18. Governing Law"
+                        android:textColor="#0D3238"
+                        android:textSize="15sp"
+                        app:carbon_font="@font/space_grotesk_semibold" />
+
+                    <carbon.widget.ImageView
+                        android:id="@+id/chevron18"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/ic_chevron_right"
+                        app:carbon_tint="@color/chev" />
+                </LinearLayout>
+
+                <carbon.widget.TextView
+                    android:id="@+id/body18"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:lineSpacingExtra="3dp"
+                    android:paddingBottom="18dp"
+                    android:text="These Terms of Service, and any separate agreements under which we provide you Services, are governed by and construed in accordance with the laws of Delhi, India."
+                    android:textColor="#5C5C5C"
+                    android:textSize="14sp"
+                    android:visibility="gone"
+                    app:carbon_font="@font/space_grotesk_semibold" />
+
+                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/line" />
+
+                <!-- 19 -->
+                <LinearLayout
+                    android:id="@+id/header19"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingVertical="16dp">
+
+                    <carbon.widget.TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="19. Changes to Terms of Service"
+                        android:textColor="#0D3238"
+                        android:textSize="15sp"
+                        app:carbon_font="@font/space_grotesk_semibold" />
+
+                    <carbon.widget.ImageView
+                        android:id="@+id/chevron19"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/ic_chevron_right"
+                        app:carbon_tint="@color/chev" />
+                </LinearLayout>
+
+                <carbon.widget.TextView
+                    android:id="@+id/body19"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:lineSpacingExtra="3dp"
+                    android:paddingBottom="18dp"
+                    android:text="You can review the most current version of these Terms at any time on this page. We reserve the right, at our sole discretion, to update or replace any part of these Terms by posting changes to our website. Checking this page periodically is your responsibility — continued use of our site after changes are posted constitutes acceptance of them."
+                    android:textColor="#5C5C5C"
+                    android:textSize="14sp"
+                    android:visibility="gone"
+                    app:carbon_font="@font/space_grotesk_semibold" />
+            </carbon.widget.LinearLayout>
+
+            <!-- CONTACT CARD (Section 20) -->
+            <carbon.widget.TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="12dp"
+                android:text="Questions About These Terms?"
+                android:textColor="#0D3238"
+                android:textSize="22sp"
+                app:carbon_font="@font/space_grotesk_semibold" />
+
+            <carbon.widget.LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:orientation="horizontal"
+                android:padding="18dp"
+                app:carbon_cornerRadius="24dp"
+                app:carbon_elevation="4dp"
+                app:carbon_stroke="#14000000"
+                app:carbon_strokeWidth="1dp">
+
+                <carbon.widget.ImageView
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:background="#0D3238"
+                    android:padding="12dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_mail"
+                    app:carbon_cornerRadius="15dp"
+                    app:carbon_tint="@color/white" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="14dp"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:orientation="vertical">
+
+                    <carbon.widget.TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Questions about the Terms of Service should be sent to us at:"
+                        android:textColor="#5C5C5C"
+                        android:textSize="14sp"
+                        app:carbon_font="@font/space_grotesk_semibold" />
+
+                    <carbon.widget.TextView
+                        android:id="@+id/tvContactEmail"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:text="contact@adikala.in"
+                        android:textColor="@color/teal"
+                        android:textSize="15sp"
+                        app:carbon_font="@font/space_grotesk_semibold" />
+                </LinearLayout>
+            </carbon.widget.LinearLayout>
+
+            <carbon.widget.TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:gravity="center"
+                android:text="Adikala · Version 1.0.4"
+                android:textColor="#B6A89F"
+                android:textSize="11sp"
+                app:carbon_font="@font/space_grotesk_semibold" />
+
+        </LinearLayout>
+    </ScrollView>
+
+</carbon.widget.RelativeLayout>

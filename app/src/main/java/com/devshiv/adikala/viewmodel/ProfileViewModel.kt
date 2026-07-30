@@ -262,26 +262,15 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
             try {
                 val token = getValidToken() ?: return@launch
                 val addresses = customerRepository.getAddresses(token)
-                _addresses.value = addresses
+                _addresses.value = addresses.toList()
 
                 val defaultAddr = addresses.find { it.isDefault }
-                Log.d("ProfileVM", "=== loadAddresses ===")
-                Log.d("ProfileVM", "Default addr firstName: '${defaultAddr?.firstName}'")
-                Log.d("ProfileVM", "Default addr lastName: '${defaultAddr?.lastName}'")
-
                 if (defaultAddr != null) {
                     val name = listOfNotNull(defaultAddr.firstName, defaultAddr.lastName)
                         .filter { it.isNotEmpty() }
                         .joinToString(" ")
-
-                    Log.d("ProfileVM", "Constructed name: '$name'")
-
-                    if (name.isNotEmpty()) {
-                        _defaultAddressName.value = name
-                        ProfileCacheManager.saveAddressName(app, name)
-                    } else {
-                        _defaultAddressName.value = "Default address"
-                    }
+                    _defaultAddressName.value = name.ifEmpty { "Default address" }
+                    if (name.isNotEmpty()) ProfileCacheManager.saveAddressName(app, name)
 
                     if (defaultAddr.phone != null && defaultAddr.phone.isNotEmpty()) {
                         _userPhone.value = defaultAddr.phone
@@ -304,6 +293,41 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
+    fun deleteAddress(addressId: String) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            try {
+                Log.d("ProfileVM", "=== deleteAddress START: $addressId ===")
+                Log.d("ProfileVM", "Current addresses count: ${_addresses.value?.size}")
+
+                val token = getValidToken() ?: return@launch
+                val success = customerRepository.deleteAddress(token, addressId)
+
+                Log.d("ProfileVM", "Delete API success: $success")
+
+                if (success) {
+                    _successMessage.value = "Address deleted"
+
+                    val currentList = _addresses.value?.toMutableList() ?: mutableListOf()
+                    Log.d("ProfileVM", "Before remove - list size: ${currentList.size}")
+                    currentList.removeAll { it.id == addressId }
+                    Log.d("ProfileVM", "After remove - list size: ${currentList.size}")
+                    _addresses.value = currentList.toList()
+                    Log.d("ProfileVM", "New LiveData value set: ${_addresses.value?.size}")
+
+                    loadAddresses()
+                } else {
+                    _errorMessage.value = "Failed to delete address"
+                }
+            } catch (e: Exception) {
+                Log.e("ProfileVM", "Delete exception: ${e.message}", e)
+                _errorMessage.value = "Failed to delete address"
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+
     fun addAddress(address: Address) {
         viewModelScope.launch {
             _isLoading.value = true
@@ -312,7 +336,23 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
                 val success = customerRepository.addAddress(token, address)
                 if (success) {
                     _successMessage.value = "Address added successfully"
-                    fetchProfileFromServer()
+
+                    val currentList = _addresses.value?.toMutableList() ?: mutableListOf()
+                    currentList.add(0, address)
+                    _addresses.value = currentList.toList()
+
+                    if (address.isDefault) {
+                        val name = listOfNotNull(address.firstName, address.lastName)
+                            .filter { it.isNotEmpty() }.joinToString(" ")
+                        _defaultAddressName.value = name.ifEmpty { "Default address" }
+                        val fullAddress = listOfNotNull(
+                            address.address1, address.address2,
+                            address.city, address.state,
+                            address.country, address.zip
+                        ).filter { it.isNotEmpty() }.joinToString(", ")
+                        _defaultAddress.value = fullAddress.ifEmpty { "No address saved yet" }
+                    }
+
                     loadAddresses()
                 } else {
                     _errorMessage.value = "Failed to add address"
@@ -333,34 +373,42 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
                 val success = customerRepository.updateAddress(token, addressId, address)
                 if (success) {
                     _successMessage.value = "Address updated"
-                    fetchProfileFromServer()
+
+                    val currentList = _addresses.value?.toMutableList() ?: mutableListOf()
+
+                    if (address.isDefault) {
+                        for (i in currentList.indices) {
+                            if (currentList[i].isDefault && currentList[i].id != addressId) {
+                                currentList[i] = currentList[i].copy(isDefault = false)
+                            }
+                        }
+                    }
+
+                    val index = currentList.indexOfFirst { it.id == addressId }
+                    if (index >= 0) {
+                        currentList[index] = address
+                    }
+
+                    _addresses.value = currentList.toList()
+
+                    if (address.isDefault) {
+                        val name = listOfNotNull(address.firstName, address.lastName)
+                            .filter { it.isNotEmpty() }.joinToString(" ")
+                        _defaultAddressName.value = name.ifEmpty { "Default address" }
+                        val fullAddress = listOfNotNull(
+                            address.address1, address.address2,
+                            address.city, address.state,
+                            address.country, address.zip
+                        ).filter { it.isNotEmpty() }.joinToString(", ")
+                        _defaultAddress.value = fullAddress.ifEmpty { "No address saved yet" }
+                    }
+
                     loadAddresses()
                 } else {
                     _errorMessage.value = "Failed to update address"
                 }
             } catch (e: Exception) {
                 _errorMessage.value = "Failed to update address"
-            } finally {
-                _isLoading.value = false
-            }
-        }
-    }
-
-    fun deleteAddress(addressId: String) {
-        viewModelScope.launch {
-            _isLoading.value = true
-            try {
-                val token = getValidToken() ?: return@launch
-                val success = customerRepository.deleteAddress(token, addressId)
-                if (success) {
-                    _successMessage.value = "Address deleted"
-                    fetchProfileFromServer()
-                    loadAddresses()
-                } else {
-                    _errorMessage.value = "Failed to delete address"
-                }
-            } catch (e: Exception) {
-                _errorMessage.value = "Failed to delete address"
             } finally {
                 _isLoading.value = false
             }

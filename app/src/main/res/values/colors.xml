@@ -23,5 +23,6 @@
     <color name="red">#D66A5F</color>
     <color name="chev">#C3B7B0</color>
     <color name="avatar_text">#F3D9CB</color>
+    <color name="product_card_bg">#F2ECE6</color>
     <color name="hint">#A6ABAB</color>
 </resources>

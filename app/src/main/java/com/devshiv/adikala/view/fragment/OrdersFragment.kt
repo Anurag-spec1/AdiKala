@@ -253,6 +253,11 @@ class OrdersFragment : Fragment() {
         adapter.updateList(displayOrders)
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.loadOrders()
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

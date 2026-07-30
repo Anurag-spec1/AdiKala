@@ -491,7 +491,7 @@
                     app:carbon_strokeWidth="1dp">
 
                     <LinearLayout
-                        android:id="@+id/btnHelpCenter"
+                        android:id="@+id/btnAboutUs"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:clickable="true"
@@ -520,7 +520,7 @@
                             <carbon.widget.TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="Help Center"
+                                android:text="About Us"
                                 android:textColor="#0D3238"
                                 android:textSize="17sp"
                                 app:carbon_font="@font/space_grotesk_semibold" />
@@ -539,7 +539,7 @@
                         android:background="@color/line" />
 
                     <LinearLayout
-                        android:id="@+id/btnContactUs"
+                        android:id="@+id/btnRefundsAndReturns"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:clickable="true"
@@ -568,7 +568,7 @@
                             <carbon.widget.TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="Contact Us"
+                                android:text="Refunds &amp; Returns"
                                 android:textColor="#0D3238"
                                 android:textSize="17sp"
                                 app:carbon_font="@font/space_grotesk_semibold" />
@@ -585,6 +585,54 @@
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:background="@color/line" />
+
+                    <LinearLayout
+                        android:id="@+id/btnShippingPolicy"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingVertical="16dp">
+
+                        <carbon.widget.ImageView
+                            android:layout_width="44dp"
+                            android:layout_height="44dp"
+                            android:background="#0D3238"
+                            android:padding="12dp"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/ic_cart"
+                            app:carbon_cornerRadius="15dp"
+                            app:carbon_tint="@color/white" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="14dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <carbon.widget.TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Shipping Policy"
+                                android:textColor="#0D3238"
+                                android:textSize="17sp"
+                                app:carbon_font="@font/space_grotesk_semibold" />
+                        </LinearLayout>
+
+                        <carbon.widget.ImageView
+                            android:layout_width="19dp"
+                            android:layout_height="19dp"
+                            android:src="@drawable/ic_chevron_right"
+                            app:carbon_tint="@color/chev" />
+                    </LinearLayout>
+
+                    <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/line" />
 
                     <LinearLayout
                         android:id="@+id/btnPrivacyPolicy"
@@ -664,7 +712,7 @@
                             <carbon.widget.TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="Terms &amp; Conditions"
+                                android:text="Terms Of Use"
                                 android:textColor="#0D3238"
                                 android:textSize="17sp"
                                 app:carbon_font="@font/space_grotesk_semibold" />
