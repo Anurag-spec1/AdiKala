@@ -10,16 +10,16 @@
 
     <carbon.widget.ImageView
         android:id="@+id/userImg"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="58dp"
+        android:layout_height="58dp"
         android:layout_marginStart="20dp"
         android:layout_marginTop="15dp"
         android:scaleType="centerCrop"
         android:src="@drawable/user_image"
-        app:carbon_cornerRadius="30dp"
+        app:carbon_cornerRadius="29dp"
         app:carbon_elevation="3dp"
-        app:carbon_stroke="@color/carbon_blue_200"
-        app:carbon_strokeWidth="1dp" />
+        app:carbon_stroke="@color/white"
+        app:carbon_strokeWidth="3dp" />
 
     <LinearLayout
         android:id="@+id/userInfoLayout"
@@ -118,43 +118,51 @@
         app:carbon_strokeWidth="1dp"
         app:carbon_tint="@color/white" />
 
-    <carbon.widget.EditText
-        android:id="@+id/etSearchBar"
+    <carbon.widget.RelativeLayout
         android:layout_width="match_parent"
+        android:id="@+id/etSearchBar2"
         android:layout_height="60dp"
         android:layout_below="@id/userImg"
         android:layout_marginStart="20dp"
         android:layout_marginTop="15dp"
         android:layout_marginEnd="12dp"
         android:layout_toStartOf="@id/ivMic"
-        android:background="@android:color/white"
-        android:clickable="true"
-        android:drawableStart="@drawable/ic_search"
-        android:drawablePadding="12dp"
-        android:drawableTint="#0D3238"
-        android:focusable="true"
-        android:gravity="center_vertical"
-        android:hint="Search handcrafts..."
-        android:imeOptions="actionSearch"
-        android:inputType="text"
-        android:maxLines="1"
-        android:paddingStart="18dp"
-        android:paddingEnd="18dp"
-        android:singleLine="true"
-        android:textColor="@android:color/black"
-        android:textColorHint="#8A8A8A"
-        android:textSize="16sp"
+        android:background="#FFFFFF"
         app:carbon_cornerRadius="30dp"
         app:carbon_elevation="4dp"
-        app:carbon_font="@font/space_grotesk_semibold"
         app:carbon_stroke="#14000000"
-        app:carbon_strokeWidth="1dp" />
+        app:carbon_strokeWidth="1dp">
+
+        <carbon.widget.EditText
+            android:id="@+id/etSearchBar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@null"
+            android:drawableStart="@drawable/ic_search"
+            android:drawableEnd="@drawable/ic_close"
+            android:drawablePadding="12dp"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:hint="Search handcrafts..."
+            android:imeOptions="actionSearch"
+            android:inputType="text"
+            android:maxLines="1"
+            android:paddingStart="18dp"
+            android:paddingEnd="18dp"
+            android:scrollHorizontally="true"
+            android:singleLine="true"
+            android:textColor="@android:color/black"
+            android:textColorHint="#8A8A8A"
+            android:textSize="16sp"
+            app:carbon_font="@font/space_grotesk_semibold" />
+
+    </carbon.widget.RelativeLayout>
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/nestedScroll"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/etSearchBar"
+        android:layout_below="@id/etSearchBar2"
         android:layout_marginTop="20dp"
         android:fillViewport="true"
         android:overScrollMode="never"

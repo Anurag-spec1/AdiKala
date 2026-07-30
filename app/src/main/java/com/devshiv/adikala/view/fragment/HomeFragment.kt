@@ -3,12 +3,19 @@ package com.devshiv.adikala.view.fragment
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
 import android.graphics.Typeface
 import android.os.Bundle
 import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
@@ -76,6 +83,41 @@ class HomeFragment : Fragment() {
         updateGreeting()
     }
 
+
+    private fun generateInitialAvatar(initial: String): Bitmap {
+        val sizePx = if (binding.userImg.width > 0) {
+            binding.userImg.width
+        } else {
+            (60 * resources.displayMetrics.density).toInt()
+        }
+
+        val bitmap = Bitmap.createBitmap(sizePx, sizePx, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bitmap)
+        val radius = sizePx / 2f
+
+        val backgroundPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            style = Paint.Style.FILL
+            shader = android.graphics.LinearGradient(
+                0f, 0f, 0f, sizePx.toFloat(),
+                Color.parseColor("#1E5049"),
+                Color.parseColor("#0F332E"),
+                android.graphics.Shader.TileMode.CLAMP
+            )
+        }
+        canvas.drawCircle(radius, radius, radius, backgroundPaint)
+
+        val textPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = Color.parseColor("#F3D9CB")
+            textAlign = Paint.Align.CENTER
+            textSize = sizePx * 0.42f
+            typeface = Typeface.DEFAULT_BOLD
+        }
+        val textY = radius - (textPaint.descent() + textPaint.ascent()) / 2f
+        canvas.drawText(initial, radius, textY, textPaint)
+
+        return bitmap
+    }
+
     private fun updateGreeting() {
         val authManager = ShopifyAuthManager(requireContext())
         val firstName =
@@ -85,6 +127,10 @@ class HomeFragment : Fragment() {
         binding.gestureTag.text = greeting
         binding.userName.text = if (firstName.isNotEmpty()) firstName else "User"
         binding.userName.setTypeface(null, Typeface.BOLD)
+        val initial = if (firstName.isNotEmpty()) firstName.first().uppercaseChar().toString() else "U"
+        binding.userImg.post {
+            binding.userImg.setImageBitmap(generateInitialAvatar(initial))
+        }
     }
 
     private fun getTimeBasedGreeting(): String {
@@ -187,12 +233,55 @@ class HomeFragment : Fragment() {
             } else false
         }
 
+        setupSearchBarClearButton()
+
         binding.ivMic.setOnClickListener {
             if (isListening) {
                 stopVoiceSearch()
             } else {
                 startVoiceSearch()
             }
+        }
+    }
+
+
+    private fun setupSearchBarClearButton() {
+        val searchIcon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_search)
+        val closeIcon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_close)
+
+        fun updateClearIcon(hasText: Boolean) {
+            binding.etSearchBar.setCompoundDrawablesWithIntrinsicBounds(
+                searchIcon,
+                null,
+                if (hasText) closeIcon else null,
+                null
+            )
+        }
+
+        updateClearIcon(binding.etSearchBar.text?.isNotEmpty() == true)
+
+        binding.etSearchBar.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                updateClearIcon(s?.isNotEmpty() == true)
+            }
+        })
+
+        binding.etSearchBar.setOnTouchListener { v, event ->
+            if (event.action == MotionEvent.ACTION_UP) {
+                val et = v as android.widget.EditText
+                val drawableEnd = et.compoundDrawables[2]
+                if (drawableEnd != null) {
+                    val touchAreaStart = et.width - et.paddingEnd - drawableEnd.bounds.width()
+                    if (event.rawX >= v.x + touchAreaStart) {
+                        et.text?.clear()
+                        v.performClick()
+                        return@setOnTouchListener true
+                    }
+                }
+            }
+            false
         }
     }
 
