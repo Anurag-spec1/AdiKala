@@ -24,6 +24,7 @@ import com.devshiv.adikala.databinding.ActivityProductDetailBinding
 import com.devshiv.adikala.databinding.ItemDiscountBinding
 import com.devshiv.adikala.databinding.ItemFeatureBinding
 import com.devshiv.adikala.model.Product
+import com.devshiv.adikala.utils.WishlistManager
 import com.devshiv.adikala.viewmodel.CartViewModel
 import com.devshiv.adikala.viewmodel.ProductDetailViewModel
 
@@ -231,6 +232,7 @@ class ProductDetailActivity : AppCompatActivity() {
 
         binding.btnWishlist.setOnClickListener {
             product.isWishlisted = !product.isWishlisted
+            WishlistManager.toggleWishlist(this, product)
             binding.btnWishlist.setImageResource(
                 if (product.isWishlisted) R.drawable.ic_heart_filled else R.drawable.ic_heart
             )

@@ -91,7 +91,7 @@
         android:focusable="true"
         android:padding="13dp"
         android:scaleType="centerCrop"
-        android:src="@drawable/ic_notification"
+        android:src="@drawable/ic_heart"
         app:carbon_cornerRadius="22.5dp"
         app:carbon_elevation="4dp"
         app:carbon_elevationShadowColor="@color/black"

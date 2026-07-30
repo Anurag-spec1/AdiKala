@@ -48,6 +48,7 @@ import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
+import com.devshiv.adikala.view.activity.WishlistActivity
 import java.security.MessageDigest
 
 class HomeFragment : Fragment() {
@@ -260,6 +261,10 @@ class HomeFragment : Fragment() {
         }
         binding.cart.setOnClickListener {
             startActivity(Intent(requireContext(), CartActivity::class.java))
+        }
+
+        binding.notification.setOnClickListener {
+            startActivity(Intent(requireContext(), WishlistActivity::class.java))
         }
 
         binding.rvCategories.layoutManager =

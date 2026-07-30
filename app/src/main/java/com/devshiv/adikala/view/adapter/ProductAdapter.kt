@@ -10,6 +10,7 @@ import com.bumptech.glide.Glide
 import com.devshiv.adikala.R
 import com.devshiv.adikala.databinding.ItemProductsBinding
 import com.devshiv.adikala.model.Product
+import com.devshiv.adikala.utils.WishlistManager
 
 class ProductAdapter(
     private var list: List<Product>,
@@ -42,7 +43,7 @@ class ProductAdapter(
             val onSale = item.discountedPrice < item.actualPrice
             if (onSale) {
                 val saved = item.actualPrice - item.discountedPrice
-                val percent = saved * 100 / item.actualPrice
+                val percent = if (item.actualPrice > 0) saved * 100 / item.actualPrice else 0
                 binding.tvDiscountBadge.text = "$percent% OFF"
                 binding.tvDiscountBadge.visibility = View.VISIBLE
                 binding.tvActualPrice.visibility = View.VISIBLE
@@ -50,6 +51,9 @@ class ProductAdapter(
                 binding.tvDiscountBadge.visibility = View.GONE
                 binding.tvActualPrice.visibility = View.GONE
             }
+
+            val context = binding.root.context
+            item.isWishlisted = WishlistManager.isWishlisted(context, item.id)
 
             binding.btnWishlist.setImageResource(
                 if (item.isWishlisted) R.drawable.ic_heart_filled else R.drawable.ic_heart
@@ -62,7 +66,18 @@ class ProductAdapter(
 
             binding.root.setOnClickListener { onClick?.invoke(item) }
             binding.btnQuickAdd.setOnClickListener { onAddToCart?.invoke(item) }
-            binding.btnWishlist.setOnClickListener { onWishlistToggle?.invoke(item) }
+            binding.btnWishlist.setOnClickListener {
+                val context = binding.root.context
+                val isNowWishlisted = WishlistManager.toggleWishlist(context, item)
+                item.isWishlisted = isNowWishlisted
+                binding.btnWishlist.setImageResource(
+                    if (item.isWishlisted) R.drawable.ic_heart_filled else R.drawable.ic_heart
+                )
+                binding.btnWishlist.setColorFilter(
+                    Color.parseColor(if (item.isWishlisted) "#C2707D" else "#0D3238")
+                )
+                onWishlistToggle?.invoke(item)
+            }
         }
     }
 
