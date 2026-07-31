@@ -25,8 +25,11 @@
             android:layout_width="120dp"
             android:layout_height="120dp"
             android:alpha="0.8"
+            app:carbon_elevation="3dp"
+            app:carbon_strokeWidth="2dp"
+            app:carbon_stroke="#0D3238"
             android:scaleType="centerCrop"
-            android:src="@drawable/user_image"
+            android:src="@drawable/logo"
             app:carbon_cornerRadius="60dp" />
 
         <carbon.widget.TextView

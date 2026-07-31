@@ -11,7 +11,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
-import androidx.fragment.app.Fragment
 import com.devshiv.adikala.R
 import com.devshiv.adikala.auth.ShopifyAuthManager
 import com.devshiv.adikala.databinding.ActivityMainBinding
@@ -21,6 +20,7 @@ import com.devshiv.adikala.view.fragment.ProfileFragment
 import com.devshiv.adikala.widget.BottomNavBar
 
 class MainActivity : AppCompatActivity() {
+
     private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,44 +33,51 @@ class MainActivity : AppCompatActivity() {
         val token = ShopifyAuthManager(this).getAccessToken()
         Log.d("ACCESS_TOKEN", token ?: "NO TOKEN FOUND")
 
-        val navigateTo = intent.getStringExtra("navigate_to")
+        binding.bottomNavBar.setOnHomeClickListener {
+            navigateTo(BottomNavBar.Tab.HOME)
+        }
+
+        binding.bottomNavBar.setOnCartClickListener {
+            navigateTo(BottomNavBar.Tab.ORDERS)
+        }
+
+        binding.bottomNavBar.setOnProfileClickListener {
+            navigateTo(BottomNavBar.Tab.PROFILE)
+        }
 
         if (savedInstanceState == null) {
-            if (navigateTo == "profile") {
-                binding.bottomNavBar.selectTab(BottomNavBar.Tab.PROFILE)
-            } else {
-                loadFragment(HomeFragment())
+            val navigateTo = intent.getStringExtra("navigate_to")
+            when (navigateTo) {
+                "profile" -> navigateTo(BottomNavBar.Tab.PROFILE)
+                "orders" -> navigateTo(BottomNavBar.Tab.ORDERS)
+                else -> navigateTo(BottomNavBar.Tab.HOME)
             }
-        }
-
-        binding.bottomNavBar.setOnHomeClickListener {
-            loadFragment(HomeFragment())
-        }
-        binding.bottomNavBar.setOnCartClickListener {
-            loadFragment(OrdersFragment())
-        }
-        binding.bottomNavBar.setOnProfileClickListener {
-            loadFragment(ProfileFragment())
         }
     }
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        intent.getStringExtra("navigate_to")?.let { tab ->
-            if (tab == "profile") {
-                binding.bottomNavBar.selectTab(BottomNavBar.Tab.PROFILE)
-            }
+        setIntent(intent)
 
-            if (tab == "home") {
-                binding.bottomNavBar.selectTab(BottomNavBar.Tab.HOME)
-            }
+        when (intent.getStringExtra("navigate_to")) {
+            "profile" -> navigateTo(BottomNavBar.Tab.PROFILE)
+            "orders" -> navigateTo(BottomNavBar.Tab.ORDERS)
+            "home" -> navigateTo(BottomNavBar.Tab.HOME)
         }
     }
 
-    private fun loadFragment(fragment: Fragment) {
+    private fun navigateTo(tab: BottomNavBar.Tab) {
+        binding.bottomNavBar.setActive(tab)
+
+        val fragment = when (tab) {
+            BottomNavBar.Tab.HOME -> HomeFragment()
+            BottomNavBar.Tab.ORDERS -> OrdersFragment()
+            BottomNavBar.Tab.PROFILE -> ProfileFragment()
+        }
+
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragmentContainer, fragment)
-            .commit()
+            .commitNow()
     }
 
     private fun enableFullScreen() {
@@ -80,7 +87,8 @@ class MainActivity : AppCompatActivity() {
 
         val controller = WindowInsetsControllerCompat(window, binding.root)
         controller.hide(WindowInsetsCompat.Type.statusBars() or WindowInsetsCompat.Type.navigationBars())
-        controller.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+        controller.systemBarsBehavior =
+            WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
             @Suppress("DEPRECATION")

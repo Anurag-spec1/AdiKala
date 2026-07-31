@@ -21,7 +21,8 @@ class BottomNavBar @JvmOverloads constructor(
 
     enum class Tab { ORDERS, HOME, PROFILE }
 
-    private val binding: BottomNavBarBinding
+    private val binding: BottomNavBarBinding =
+        BottomNavBarBinding.inflate(LayoutInflater.from(context), this, true)
 
     private var onCartClick: (() -> Unit)? = null
     private var onHomeClick: (() -> Unit)? = null
@@ -33,29 +34,27 @@ class BottomNavBar @JvmOverloads constructor(
     private val inactiveColor by lazy { ContextCompat.getColor(context, R.color.nav_icon_inactive) }
 
     init {
-        binding = BottomNavBarBinding.inflate(LayoutInflater.from(context), this, true)
         setupTouchListeners()
         setInitialState()
     }
 
     private fun setupTouchListeners() {
-        binding.navCart.setOnTouchListener { v, event ->
+        binding.navCart.setOnTouchListener { _, event ->
             if (event.action == MotionEvent.ACTION_DOWN) {
-                setActive(Tab.ORDERS)
                 onCartClick?.invoke()
                 true
             } else false
         }
-        binding.navHome.setOnTouchListener { v, event ->
+
+        binding.navHome.setOnTouchListener { _, event ->
             if (event.action == MotionEvent.ACTION_DOWN) {
-                setActive(Tab.HOME)
                 onHomeClick?.invoke()
                 true
             } else false
         }
-        binding.navProfile.setOnTouchListener { v, event ->
+
+        binding.navProfile.setOnTouchListener { _, event ->
             if (event.action == MotionEvent.ACTION_DOWN) {
-                setActive(Tab.PROFILE)
                 onProfileClick?.invoke()
                 true
             } else false
@@ -68,9 +67,18 @@ class BottomNavBar @JvmOverloads constructor(
         updateTab(binding.navProfilePill, binding.navProfileIcon, binding.navProfileText, Tab.PROFILE)
     }
 
-    fun setOnCartClickListener(listener: () -> Unit) { onCartClick = listener }
-    fun setOnHomeClickListener(listener: () -> Unit) { onHomeClick = listener }
-    fun setOnProfileClickListener(listener: () -> Unit) { onProfileClick = listener }
+    fun setOnCartClickListener(listener: () -> Unit) {
+        onCartClick = listener
+    }
+
+    fun setOnHomeClickListener(listener: () -> Unit) {
+        onHomeClick = listener
+    }
+
+    fun setOnProfileClickListener(listener: () -> Unit) {
+        onProfileClick = listener
+    }
+
     fun getActiveTab(): Tab = activeTab
 
     fun setActive(tab: Tab) {
@@ -79,17 +87,9 @@ class BottomNavBar @JvmOverloads constructor(
         setInitialState()
     }
 
-    fun selectTab(tab: Tab) {
-        setActive(tab)
-        when (tab) {
-            Tab.ORDERS -> onCartClick?.invoke()
-            Tab.HOME -> onHomeClick?.invoke()
-            Tab.PROFILE -> onProfileClick?.invoke()
-        }
-    }
-
     private fun updateTab(pill: LinearLayout, icon: ImageView, text: TextView, tab: Tab) {
         val isActive = tab == activeTab
+
         pill.background.alpha = if (isActive) 255 else 0
         text.alpha = if (isActive) 1f else 0f
 
