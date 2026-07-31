@@ -68,8 +68,7 @@
             android:paddingTop="6dp"
             android:paddingBottom="40dp">
 
-            <!-- WAREHOUSE + DELIVERY WINDOW HERO -->
-            <carbon.widget.LinearLayout
+ <carbon.widget.LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
@@ -149,7 +148,6 @@
                 </LinearLayout>
             </carbon.widget.LinearLayout>
 
-            <!-- DELIVERY DETAILS -->
             <carbon.widget.TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -314,7 +312,6 @@
                 </LinearLayout>
             </carbon.widget.LinearLayout>
 
-            <!-- RESPONSIBILITY / DISCLAIMER -->
             <carbon.widget.TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -424,7 +421,6 @@
                 </LinearLayout>
             </carbon.widget.LinearLayout>
 
-            <!-- UNBOXING VIDEO NOTE -->
             <carbon.widget.TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

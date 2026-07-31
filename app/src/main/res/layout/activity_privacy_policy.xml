@@ -68,7 +68,6 @@
             android:paddingTop="6dp"
             android:paddingBottom="40dp">
 
-            <!-- INTRO CARD -->
             <carbon.widget.LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -122,7 +121,6 @@
                 android:textSize="22sp"
                 app:carbon_font="@font/space_grotesk_semibold" />
 
-            <!-- ACCORDION CONTAINER -->
             <carbon.widget.LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -134,7 +132,6 @@
                 app:carbon_stroke="#14000000"
                 app:carbon_strokeWidth="1dp">
 
-                <!-- SECTION 1 -->
                 <LinearLayout
                     android:id="@+id/headerSection1"
                     android:layout_width="match_parent"
@@ -179,7 +176,6 @@
                     android:layout_height="1dp"
                     android:background="@color/line" />
 
-                <!-- SECTION 2 -->
                 <LinearLayout
                     android:id="@+id/headerSection2"
                     android:layout_width="match_parent"
@@ -224,7 +220,6 @@
                     android:layout_height="1dp"
                     android:background="@color/line" />
 
-                <!-- SECTION 3 -->
                 <LinearLayout
                     android:id="@+id/headerSection3"
                     android:layout_width="match_parent"
@@ -269,7 +264,6 @@
                     android:layout_height="1dp"
                     android:background="@color/line" />
 
-                <!-- SECTION 4 -->
                 <LinearLayout
                     android:id="@+id/headerSection4"
                     android:layout_width="match_parent"
@@ -314,7 +308,6 @@
                     android:layout_height="1dp"
                     android:background="@color/line" />
 
-                <!-- SECTION 5 -->
                 <LinearLayout
                     android:id="@+id/headerSection5"
                     android:layout_width="match_parent"
@@ -359,7 +352,6 @@
                     android:layout_height="1dp"
                     android:background="@color/line" />
 
-                <!-- SECTION 6 -->
                 <LinearLayout
                     android:id="@+id/headerSection6"
                     android:layout_width="match_parent"
@@ -404,7 +396,6 @@
                     android:layout_height="1dp"
                     android:background="@color/line" />
 
-                <!-- SECTION 7 -->
                 <LinearLayout
                     android:id="@+id/headerSection7"
                     android:layout_width="match_parent"
@@ -453,8 +444,8 @@
                     <carbon.widget.LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/main_bg"
                         android:orientation="vertical"
+                        android:background="#FEE0D8"
                         android:padding="14dp"
                         app:carbon_cornerRadius="16dp">
 
@@ -597,7 +588,6 @@
                     android:layout_height="1dp"
                     android:background="@color/line" />
 
-                <!-- SECTION 8 -->
                 <LinearLayout
                     android:id="@+id/headerSection8"
                     android:layout_width="match_parent"
@@ -642,7 +632,6 @@
                     android:layout_height="1dp"
                     android:background="@color/line" />
 
-                <!-- SECTION 9 -->
                 <LinearLayout
                     android:id="@+id/headerSection9"
                     android:layout_width="match_parent"
@@ -683,7 +672,6 @@
                     app:carbon_font="@font/space_grotesk_semibold" />
             </carbon.widget.LinearLayout>
 
-            <!-- CONTACT CARD -->
             <carbon.widget.TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

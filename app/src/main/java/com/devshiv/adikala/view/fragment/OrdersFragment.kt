@@ -1,4 +1,3 @@
-// com/devshiv/adikala/view/fragment/OrdersFragment.kt
 package com.devshiv.adikala.view.fragment
 
 import android.app.AlertDialog
