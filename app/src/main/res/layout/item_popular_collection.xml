@@ -53,6 +53,9 @@
             android:text="Explore"
             android:textAllCaps="false"
             android:textColor="@color/white"
+            android:clickable="true"
+            android:focusable="true"
+            app:carbon_rippleColor="#EAF4F5"
             android:textSize="13sp"
             app:carbon_cornerRadius="20dp"
             app:carbon_font="@font/space_grotesk_semibold" />

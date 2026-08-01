@@ -9,6 +9,7 @@ object CartManager {
     private const val PREFS_NAME = "adikala_cart"
     private const val KEY_CART_ID = "active_cart_id"
     private const val KEY_PRODUCT_NAMES = "product_names"
+    private const val KEY_CART_COUNT = "cart_count"
 
     private fun prefs(context: Context): SharedPreferences =
         context.applicationContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
@@ -22,6 +23,25 @@ object CartManager {
         val map = getProductNames(context).toMutableMap()
         map[variantId] = name
         prefs(context).edit().putString(KEY_PRODUCT_NAMES, Gson().toJson(map)).apply()
+    }
+
+    fun saveCartCount(context: Context, count: Int) {
+        context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+            .edit()
+            .putInt(KEY_CART_COUNT, count)
+            .apply()
+    }
+
+    fun getCartCount(context: Context): Int {
+        return context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+            .getInt(KEY_CART_COUNT, 0)
+    }
+
+    fun clearCartCount(context: Context) {
+        context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+            .edit()
+            .remove(KEY_CART_COUNT)
+            .apply()
     }
 
     fun getProductName(context: Context, variantId: String): String? {

@@ -201,11 +201,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="14dp"
-            android:buttonTint="#0D3238"
-            android:fontFamily="@font/space_grotesk_semibold"
             android:text="Set as default address"
             android:textColor="#0D3238"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            app:buttonTint="@color/default_address_checkbox_tint" />
 
         <LinearLayout
             android:layout_width="match_parent"

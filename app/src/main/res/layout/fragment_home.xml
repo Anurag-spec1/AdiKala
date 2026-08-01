@@ -59,33 +59,13 @@
     </LinearLayout>
 
     <carbon.widget.ImageView
-        android:id="@+id/cart"
-        android:layout_width="45dp"
-        android:layout_height="45dp"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="15dp"
-        android:background="@color/white"
-        android:clickable="true"
-        android:focusable="true"
-        android:padding="13dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/ic_cart"
-        app:carbon_cornerRadius="22.5dp"
-        app:carbon_elevation="4dp"
-        app:carbon_elevationShadowColor="@color/black"
-        app:carbon_stroke="#14000000"
-        app:carbon_strokeWidth="1dp"
-        app:carbon_tint="#0D3238" />
-
-    <carbon.widget.ImageView
         android:id="@+id/notification"
         android:layout_width="45dp"
         android:layout_height="45dp"
         android:layout_marginStart="20dp"
         android:layout_marginTop="20dp"
         android:layout_marginEnd="15dp"
-        android:layout_toStartOf="@id/cart"
+        android:layout_toStartOf="@id/cartContainer"
         android:background="@color/white"
         android:clickable="true"
         android:focusable="true"
@@ -98,6 +78,51 @@
         app:carbon_stroke="#14000000"
         app:carbon_strokeWidth="1dp"
         app:carbon_tint="#0D3238" />
+
+    <carbon.widget.FrameLayout
+        android:id="@+id/cartContainer"
+        android:layout_width="52dp"
+        android:layout_height="52dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="13dp"
+        android:layout_marginEnd="8dp"
+        android:clipChildren="false"
+        android:clipToPadding="false">
+
+        <carbon.widget.ImageView
+            android:id="@+id/cart"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_gravity="bottom|start"
+            android:background="@color/white"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="13dp"
+            android:scaleType="centerCrop"
+            android:layout_marginBottom="1dp"
+            android:src="@drawable/ic_cart"
+            app:carbon_cornerRadius="22.5dp"
+            app:carbon_elevation="4dp"
+            app:carbon_elevationShadowColor="@color/black"
+            app:carbon_stroke="#14000000"
+            app:carbon_strokeWidth="1dp"
+            app:carbon_tint="#0D3238" />
+
+        <TextView
+            android:id="@+id/tvCartBadge"
+            android:layout_width="19dp"
+            android:layout_height="19dp"
+            android:layout_gravity="top|end"
+            android:background="@drawable/bg_cart_badge"
+            android:elevation="6dp"
+            android:gravity="center"
+            android:includeFontPadding="false"
+            android:text="4"
+            android:textColor="@color/white"
+            android:textSize="11sp"
+            android:textStyle="bold" />
+
+    </carbon.widget.FrameLayout>
 
     <carbon.widget.ImageView
         android:id="@+id/ivMic"

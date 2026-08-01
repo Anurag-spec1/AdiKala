@@ -42,6 +42,9 @@ class CartViewModel(application: Application) : AndroidViewModel(application) {
     private val _itemAdded = MutableLiveData<Boolean>()
     val itemAdded: LiveData<Boolean> = _itemAdded
 
+    private val _cartCount = MutableLiveData(CartManager.getCartCount(application))
+    val cartCount: LiveData<Int> = _cartCount
+
     private val _suggestions = MutableLiveData<List<CartRepository.ProductSuggestion>>()
     val suggestions: LiveData<List<CartRepository.ProductSuggestion>> = _suggestions
 
@@ -51,7 +54,11 @@ class CartViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun loadCart() {
-        val cartId = CartManager.getCartId(app) ?: run { _isEmpty.value = true; return }
+        val cartId = CartManager.getCartId(app) ?: run {
+            _isEmpty.value = true
+            _cartCount.value = CartManager.getCartCount(app)  // Use saved count
+            return
+        }
         viewModelScope.launch {
             _isLoading.value = true
             val cart = repository.getCart(cartId)
@@ -71,11 +78,15 @@ class CartViewModel(application: Application) : AndroidViewModel(application) {
                 _totalAmount.value = cart.totalAmount
                 _checkoutUrl.value = cart.checkoutUrl
                 _isEmpty.value = false
+                _cartCount.value = cart.totalQuantity
+                CartManager.saveCartCount(app, cart.totalQuantity)
 
                 loadDynamicSuggestions(cart.items.map { it.variantId })
             } else {
                 CartManager.clear(app)
+                CartManager.clearCartCount(app)
                 _isEmpty.value = true
+                _cartCount.value = 0
                 loadBestSellers()
             }
             _isLoading.value = false
@@ -152,6 +163,8 @@ class CartViewModel(application: Application) : AndroidViewModel(application) {
                 _totalAmount.value = result.totalAmount
                 _checkoutUrl.value = result.checkoutUrl
                 _isEmpty.value = result.items.isEmpty()
+                _cartCount.value = result.totalQuantity
+                CartManager.saveCartCount(app, result.totalQuantity)
             } else {
                 loadCart()
             }
@@ -182,6 +195,8 @@ class CartViewModel(application: Application) : AndroidViewModel(application) {
                 }
                 _totalAmount.value = result.totalAmount
                 _checkoutUrl.value = result.checkoutUrl
+                _cartCount.value = result.totalQuantity
+                CartManager.saveCartCount(app, result.totalQuantity)
             } else {
                 loadCart()
             }

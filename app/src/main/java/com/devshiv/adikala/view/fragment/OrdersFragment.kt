@@ -1,6 +1,7 @@
 package com.devshiv.adikala.view.fragment
 
 import android.app.AlertDialog
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -15,6 +16,7 @@ import com.devshiv.adikala.R
 import com.devshiv.adikala.databinding.FragmentOrdersBinding
 import com.devshiv.adikala.model.Order
 import com.devshiv.adikala.model.OrderStatus
+import com.devshiv.adikala.view.activity.MainActivity
 import com.devshiv.adikala.view.adapter.OrderAdapter
 import com.devshiv.adikala.viewmodel.OrdersViewModel
 
@@ -64,6 +66,12 @@ class OrdersFragment : Fragment() {
             } catch (e: Exception) {
                 android.widget.Toast.makeText(requireContext(), "No email app found", android.widget.Toast.LENGTH_SHORT).show()
             }
+        }
+
+        binding.btnShopNow.setOnClickListener {
+            val intent = Intent(requireContext(), MainActivity::class.java)
+            intent.putExtra("navigate_to", "home")
+            startActivity(intent)
         }
         binding.rvOrders.layoutManager = LinearLayoutManager(requireContext())
         binding.rvOrders.adapter = adapter

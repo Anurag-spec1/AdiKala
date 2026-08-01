@@ -14,7 +14,6 @@ import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -41,15 +40,10 @@ import com.devshiv.adikala.databinding.FragmentHomeBinding
 import com.devshiv.adikala.model.Category
 import com.devshiv.adikala.model.PopularCollection
 import com.devshiv.adikala.viewmodel.HomeViewModel
+import com.devshiv.adikala.viewmodel.CartViewModel
 import java.util.Calendar
-
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.target.Target
+import com.devshiv.adikala.utils.CartManager
 import com.devshiv.adikala.view.activity.WishlistActivity
-import java.security.MessageDigest
 
 class HomeFragment : Fragment() {
 
@@ -59,6 +53,7 @@ class HomeFragment : Fragment() {
     private val RECORD_AUDIO_PERMISSION = 100
 
     private lateinit var viewModel: HomeViewModel
+    private lateinit var cartViewModel: CartViewModel
 
     private lateinit var categoryAdapter: CategoryAdapter
     private lateinit var adikalaStoreAdapter: PopularCollectionAdapter
@@ -80,19 +75,36 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel = ViewModelProvider(this)[HomeViewModel::class.java]
+        cartViewModel = ViewModelProvider(requireActivity())[CartViewModel::class.java]
+
+        cartViewModel.cartCount.observe(viewLifecycleOwner) { count ->
+            updateCartBadge(count)
+        }
 
         initSpeechRecognizer()
         setupUI()
         observeViewModel()
         viewModel.loadHomeData()
+
+       updateCartBadge(CartManager.getCartCount(requireContext()))
     }
 
     override fun onResume() {
         super.onResume()
         updateGreeting()
         viewModel.loadHomeData()
+
+        cartViewModel.loadCart()
     }
 
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+        if (!hidden) {
+            updateGreeting()
+            updateCartBadge(CartManager.getCartCount(requireContext()))
+            cartViewModel.loadCart()
+        }
+    }
 
     private fun generateInitialAvatar(initial: String): Bitmap {
         val sizePx = if (binding.userImg.width > 0) {
@@ -143,10 +155,18 @@ class HomeFragment : Fragment() {
         loadProfileImage(email, initial)
     }
 
+    private fun updateCartBadge(count: Int) {
+        if (count > 0) {
+            binding.tvCartBadge.visibility = View.VISIBLE
+            binding.tvCartBadge.text = if (count > 99) "99+" else count.toString()
+        } else {
+            binding.tvCartBadge.visibility = View.GONE
+        }
+    }
+
     private fun loadProfileImage(email: String?, initial: String) {
         binding.userImg.setImageBitmap(generateInitialAvatar(initial))
     }
-
 
     private fun getTimeBasedGreeting(): String {
         val hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
@@ -262,7 +282,6 @@ class HomeFragment : Fragment() {
             }
         }
     }
-
 
     private fun setupSearchBarClearButton() {
         val searchIcon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_search)

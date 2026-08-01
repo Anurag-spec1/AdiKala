@@ -20,7 +20,6 @@
     app:carbon_stroke="#14000000"
     app:carbon_strokeWidth="1dp">
 
-
     <carbon.widget.FrameLayout
         android:layout_width="51dp"
         android:layout_height="51dp"
@@ -33,7 +32,7 @@
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:adjustViewBounds="true"
-            android:scaleType="centerInside"/>
+            android:scaleType="centerCrop" />
     </carbon.widget.FrameLayout>
 
     <carbon.widget.TextView
@@ -47,6 +46,6 @@
         android:textSize="16sp"
         app:carbon_font="@font/space_grotesk_semibold"
         android:maxLines="1"
-        android:ellipsize="end"/>
+        android:ellipsize="end" />
 
 </carbon.widget.LinearLayout>
