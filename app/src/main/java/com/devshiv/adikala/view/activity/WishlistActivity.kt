@@ -5,21 +5,28 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.devshiv.adikala.databinding.ActivityWishlistBinding
 import com.devshiv.adikala.model.Product
 import com.devshiv.adikala.utils.WishlistManager
 import com.devshiv.adikala.view.adapter.ProductAdapter
+import com.devshiv.adikala.viewmodel.CartViewModel
 
 class WishlistActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityWishlistBinding
     private lateinit var productAdapter: ProductAdapter
 
+    private lateinit var cartviewmodel : CartViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityWishlistBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        cartviewmodel = ViewModelProvider(this)[CartViewModel::class.java]
 
         setupRecycler()
         setupListeners()
@@ -40,6 +47,7 @@ class WishlistActivity : AppCompatActivity() {
             },
             onAddToCart = { product ->
                 val variantId = "gid://shopify/ProductVariant/${product.variants.firstOrNull()?.id ?: product.id}"
+                cartviewmodel.addItem(variantId, product.name)
                 Toast.makeText(this, "${product.name} added to cart", Toast.LENGTH_SHORT).show()
             },
             onWishlistToggle = { product ->
